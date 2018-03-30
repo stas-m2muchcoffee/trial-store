@@ -1,12 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-//import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { InvoicesComponent } from './invoices/invoices.component';
-//import { CustomersComponent } from './customers/customers.component';
-//import { ProductsComponent } from './products/products.component';
-//import { NewInvoiceComponent } from './new-invoice/new-invoice.component';
-
 
 const routes: Routes = [
   { path: '', redirectTo: '/invoices', pathMatch: 'full' },
