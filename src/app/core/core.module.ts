@@ -1,8 +1,9 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { ToolbarModule } from '../toolbar/toolbar.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { throwIfAlreadyLoaded } from './module-import-guard';
 import { InvoicesModule } from '../invoices/invoices.module';
 
 @NgModule({
@@ -15,4 +16,10 @@ import { InvoicesModule } from '../invoices/invoices.module';
   ],
   declarations: []
 })
-export class CoreModule { }
+export class CoreModule {
+  constructor(
+    @Optional() @SkipSelf() parentModule: CoreModule
+  ) {
+    throwIfAlreadyLoaded(parentModule, 'CoreModule');
+  }
+}
