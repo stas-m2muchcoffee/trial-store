@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { InvoicesModule } from '../invoices/invoices.module';
 import { ProductService } from './services/product.service';
+import { CustomerService } from './services/customer.service';
 
 @NgModule({
   imports: [],
@@ -18,7 +19,8 @@ import { ProductService } from './services/product.service';
     HttpClientModule
   ],
   providers: [
-    ProductService
+    ProductService,
+    CustomerService
   ],
   declarations: []
 })
