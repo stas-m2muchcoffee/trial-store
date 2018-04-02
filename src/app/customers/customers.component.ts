@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { CustomerService } from '../core/services/customer.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from "rxjs/Subscription";
 
+import { CustomerService } from '../core/services/customer.service';
 import { Customer } from './customer';
 
 @Component({
@@ -8,9 +9,10 @@ import { Customer } from './customer';
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.scss']
 })
-export class CustomersComponent implements OnInit {
+export class CustomersComponent implements OnInit, OnDestroy {
   customers: Customer[];
   displayedColumns = ['name', 'address', 'phone'];
+  subscription: Subscription;
   
   constructor(
     private customerService: CustomerService
@@ -21,8 +23,12 @@ export class CustomersComponent implements OnInit {
   }
   
   getCustomers() {
-    this.customerService.getCustomers()
+    this.subscription = this.customerService.getCustomers()
       .subscribe(customers => this.customers = customers);
+  }
+  
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
 }

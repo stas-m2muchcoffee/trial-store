@@ -1,3 +1,11 @@
-<p>
-  invoices works!
-</p>
+<div class="container">
+  <ul>
+    <li *ngFor="let invoice of invoices">
+      id: {{ invoice.id }};
+      customer_id: {{ invoice.customer_id }};
+      discount: {{ invoice.discount }};
+      total: {{ invoice.total }};
+      customer_name: {{ invoice.customer_name }};
+    </li>
+  </ul>
+</div>

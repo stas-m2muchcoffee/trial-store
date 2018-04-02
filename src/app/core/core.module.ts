@@ -8,6 +8,7 @@ import { throwIfAlreadyLoaded } from './module-import-guard';
 import { InvoicesModule } from '../invoices/invoices.module';
 import { ProductService } from './services/product.service';
 import { CustomerService } from './services/customer.service';
+import { InvoiceService } from './services/invoice.service';
 
 @NgModule({
   imports: [],
@@ -20,7 +21,8 @@ import { CustomerService } from './services/customer.service';
   ],
   providers: [
     ProductService,
-    CustomerService
+    CustomerService,
+    InvoiceService
   ],
   declarations: []
 })
