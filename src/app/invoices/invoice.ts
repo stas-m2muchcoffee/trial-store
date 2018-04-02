@@ -3,5 +3,4 @@ export interface Invoice {
   customer_id: number;
   discount: number;
   total: number;
-  customer_name: string;
 }
