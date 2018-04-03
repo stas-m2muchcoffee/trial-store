@@ -1,10 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
+import { combineLatest } from 'rxjs/observable/combineLatest';
 
 import { InvoiceService } from '../core/services/invoice.service';
 import { Invoice } from './invoice';
 import { CustomerService } from '../core/services/customer.service';
 import { Customer } from '../customers/customer';
+import { TransformInvoice } from './transformInvoice';
 
 @Component({
   selector: 'app-invoices',
@@ -14,31 +16,36 @@ import { Customer } from '../customers/customer';
 export class InvoicesComponent implements OnInit, OnDestroy {
   invoices: Invoice[];
   customers: Customer[];
-  invoicesSubscription: Subscription;
-  customersSubscription: Subscription;
-
+  subscription: Subscription;
+  transformInvoices: Array<TransformInvoice>;
+  displayedColumns = ['invoice_id', 'customer_name', 'discount', 'total', 'actions'];
+  
   constructor(
     private invoiceService: InvoiceService,
     private customerService: CustomerService
   ) { }
 
   ngOnInit() {
-    this.getInvoices();
-    this.getCustomers();
+    this.getTransformInvoices();
   }
   
-  getInvoices() {
-    this.invoicesSubscription = this.invoiceService.getInvoices()
-      .subscribe(invoices => this.invoices = invoices);
-  }
-  getCustomers() {
-    this.customersSubscription = this.customerService.getCustomers()
-      .subscribe(customers => this.customers = customers);
+  getTransformInvoices() {
+    this.subscription = combineLatest([this.invoiceService.getInvoices(), this.customerService.getCustomers()])
+      .subscribe(resp => {
+        this.transformInvoices = [];
+        resp[0].map((invoice) => {
+          let customer = resp[1].filter((customer) => {
+            return customer.id == invoice.customer_id;
+          });
+          invoice.customer = customer[0];
+          this.transformInvoices.push(invoice);
+        });
+        this.invoiceService.sendNumInvoices(this.transformInvoices.length);
+      });
   }
   
   ngOnDestroy() {
-    this.invoicesSubscription.unsubscribe();
-    this.customersSubscription.unsubscribe();
+    this.subscription.unsubscribe();
   }
 
 }
