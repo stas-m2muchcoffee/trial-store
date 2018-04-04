@@ -9,6 +9,11 @@ import { InvoicesModule } from '../invoices/invoices.module';
 import { ProductService } from './services/product.service';
 import { CustomerService } from './services/customer.service';
 import { InvoiceService } from './services/invoice.service';
+import { httpInterceptorProviders } from './interceptors';
+import { ProductsResolverService } from '../shared/resolvers/products-resolver.service';
+import { CustomersResolverService } from '../shared/resolvers/customers-resolver.service';
+import { InvoicesResolverService } from '../shared/resolvers/invoices-resolver.service';
+
 
 @NgModule({
   imports: [],
@@ -17,12 +22,16 @@ import { InvoiceService } from './services/invoice.service';
     BrowserAnimationsModule,
     ToolbarModule,
     InvoicesModule,
-    HttpClientModule
+    HttpClientModule,
   ],
   providers: [
     ProductService,
     CustomerService,
-    InvoiceService
+    InvoiceService,
+    ProductsResolverService,
+    CustomersResolverService,
+    InvoicesResolverService,
+    httpInterceptorProviders
   ],
   declarations: []
 })

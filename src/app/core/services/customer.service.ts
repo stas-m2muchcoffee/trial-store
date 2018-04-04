@@ -6,13 +6,14 @@ import { Customer } from '../../customers/customer';
 
 @Injectable()
 export class CustomerService {
-  private customersUrl = 'http://api.invoice-app.2muchcoffee.com/api/customers';
+  
+  customers$: Observable<Customer[]>;
   
   constructor(
     private http: HttpClient
   ) { }
   
-  getCustomers(): Observable<Customer[]> {
-    return this.http.get<Customer[]>(this.customersUrl);
+  getCustomers(): void {
+    this.customers$ = this.http.get<Customer[]>('customers');
   }
 }

@@ -1,5 +1,5 @@
 <div class="container">
-  <mat-table #table [dataSource]="customers" class="customers-table">
+  <mat-table #table [dataSource]="customers$ | async">
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef> Customer Name </mat-header-cell>
       <mat-cell *matCellDef="let element"> {{ element.name }} </mat-cell>

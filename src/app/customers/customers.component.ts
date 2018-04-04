@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subscription } from "rxjs/Subscription";
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 
 import { CustomerService } from '../core/services/customer.service';
 import { Customer } from './customer';
@@ -9,26 +9,16 @@ import { Customer } from './customer';
   templateUrl: './customers.component.html',
   styleUrls: ['./customers.component.scss']
 })
-export class CustomersComponent implements OnInit, OnDestroy {
-  customers: Customer[];
+export class CustomersComponent implements OnInit {
+  customers$: Observable<Customer[]>;
   displayedColumns = ['name', 'address', 'phone'];
-  subscription: Subscription;
   
   constructor(
     private customerService: CustomerService
   ) { }
 
   ngOnInit() {
-    this.getCustomers();
-  }
-  
-  getCustomers() {
-    this.subscription = this.customerService.getCustomers()
-      .subscribe(customers => this.customers = customers);
-  }
-  
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.customers$ = this.customerService.customers$;
   }
 
 }

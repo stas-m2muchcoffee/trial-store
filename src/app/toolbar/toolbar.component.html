@@ -7,7 +7,7 @@
       <mat-chip-list fxHide.xs="true">
         <button mat-raised-button routerLink="/products" routerLinkActive="active" color="primary">Products</button>
         <button mat-raised-button routerLink="/customers" routerLinkActive="active" color="primary">Customers</button>
-        <button mat-raised-button routerLink="/invoices" routerLinkActive="active" color="primary">Invoices({{ numInvoices.num }})</button>
+        <button mat-raised-button routerLink="/invoices" routerLinkActive="active" color="primary">Invoices({{ countInvoices$ | async }})</button>
       </mat-chip-list>
 
       <!--mobile menu-->
@@ -15,7 +15,7 @@
         <mat-menu #appMenu="matMenu">
           <a mat-menu-item routerLink="/products">Products</a>
           <a mat-menu-item routerLink="/customers">Customers</a>
-          <a mat-menu-item routerLink="/invoices">Invoices({{ numInvoices.num }})</a>
+          <a mat-menu-item routerLink="/invoices">Invoices()</a>
         </mat-menu>
         <button mat-icon-button [matMenuTriggerFor]="appMenu">
           <mat-icon>menu</mat-icon>
