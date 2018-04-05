@@ -1,0 +1,29 @@
+<div class="container">
+  <span>Invoice #{{ (invoice$ | async)?.id }}</span>
+  <div fxLayoutAlign="row" fxLayoutGap="5%">
+    <div fxFlexAlign="column" fxFlex="70%">
+      <p class="gray">{{ (customer$ | async)?.name }}</p>
+      <div>
+        <div fxFlexAlign="row" fxLayoutGap="2%">
+          <p fxFlex="60%">Products</p>
+          <p fxFlex="20%">Qty</p>
+          <p fxFlex="20%">Price</p>
+        </div>
+        <div fxFlexAlign="row" fxLayoutGap="2%" *ngFor="let invoiceItem of (invoiceItems$ | async)">
+          <p fxFlex="60%" class="gray">{{ invoiceItem?.product.name }}</p>
+          <p fxFlex="20%" class="gray">{{ invoiceItem?.quantity }}</p>
+          <p fxFlex="20%" class="gray">${{ invoiceItem?.product.price }}</p>
+        </div>
+        <hr>
+        <div fxFlexAlign="row" fxLayoutGap="2%" class="total">
+          <p fxFlex="58%">Total</p>
+          <p fxFlex="42%">{{ (invoice$ | async)?.total }}</p>
+        </div>
+      </div>
+    </div>
+    <div fxFlexAlign="column" fxFlex="15%">
+      <p>Discount, %</p>
+      <p>{{ (invoice$ | async)?.discount }}</p>
+    </div>
+  </div>
+</div>

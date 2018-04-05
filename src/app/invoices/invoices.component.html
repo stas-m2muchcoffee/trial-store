@@ -24,8 +24,8 @@
       <ng-container matColumnDef="actions">
         <mat-header-cell *matHeaderCellDef class="actions"> Actions </mat-header-cell>
         <mat-cell *matCellDef="let element"  class="actions">
-          <button mat-raised-button routerLink="" color="primary">View</button>
-          <button mat-raised-button routerLink="" color="accent">Edit</button>
+          <button mat-raised-button [routerLink]="['view', element.id]" color="primary">View</button>
+          <button mat-raised-button [routerLink]="['edit', element.id]" color="accent">Edit</button>
           <button mat-raised-button routerLink="" color="warn">Delete</button>
         </mat-cell>
       </ng-container>
@@ -35,31 +35,3 @@
     </mat-table>
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--<div class="container">-->
-  <!--<ul>-->
-    <!--<li *ngFor="let invoice of transformInvoices">-->
-      <!--id: {{ invoice.id }};-->
-      <!--customer_id: {{ invoice.customer_id }};-->
-      <!--discount: {{ invoice.discount }};-->
-      <!--total: {{ invoice.total }};-->
-      <!--customer_name: {{ invoice.customer.name }};-->
-    <!--</li>-->
-  <!--</ul>-->
-<!--</div>-->

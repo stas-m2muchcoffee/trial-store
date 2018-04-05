@@ -5,15 +5,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
 import { throwIfAlreadyLoaded } from './module-import-guard';
-import { InvoicesModule } from '../invoices/invoices.module';
 import { ProductService } from './services/product.service';
 import { CustomerService } from './services/customer.service';
 import { InvoiceService } from './services/invoice.service';
+import { InvoiceItemsService } from './services/invoice-items.service';
 import { httpInterceptorProviders } from './interceptors';
 import { ProductsResolverService } from '../shared/resolvers/products-resolver.service';
 import { CustomersResolverService } from '../shared/resolvers/customers-resolver.service';
 import { InvoicesResolverService } from '../shared/resolvers/invoices-resolver.service';
-
+import { InvoiceItemsResolverService } from '../shared/resolvers/invoice-items-resolver.service';
 
 @NgModule({
   imports: [],
@@ -21,16 +21,17 @@ import { InvoicesResolverService } from '../shared/resolvers/invoices-resolver.s
     BrowserModule,
     BrowserAnimationsModule,
     ToolbarModule,
-    InvoicesModule,
-    HttpClientModule,
+    HttpClientModule
   ],
   providers: [
     ProductService,
     CustomerService,
     InvoiceService,
+    InvoiceItemsService,
     ProductsResolverService,
     CustomersResolverService,
     InvoicesResolverService,
+    InvoiceItemsResolverService,
     httpInterceptorProviders
   ],
   declarations: []

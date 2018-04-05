@@ -16,5 +16,9 @@ export class ProductService {
   getProducts(): void {
     this.products$ = this.http.get<Product[]>('products');
   }
+  
+  getProduct(id: number | string): Observable<Product> {
+    return this.http.get<Product>(`products/${id}`);
+  }
 
 }
