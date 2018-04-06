@@ -1,29 +1,29 @@
 <div class="container">
   <span>Invoice #{{ (invoice$ | async)?.id }}</span>
-  <div fxLayoutAlign="row" fxLayoutGap="5%">
+  <div fxLayoutAlign="row center" fxLayoutGap="5%">
     <div fxFlexAlign="column" fxFlex="70%">
-      <p class="gray">{{ (customer$ | async)?.name }}</p>
+      <a routerLink="/customers"><p class="gray fBlue">{{ (customer$ | async)?.name }}</p></a>
       <div>
         <div fxFlexAlign="row" fxLayoutGap="2%">
           <p fxFlex="60%">Products</p>
-          <p fxFlex="20%">Qty</p>
-          <p fxFlex="20%">Price</p>
+          <p fxFlex="20%" class="center">Qty</p>
+          <p fxFlex="20%" class="center">Price</p>
         </div>
         <div fxFlexAlign="row" fxLayoutGap="2%" *ngFor="let invoiceItem of (invoiceItems$ | async)">
           <p fxFlex="60%" class="gray">{{ invoiceItem?.product.name }}</p>
-          <p fxFlex="20%" class="gray">{{ invoiceItem?.quantity }}</p>
-          <p fxFlex="20%" class="gray">${{ invoiceItem?.product.price }}</p>
+          <p fxFlex="20%" class="gray center">{{ invoiceItem?.quantity }}</p>
+          <p fxFlex="20%" class="gray center">${{ invoiceItem?.product.price }}</p>
         </div>
         <hr>
         <div fxFlexAlign="row" fxLayoutGap="2%" class="total">
-          <p fxFlex="58%">Total</p>
-          <p fxFlex="42%">{{ (invoice$ | async)?.total }}</p>
+          <p fxFlex="58%" class="center blue f24">Total</p>
+          <p fxFlex="42%" class="center f24">${{ (invoice$ | async)?.total }}</p>
         </div>
       </div>
     </div>
     <div fxFlexAlign="column" fxFlex="15%">
-      <p>Discount, %</p>
-      <p>{{ (invoice$ | async)?.discount }}</p>
+      <p class="center blue">Discount, %</p>
+      <p class="center">{{ (invoice$ | async)?.discount }}</p>
     </div>
   </div>
 </div>
