@@ -1,56 +1,46 @@
 <div class="container">
-  <span>Invoice #{{ (invoice$ | async)?.id }}</span>
-  <div fxLayoutAlign="row center" fxLayoutGap="5%">
-    <div fxFlexAlign="column" fxFlex="70%">
-      <mat-form-field fxFlexFill>
-        <mat-select [(value)]="selectedCustomer">
-          <mat-option value="{{ customer.name }}" *ngFor="let customer of customers$ | async">{{ customer.name }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+  <form [formGroup]="editInvoiceForm">
+    <span>{{ editInvoiceForm.get('invoiceId').value }}</span>
 
-      <div>
+    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="5%">
+      <div fxFlex="80%">
+        <mat-form-field>
+          <mat-select formControlName="customerName">
+            <mat-option value="{{ customer.name }}" *ngFor="let customer of customers$ | async">{{ customer.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
         <div fxFlexAlign="row" fxLayoutGap="2%">
           <p fxFlex="60%">Products</p>
           <p fxFlex="20%" class="center">Qty</p>
           <p fxFlex="20%" class="center">Price</p>
         </div>
-        <div fxFlexAlign="row" fxLayoutGap="2%" *ngFor="let invoiceItem of (invoiceItems$ | async); index as i;">
-          <!--<p fxFlex="60%" class="gray">{{ invoiceItem?.product.name }}</p>-->
-          <mat-form-field fxFlex="60%">
-            <mat-select [(value)]="selectedProduct[i]">
-              <mat-option value="{{ product.name }}" *ngFor="let product of products$ | async">{{ product.name }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <!--<p fxFlex="20%" class="gray center">{{ invoiceItem?.quantity }}</p>-->
-          <mat-form-field fxFlex="20%">
-            <mat-select [(value)]="selectedQuantity[i]">
-              <!--<mat-option value="{{ num }}" *ngFor="let num of nums">{{ num }}</mat-option>-->
-              <mat-option value="{{ num }}" *ngFor="let num of count">{{ num }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <p fxFlex="20%" class="gray center">${{ invoiceItem?.product.price }}</p>
-        </div>
-        <div fxFlexAlign="row" fxLayoutGap="2%">
-          <!--<p fxFlex="60%" class="gray">{{ invoiceItem?.product.name }}</p>-->
-          <mat-form-field fxFlex="60%">
-            <mat-select [(value)]="selectedProduct" placeholder="Add product">
-              <mat-option value="{{ product.name }}" *ngFor="let product of products$ | async">{{ product.name }}</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <p fxFlex="20%" class="gray center">{{ invoiceItem?.quantity }}</p>
-          <p fxFlex="20%" class="gray center">${{ invoiceItem?.product.price }}</p>
+        <div formArrayName="products">
+          <div *ngFor="let product of products.controls; let i=index" [formGroupName]="i" fxFlexAlign="row" fxLayoutGap="2%">
+            <mat-form-field fxFlex="60%">
+              <mat-select formControlName="productName">
+                <mat-option value="{{ product.name }}" *ngFor="let product of products$ | async">{{ product.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="20%">
+              <input matInput type="number" formControlName="productQty" min="0">
+            </mat-form-field>
+            <mat-form-field fxFlex="20%">
+              <input matInput formControlName="productPrice" min="0">
+            </mat-form-field>
+          </div>
         </div>
         <hr>
         <div fxFlexAlign="row" fxLayoutGap="2%" class="total">
-          <p fxFlex="58%" class="center blue f24">Total</p>
-          <p fxFlex="42%" class="center f24">${{ (invoice$ | async)?.total }}</p>
+        <p fxFlex="58%" class="center blue f24">Total</p>
+        <p fxFlex="42%" class="center f24">${{ editInvoiceForm.get('total').value }}</p>
         </div>
       </div>
+      <div fxFlex="15%" fxFlexAlign="center">
+        <p class="center blue">Discount, %</p>
+        <p class="center">{{ editInvoiceForm.get('discount').value }}</p>
+      </div>
     </div>
-    <div fxFlexAlign="column" fxFlex="15%">
-      <p class="center blue">Discount, %</p>
-      <p class="center">{{ (invoice$ | async)?.discount }}</p>
-    </div>
-  </div>
+  </form>
+
+  <!--<p>Form value {{ editInvoiceForm.value | json }} </p>-->
 </div>
