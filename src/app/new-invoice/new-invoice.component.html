@@ -1,3 +1,45 @@
-<p>
-  new-invoice works!
-</p>
+<div class="container">
+  <form [formGroup]="newInvoiceForm">
+    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="5%">
+      <div fxFlex="80%">
+        <mat-form-field>
+          <mat-select formControlName="customerId" placeholder="Select Name">
+            <mat-option>None</mat-option>
+            <mat-option [value]="customer.id" *ngFor="let customer of customers$ | async">{{ customer.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div fxFlexAlign="row" fxLayoutGap="2%">
+          <p fxFlex="60%">Products</p>
+          <p fxFlex="20%" class="center">Qty</p>
+          <p fxFlex="20%" class="center">Price</p>
+        </div>
+        <div formArrayName="products">
+          <div *ngFor="let product of productsControl.controls; let i=index" [formGroupName]="i" fxFlexAlign="row" fxLayoutGap="2%">
+            <mat-form-field fxFlex="60%">
+              <mat-select formControlName="productId">
+                <mat-option [value]="product.id" *ngFor="let product of products$ | async">{{ product.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field fxFlex="20%">
+              <input matInput type="number" formControlName="productQty" min="0">
+            </mat-form-field>
+            <p fxFlex="20%">$</p>
+          </div>
+        </div>
+        <hr>
+        <div fxFlexAlign="row" fxLayoutGap="2%" class="total">
+          <p fxFlex="58%" class="center blue f24">Total</p>
+          <p fxFlex="42%" class="center f24">$</p>
+        </div>
+      </div>
+      <div fxFlex="15%" fxFlexAlign="center">
+        <p class="center blue">Discount, %</p>
+        <mat-form-field>
+          <input matInput type="number" formControlName="discount" min="0" max="50">
+        </mat-form-field>
+      </div>
+    </div>
+  </form>
+
+  <!--<p>Form value {{ newInvoiceForm.value | json }} </p>-->
+</div>

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import 'rxjs/add/operator/combineLatest';
 
@@ -10,6 +10,8 @@ import { InvoiceItemsService } from '../../core/services/invoice-items.service';
 import { InvoiceItem } from '../invoice-item';
 import { Product } from '../../products/product';
 import { ProductService } from '../../core/services/product.service';
+import { InvoiceService } from '../../core/services/invoice.service';
+import { Invoice } from '../invoice';
 
 @Component({
   selector: 'app-edit-invoice',
@@ -19,31 +21,24 @@ import { ProductService } from '../../core/services/product.service';
 export class EditInvoiceComponent implements OnInit {
   
   editInvoiceForm: FormGroup;
-  
   customers$: Observable<Customer[]>;
   invoiceItems$: Observable<InvoiceItem[]>;
   products$: Observable<Product[]>;
-  
+
   total: number = 0;
   
   constructor(
     private customerService: CustomerService,
     private invoiceItemsService: InvoiceItemsService,
     private productService: ProductService,
+    private invoiceService: InvoiceService,
     private formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
     this.createForm();
-    this.editInvoiceForm.controls['products'].valueChanges.subscribe(console.log);
-    
     this.customers$ = this.customerService.customers$;
-    this.invoiceItemsService.customer$.subscribe(customer => this.editInvoiceForm.controls['customerName'].setValue(customer.name));
-    this.invoiceItemsService.invoice$.subscribe(invoice => {
-      this.editInvoiceForm.controls['invoiceId'].setValue('Invoice #'+invoice.id);
-      this.editInvoiceForm.controls['discount'].setValue(invoice.discount);
-    });
-    
+    this.products$ = this.productService.products$;
     this.invoiceItems$ = Observable.combineLatest(
       this.invoiceItemsService.invoiceItems$,
       this.invoiceItemsService.products$
@@ -54,39 +49,73 @@ export class EditInvoiceComponent implements OnInit {
         return invoiceItem;
       })
     });
-  
-    this.products$ = this.productService.products$;
+    
+    this.invoiceItemsService.customer$.subscribe(customer => this.editInvoiceForm.controls['customerId'].setValue(customer.id));
+    
+    this.invoiceItemsService.invoice$.subscribe(invoice => {
+      this.editInvoiceForm.controls['invoiceId'].setValue(invoice.id);
+      this.editInvoiceForm.controls['discount'].setValue(invoice.discount);
+    });
+    
     this.invoiceItems$.subscribe(invoiceItems => {
       const products = <FormArray>this.editInvoiceForm.controls['products'];
       invoiceItems.map(invoiceItem => {
         products.push(this.formBuilder.group({
-          productName: invoiceItem.product.name,
+          productId: invoiceItem.product.id,
           productQty: invoiceItem.quantity,
-          productPrice: '$'+(invoiceItem.product.price*invoiceItem.quantity).toFixed(2)
+          productPrice: invoiceItem.product.price
         }));
-        this.total += (invoiceItem.product.price*invoiceItem.quantity);
+        this.total += invoiceItem.product.price*invoiceItem.quantity;
         this.editInvoiceForm.controls['total'].setValue((this.total*(1-(this.editInvoiceForm.controls['discount'].value)/100)).toFixed(2));
       });
       products.push(this.formBuilder.group({
-        productName: "",
+        productId: null,
         productQty: 0,
-        productPrice: '$0'
+        productPrice: 0
       }));
     });
+    
+    //this.productsControl.controls.forEach(() => console.log(111));
+  
+    //this.productsControl.controls.forEach(
+    //  control => {
+    //    control.valueChanges.subscribe(
+    //      () => {
+    //        console.log(this.productsControl.controls.indexOf(control))
+    //      }
+    //    )
+    //  }
+    //)
   }
   
-  get products(): FormArray {
+  get productsControl(): FormArray {
     return this.editInvoiceForm.get('products') as FormArray;
   };
   
   createForm() {
     this.editInvoiceForm = this.formBuilder.group({
-      invoiceId: '',
-      customerName: '',
+      invoiceId: null,
+      customerId: null,
       products: this.formBuilder.array([]),
-      total: '',
-      discount: ''
+      total: null,
+      discount: null
     });
   }
 
+  //put() {
+  //  //подписываемся на изменение кастомера
+  //  this.editInvoiceForm.get('customerId').valueChanges.subscribe(customerId => {
+  //
+  //    const invoice: Invoice = {
+  //      id: this.editInvoiceForm.get('invoiceId').value,
+  //      customer_id: customerId,
+  //      discount: this.editInvoiceForm.get('discount').value,
+  //      total: this.editInvoiceForm.get('total').value
+  //    };
+  //
+  //    console.log(invoice);
+  //
+  //    this.invoiceService.updateInvoice(invoice);
+  //  });
+  //}
 }
