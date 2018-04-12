@@ -16,20 +16,21 @@
         <div formArrayName="products">
           <div *ngFor="let product of productsControl.controls; let i=index" [formGroupName]="i" fxFlexAlign="row" fxLayoutGap="2%">
             <mat-form-field fxFlex="60%">
-              <mat-select formControlName="productId">
+              <mat-select formControlName="productId" placeholder="Add Product">
+                <mat-option>None</mat-option>
                 <mat-option [value]="product.id" *ngFor="let product of products$ | async">{{ product.name }}</mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field fxFlex="20%">
               <input matInput type="number" formControlName="productQty" min="0">
             </mat-form-field>
-            <p fxFlex="20%">$</p>
+            <p fxFlex="20%">${{ price[i] }}</p>
           </div>
         </div>
         <hr>
         <div fxFlexAlign="row" fxLayoutGap="2%" class="total">
           <p fxFlex="58%" class="center blue f24">Total</p>
-          <p fxFlex="42%" class="center f24">$</p>
+          <p fxFlex="42%" class="center f24">${{ total }}</p>
         </div>
       </div>
       <div fxFlex="15%" fxFlexAlign="center">
@@ -39,6 +40,7 @@
         </mat-form-field>
       </div>
     </div>
+    <button mat-raised-button color="primary" (click)="createInvoice()">Create Invoice</button>
   </form>
 
   <!--<p>Form value {{ newInvoiceForm.value | json }} </p>-->

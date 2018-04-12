@@ -1,10 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { ProductsResolverService } from './shared/resolvers/products-resolver.service';
-import { CustomersResolverService } from './shared/resolvers/customers-resolver.service';
-import { InvoicesResolverService } from './shared/resolvers/invoices-resolver.service';
-
 const routes: Routes = [
   { path: '',
     redirectTo: '/invoices',
@@ -17,7 +13,7 @@ const routes: Routes = [
     loadChildren: 'app/customers/customers.module#CustomersModule'
   },
   { path: 'products',
-    loadChildren: 'app/products/products.module#ProductsModule',
+    loadChildren: 'app/products/products.module#ProductsModule'
   },
   { path: 'new-invoice',
     loadChildren: 'app/new-invoice/new-invoice.module#NewInvoiceModule'

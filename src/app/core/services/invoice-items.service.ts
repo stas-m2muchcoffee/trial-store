@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/zip';
 
@@ -11,6 +11,12 @@ import { Customer } from '../../customers/customer';
 import { ProductService } from './product.service';
 import { InvoiceService } from './invoice.service';
 import { CustomerService } from './customer.service';
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type':  'application/json; charset=utf-8'
+  })
+};
 
 @Injectable()
 export class InvoiceItemsService {
@@ -33,6 +39,10 @@ export class InvoiceItemsService {
     .switchMap(invoices => Observable.zip(...invoices.map(invoice => this.productService.getProduct(invoice.product_id))));
     this.invoice$ = this.invoiceService.getInvoice(id);
     this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
+  }
+  
+  createInvoiceItem(invoiceItem): Observable<any> {
+    return this.http.post<any>(`invoices/${invoiceItem.invoice_id}/items`, invoiceItem, httpOptions);
   }
   
 }

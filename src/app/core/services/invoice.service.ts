@@ -8,7 +8,7 @@ import { Invoice } from '../../invoices/invoice';
 
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type':  'application/json'
+    'Content-Type':  'application/json; charset=utf-8'
   })
 };
 
@@ -29,8 +29,11 @@ export class InvoiceService {
     return this.http.get<Invoice>(`invoices/${id}`);
   }
   
-  updateInvoice(invoice: Invoice) {
-    //debugger;
-    return this.http.put<Invoice>(`invoices/${invoice.id}`, invoice, httpOptions);
+  createInvoice(invoice: Invoice): Observable<Invoice> {
+    return this.http.post<Invoice>('invoices', invoice, httpOptions);
+  }
+  
+  deleteInvoice(id: number): Observable<{}>  {
+    return this.http.delete(`$invoices/${id}`, httpOptions);
   }
 }
