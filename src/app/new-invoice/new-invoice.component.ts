@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
+import { Validators } from '@angular/forms';
 
 import { CustomerService } from '../core/services/customer.service';
 import { InvoiceService } from '../core/services/invoice.service';
@@ -21,9 +21,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
   products: Product[];
-  price: number[] = [0];
   total: number = 0;
-  //customerIdSubscription: Subscription;
 
   constructor(
     private customerService: CustomerService,
@@ -48,80 +46,87 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     return this.newInvoiceForm.get('products') as FormArray;
   }
   
-  getTotal() {
-    this.total = 0;
-    this.price.forEach(price => {
-      this.total += +(price*(1-this.newInvoiceForm.get('discount').value/100)).toFixed(2);
+  createForm() {
+    this.newInvoiceForm = this.formBuilder.group({
+      customerId: [null, Validators.required],
+      products: this.formBuilder.array([]),
+      discount: [0, Validators.max(50)]
     });
+    this.addProduct();
   }
   
   addProduct() {
     const products = <FormArray>this.newInvoiceForm.controls['products'];
     products.push(this.formBuilder.group({
       productId: null,
-      productQty: 0
+      productQty: [0, Validators.min(0)],
+      productPrice: 0
     }));
-    this.price.push(0);
-  
-    this.productsControl.controls.forEach((control, i) => {
+    
+    this.productsControl.controls.forEach((control) => {
       control.valueChanges.subscribe(invItem => {
         const selectedProduct = this.products.find(product => product.id === invItem.productId);
-        this.price[i] = +(selectedProduct.price*control.value.productQty).toFixed(2);
-        this.getTotal();
+        if(selectedProduct) {
+          control.value.productPrice = (selectedProduct.price*control.value.productQty).toFixed(2);
+          this.getTotal();
+        }
       })
     });
     this.productsControl.controls[this.productsControl.controls.length-1].valueChanges.subscribe(() => {
-      if( this.productsControl.controls[this.productsControl.controls.length-1].value.productId != null ) {
+      if( this.productsControl.controls[this.productsControl.controls.length-1].value.productId !== null ) {
         this.addProduct();
       }
     });
   }
   
-  createForm() {
-    this.newInvoiceForm = this.formBuilder.group({
-      customerId: null,
-      products: this.formBuilder.array([
-        this.formBuilder.group({
-          productId: null,
-          productQty: 0
-        })
-      ]),
-      discount: 0
+  getTotal() {
+    this.total = 0;
+    this.productsControl.controls.forEach((control) => {
+      this.total += control.value.productPrice*(1-this.newInvoiceForm.get('discount').value/100);
     });
+  }
   
-    this.productsControl.controls.forEach((control, i) => {
-      control.valueChanges.subscribe(invItem => {
-        const selectedProduct = this.products.find(product => product.id === invItem.productId);
-        this.price[i] = +(selectedProduct.price*control.value.productQty).toFixed(2);
-        this.getTotal();
-      });
-    });
-    this.productsControl.controls[this.productsControl.controls.length-1].valueChanges.subscribe(() => {
-      if( this.productsControl.controls[this.productsControl.controls.length-1].value.productId != null ) {
-        this.addProduct();
-      }
-    });
+  deleteInvoice(i: number) {
+    this.productsControl.removeAt(i);
+    this.getTotal();
   }
   
   createInvoice() {
+    if (this.newInvoiceForm.valid) {
     const invoice: Invoice = {
-      items: this.newInvoiceForm.get('products').value,
-      customer_id: this.newInvoiceForm.get('customerId').value,
-      discount: this.newInvoiceForm.get('discount').value,
-      total: this.total
-    };
-    this.invoiceService.createInvoice(invoice).subscribe(invoice => {
-      this.newInvoiceForm.get('products').value.forEach(product => {
-        if (product.productId !== null) {
-          const invoiceItem = {
-            invoice_id: invoice.id,
-            product_id: product.productId,
-            quantity: product.productQty
-          };
-          this.invoiceItemsService.createInvoiceItem(invoiceItem);
-        }
+        items: [],
+        customer_id: this.newInvoiceForm.get('customerId').value,
+        discount: this.newInvoiceForm.get('discount').value,
+        total: this.total
+      };
+      this.invoiceService.createInvoice(invoice).subscribe(invoice => {
+        this.createInvoiceItem(invoice.id);
       });
+    }
+  }
+  
+  createInvoiceItem(id: number) {
+    this.newInvoiceForm.get('products').value.forEach(product => {
+      if (product.productId !== null) {
+        const invoiceItem = {
+          invoice_id: id,
+          product_id: product.productId,
+          quantity: product.productQty
+        };
+        this.invoiceItemsService.createInvoiceItem(invoiceItem, id).subscribe();
+      }
     });
+    alert('Invoice created!');
+    this.createForm();
+    this.total = 0;
+  }
+  
+  canDeactivate(): Observable<boolean> | boolean {
+    if (this.newInvoiceForm.dirty) {
+      return confirm('You did not create an invoice. Leave the page?');
+    } else {
+      return true;
+    }
   }
   
   ngOnDestroy() {

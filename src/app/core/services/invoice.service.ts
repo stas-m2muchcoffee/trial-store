@@ -34,6 +34,6 @@ export class InvoiceService {
   }
   
   deleteInvoice(id: number): Observable<{}>  {
-    return this.http.delete(`$invoices/${id}`, httpOptions);
+    return this.http.delete(`invoices/${id}`, httpOptions);
   }
 }

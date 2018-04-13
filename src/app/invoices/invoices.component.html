@@ -26,7 +26,7 @@
         <mat-cell *matCellDef="let element"  class="actions">
           <button mat-raised-button [routerLink]="['view', element?.id]" color="primary">View</button>
           <button mat-raised-button [routerLink]="['edit', element?.id]" color="accent">Edit</button>
-          <button mat-raised-button routerLink="" color="warn">Delete</button>
+          <button mat-raised-button color="warn" (click)="openModalWindow(element.id)">Delete</button>
         </mat-cell>
       </ng-container>
 

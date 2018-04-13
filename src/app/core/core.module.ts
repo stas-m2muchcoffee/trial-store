@@ -14,6 +14,7 @@ import { ProductsResolverService } from '../shared/resolvers/products-resolver.s
 import { CustomersResolverService } from '../shared/resolvers/customers-resolver.service';
 import { InvoicesResolverService } from '../shared/resolvers/invoices-resolver.service';
 import { InvoiceItemsResolverService } from '../shared/resolvers/invoice-items-resolver.service';
+import { CanDeactivateNewInvoiceGuard } from '../shared/guards/can-deactivate-new-invoice.guard';
 
 @NgModule({
   imports: [],
@@ -32,7 +33,8 @@ import { InvoiceItemsResolverService } from '../shared/resolvers/invoice-items-r
     CustomersResolverService,
     InvoicesResolverService,
     InvoiceItemsResolverService,
-    httpInterceptorProviders
+    httpInterceptorProviders,
+    CanDeactivateNewInvoiceGuard
   ],
   declarations: []
 })

@@ -41,8 +41,8 @@ export class InvoiceItemsService {
     this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
   }
   
-  createInvoiceItem(invoiceItem): Observable<any> {
-    return this.http.post<any>(`invoices/${invoiceItem.invoice_id}/items`, invoiceItem, httpOptions);
+  createInvoiceItem(invoiceItem, invoiceId): Observable<any> {
+    return this.http.post<any>(`invoices/${invoiceId}/items`, invoiceItem, httpOptions);
   }
   
 }
