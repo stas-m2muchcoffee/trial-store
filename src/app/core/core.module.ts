@@ -15,6 +15,7 @@ import { CustomersResolverService } from '../shared/resolvers/customers-resolver
 import { InvoicesResolverService } from '../shared/resolvers/invoices-resolver.service';
 import { InvoiceItemsResolverService } from '../shared/resolvers/invoice-items-resolver.service';
 import { CanDeactivateNewInvoiceGuard } from '../shared/guards/can-deactivate-new-invoice.guard';
+import { ModalService } from './services/modal.service';
 
 @NgModule({
   imports: [],
@@ -34,7 +35,8 @@ import { CanDeactivateNewInvoiceGuard } from '../shared/guards/can-deactivate-ne
     InvoicesResolverService,
     InvoiceItemsResolverService,
     httpInterceptorProviders,
-    CanDeactivateNewInvoiceGuard
+    CanDeactivateNewInvoiceGuard,
+    ModalService
   ],
   declarations: []
 })

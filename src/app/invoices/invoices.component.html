@@ -18,7 +18,7 @@
 
       <ng-container matColumnDef="total">
         <mat-header-cell *matHeaderCellDef> Total </mat-header-cell>
-        <mat-cell *matCellDef="let element"> {{ element?.total }} </mat-cell>
+        <mat-cell *matCellDef="let element"> {{ element?.total.toFixed(2) }} </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="actions">
