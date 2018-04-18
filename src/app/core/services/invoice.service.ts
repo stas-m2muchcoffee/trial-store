@@ -3,8 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { HttpHeaders } from '@angular/common/http';
 
-import { Invoice } from '../../invoices/invoice';
-
+import {Invoice} from '../interfaces/invoice';
 
 const httpOptions = {
   headers: new HttpHeaders({

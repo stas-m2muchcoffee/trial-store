@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 
-import { Customer } from '../../customers/customer';
+import {Customer} from '../interfaces/customer';
 
 @Injectable()
 export class CustomerService {

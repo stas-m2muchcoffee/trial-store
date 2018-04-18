@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/observable/zip';
 
-import { InvoiceItem } from '../../invoices/invoice-item';
-import { Product } from '../../products/product';
-import { Invoice } from '../../invoices/invoice';
-import { Customer } from '../../customers/customer';
-import { ProductService } from './product.service';
+import { InvoiceItem } from '../interfaces/invoice-item';
+import { Product } from '../interfaces/product';
+import { Invoice } from '../interfaces/invoice';
+import { Customer } from '../interfaces/customer';
+
 import { InvoiceService } from './invoice.service';
-import { CustomerService } from './customer.service';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -20,7 +20,6 @@ const httpOptions = {
 
 @Injectable()
 export class InvoiceItemsService {
-  
   invoiceItems$: Observable<InvoiceItem[]>;
   products$: Observable<Product[]>;
   invoice$: Observable<Invoice>;
@@ -28,21 +27,13 @@ export class InvoiceItemsService {
 
   constructor(
     private http: HttpClient,
-    private productService: ProductService,
-    private invoiceService: InvoiceService,
-    private customerService: CustomerService
+    private invoiceService: InvoiceService
   ) { }
-  
-  getInvoiceItems(id: number | string): void {
-    this.invoiceItems$ = this.http.get<InvoiceItem[]>(`invoices/${id}/items`);
-    this.products$ = this.invoiceItems$
-    .switchMap(invoices => Observable.zip(...invoices.map(invoice => this.productService.getProduct(invoice.product_id))));
+  getInvoiceItems(id: number | string): Observable<InvoiceItem[]> {
     this.invoice$ = this.invoiceService.getInvoice(id);
-    this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
+    return this.invoiceItems$ = this.http.get<InvoiceItem[]>(`invoices/${id}/items`);
   }
-  
   createInvoiceItem(invoiceItem, invoiceId): Observable<any> {
     return this.http.post<any>(`invoices/${invoiceId}/items`, invoiceItem, httpOptions);
   }
-  
 }

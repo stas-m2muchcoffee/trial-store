@@ -5,9 +5,9 @@ import 'rxjs/add/operator/map';
 import { MatDialog } from '@angular/material';
 
 import { InvoiceService } from '../core/services/invoice.service';
-import { Invoice } from './invoice';
 import { CustomerService } from '../core/services/customer.service';
-import { Customer } from '../customers/customer';
+import { Invoice } from '../core/interfaces/invoice';
+import { Customer } from '../core/interfaces/customer';
 import { ModalWindowComponent } from './modal-window/modal-window.component';
 
 @Component({
@@ -18,17 +18,14 @@ import { ModalWindowComponent } from './modal-window/modal-window.component';
 export class InvoicesComponent implements OnInit {
   invoice$: Observable<Invoice[]>;
   displayedColumns = ['invoice_id', 'customer_name', 'discount', 'total', 'actions'];
-  
   constructor(
     private invoiceService: InvoiceService,
     private customerService: CustomerService,
     private dialog: MatDialog
   ) {}
-  
   ngOnInit() {
     this.getTransformInvoices();
   }
-  
   getTransformInvoices() {
     this.invoice$ = Observable.combineLatest(
       this.invoiceService.invoices$,
@@ -38,12 +35,11 @@ export class InvoicesComponent implements OnInit {
       return invoices.map((invoice) => {
         invoice.customer = customers.find((customer) => customer.id === invoice.customer_id);
         return invoice;
-      })
+      });
     });
   }
-  
   openModalWindow(id: number): void {
-    let dialogRef = this.dialog.open(ModalWindowComponent, {
+    const dialogRef = this.dialog.open(ModalWindowComponent, {
       width: '250px',
       data: { id: id }
     });
@@ -53,7 +49,6 @@ export class InvoicesComponent implements OnInit {
       }
     });
   }
-  
   deleteInvoice(id: number) {
     this.invoiceService.deleteInvoice(id).subscribe(res => {
       this.invoice$ = this.invoice$.map(invoices => invoices.filter(invoice => invoice[id] === res[id]));

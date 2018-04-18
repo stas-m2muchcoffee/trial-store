@@ -14,6 +14,5 @@ import { CustomersRoutingModule } from './customers-routing.module';
   declarations: [
     CustomersComponent
   ],
-  exports: []
 })
 export class CustomersModule { }

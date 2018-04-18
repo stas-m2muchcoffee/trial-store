@@ -6,7 +6,8 @@ import { ProductsResolverService } from '../core/resolvers/products-resolver.ser
 import { ProductsComponent } from './products.component';
 
 const routes: Routes = [
-  { path: '',
+  {
+    path: '',
     component: ProductsComponent,
     resolve: { products: ProductsResolverService }
   },
@@ -18,6 +19,6 @@ const routes: Routes = [
   ],
   exports: [
     RouterModule
-  ]
+  ],
 })
 export class ProductsRoutingModule { }

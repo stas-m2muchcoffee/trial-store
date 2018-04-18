@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 
-//Angular material
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material';
@@ -27,6 +26,6 @@ import { ToolbarComponent } from './toolbar.component';
   ],
   exports: [
     ToolbarComponent
-  ]
+  ],
 })
 export class ToolbarModule { }

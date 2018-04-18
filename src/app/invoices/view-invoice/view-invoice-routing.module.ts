@@ -1,16 +1,24 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { ViewInvoiceComponent } from './view-invoice.component';
 import { InvoiceItemsResolverService } from '../../core/resolvers/invoice-items-resolver.service';
+import { ProductsResolverService } from '../../core/resolvers/products-resolver.service';
+import { CustomersResolverService } from '../../core/resolvers/customers-resolver.service';
+
+import { ViewInvoiceComponent } from './view-invoice.component';
+import { InvoicesResolverService } from '../../core/resolvers/invoices-resolver.service';
 
 const routes: Routes = [
-  { path: '',
+  {
+    path: '',
     component: ViewInvoiceComponent,
     resolve: {
-      invoiceItems: InvoiceItemsResolverService
-    }
-  }
+      invoiceItems: InvoiceItemsResolverService,
+      customers: CustomersResolverService,
+      products: ProductsResolverService,
+      invoices: InvoicesResolverService
+    },
+  },
 ];
 
 @NgModule({

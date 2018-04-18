@@ -1,0 +1,45 @@
+<div class="container">
+  <form [formGroup]="newInvoiceForm">
+    <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="5%">
+      <div fxFlex="80%">
+        <mat-form-field>
+          <mat-select [formControl]="customer_id" placeholder="Select Name">
+            <mat-option [value]="customer?.id" *ngFor="let customer of customers$ | async">{{ customer?.name }}</mat-option>
+          </mat-select>
+          <!--<mat-error *ngIf="customer_id?.invalid">This field is required</mat-error>-->
+        </mat-form-field>
+        <div fxFlexAlign="row" fxLayoutGap="2%">
+          <p fxFlex="50%">Products</p>
+          <p fxFlex="20%" class="center">Qty</p>
+          <p fxFlex="20%" class="center">Price</p>
+          <span fxFlex="10%"></span>
+        </div>
+        <ng-container formArrayName="items">
+          <ng-container *ngFor="let item of items?.controls">
+            <app-invoice-item
+              [item] = "item"
+            ></app-invoice-item>
+          </ng-container>
+        </ng-container>
+        <mat-form-field>
+          <mat-select [formControl]="addProduct" placeholder="Add Product">
+            <mat-option [value]="product?.id" *ngFor="let product of products$ | async">{{ product?.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <hr>
+        <div fxFlexAlign="row" fxLayoutGap="2%" class="total">
+          <p fxFlex="58%" class="center blue f24">Total</p>
+          <p fxFlex="42%" class="center f24">${{ total.value }}</p>
+        </div>
+      </div>
+      <div fxFlex="15%" fxFlexAlign="center">
+        <p class="center blue">Discount, %</p>
+        <mat-form-field>
+          <input matInput type="number" [formControl]="discount" min="0" max="50">
+          <!--<mat-error *ngIf="discount?.invalid">The discount should be 0-50%</mat-error>-->
+        </mat-form-field>
+      </div>
+    </div>
+    <button mat-raised-button color="primary" (click)="createInvoice()">Create Invoice</button>
+  </form>
+</div>

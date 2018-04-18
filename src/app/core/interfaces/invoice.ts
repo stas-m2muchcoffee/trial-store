@@ -1,4 +1,4 @@
-import { Customer } from '../customers/customer';
+import {Customer} from './customer';
 
 export interface Invoice {
   items: any[];

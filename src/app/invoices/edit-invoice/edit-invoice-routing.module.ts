@@ -7,7 +7,6 @@ import { CustomersResolverService } from '../../core/resolvers/customers-resolve
 import { InvoicesResolverService } from '../../core/resolvers/invoices-resolver.service';
 import { ProductsResolverService } from '../../core/resolvers/products-resolver.service';
 
-
 const routes: Routes = [
   { path: '',
     component: EditInvoiceComponent,

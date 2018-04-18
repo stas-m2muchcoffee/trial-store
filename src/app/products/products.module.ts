@@ -14,8 +14,5 @@ import { ProductsRoutingModule } from './products-routing.module';
   declarations: [
     ProductsComponent
   ],
-  exports: [
-  
-  ]
 })
 export class ProductsModule { }

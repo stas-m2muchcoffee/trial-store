@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 
-import { InvoiceItemsService } from '../../core/services/invoice-items.service';
+import { Observable } from 'rxjs/Observable';
+
+import { InvoiceItem } from '../interfaces/invoice-item';
+
+import { InvoiceItemsService } from '../services/invoice-items.service';
 
 @Injectable()
-export class InvoiceItemsResolverService implements Resolve<any> {
-
+export class InvoiceItemsResolverService implements Resolve<InvoiceItem[]> {
   constructor(
     private invoiceItemsService: InvoiceItemsService
-  ) { }
-  
-  resolve(route: ActivatedRouteSnapshot) {
+  ) {}
+  resolve(route: ActivatedRouteSnapshot): Observable<InvoiceItem[]> {
     const id = route.paramMap.get('id');
-    this.invoiceItemsService.getInvoiceItems(id);
+    return this.invoiceItemsService.getInvoiceItems(id);
   }
-
 }

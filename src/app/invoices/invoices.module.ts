@@ -24,9 +24,6 @@ import { ModalWindowComponent } from './modal-window/modal-window.component';
     InvoicesComponent,
     ModalWindowComponent
   ],
-  exports: [
-  
-  ],
   entryComponents: [
     ModalWindowComponent
   ]

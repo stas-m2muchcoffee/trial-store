@@ -6,19 +6,26 @@ import { CustomersResolverService } from '../core/resolvers/customers-resolver.s
 import { InvoicesResolverService } from '../core/resolvers/invoices-resolver.service';
 
 const routes: Routes = [
-  { path: '',
+  {
+    path: '',
     component: InvoicesComponent,
     resolve: {
       customers: CustomersResolverService,
       invoices: InvoicesResolverService
     },
   },
-  { path: 'view/:id',
+  {
+    path: 'new',
+    loadChildren: 'app/invoices/new-invoice/new-invoice.module#NewInvoiceModule'
+  },
+  {
+    path: 'view/:id',
     loadChildren: 'app/invoices/view-invoice/view-invoice.module#ViewInvoiceModule'
   },
-  { path: 'edit/:id',
+  {
+    path: 'edit/:id',
     loadChildren: 'app/invoices/edit-invoice/edit-invoice.module#EditInvoiceModule'
-  }
+  },
 ];
 
 @NgModule({

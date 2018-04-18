@@ -1,0 +1,14 @@
+<form [formGroup] fxLayoutGap="2%">
+  <mat-form-field fxFlex="50%">
+    <mat-select [formControl]="product_id">
+      <mat-option [value]="product?.id" *ngFor="let product of products$ | async">{{ product?.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field fxFlex="20%">
+    <input matInput type="number" [formControl]="quantity" min="1">
+    <!--<mat-error *ngIf="quantity?.invalid">Min quantity 1</mat-error>-->
+  </mat-form-field>
+  <p fxFlex="20%">${{ priceAll || price.value }}</p>
+  <button fxFlex="10%" mat-button color="primary" (click)="deleteInvoice(i)" *ngIf="product_id">X</button>
+  <!--<span fxFlex="10%" *ngIf="!product_id"></span>-->
+</form>

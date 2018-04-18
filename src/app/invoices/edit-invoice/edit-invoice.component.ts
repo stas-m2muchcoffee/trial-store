@@ -4,14 +4,13 @@ import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 
 import 'rxjs/add/operator/combineLatest';
 
-import { Customer } from '../../customers/customer';
 import { CustomerService } from '../../core/services/customer.service';
 import { InvoiceItemsService } from '../../core/services/invoice-items.service';
-import { InvoiceItem } from '../invoice-item';
-import { Product } from '../../products/product';
 import { ProductService } from '../../core/services/product.service';
 import { InvoiceService } from '../../core/services/invoice.service';
-import { Invoice } from '../invoice';
+import { Customer } from '../../core/interfaces/customer';
+import { InvoiceItem } from '../../core/interfaces/invoice-item';
+import { Product } from '../../core/interfaces/product';
 
 @Component({
   selector: 'app-edit-invoice',
@@ -19,14 +18,13 @@ import { Invoice } from '../invoice';
   styleUrls: ['./edit-invoice.component.scss']
 })
 export class EditInvoiceComponent implements OnInit {
-  
   editInvoiceForm: FormGroup;
   customers$: Observable<Customer[]>;
   invoiceItems$: Observable<InvoiceItem[]>;
   products$: Observable<Product[]>;
 
   total: number = 0;
-  
+
   constructor(
     private customerService: CustomerService,
     private invoiceItemsService: InvoiceItemsService,
@@ -49,14 +47,14 @@ export class EditInvoiceComponent implements OnInit {
         return invoiceItem;
       })
     });
-    
+
     this.invoiceItemsService.customer$.subscribe(customer => this.editInvoiceForm.controls['customerId'].setValue(customer.id));
-    
+
     this.invoiceItemsService.invoice$.subscribe(invoice => {
       this.editInvoiceForm.controls['invoiceId'].setValue(invoice.id);
       this.editInvoiceForm.controls['discount'].setValue(invoice.discount);
     });
-    
+
     this.invoiceItems$.subscribe(invoiceItems => {
       const products = <FormArray>this.editInvoiceForm.controls['products'];
       invoiceItems.map(invoiceItem => {
@@ -74,9 +72,9 @@ export class EditInvoiceComponent implements OnInit {
         productPrice: 0
       }));
     });
-    
+
     //this.productsControl.controls.forEach(() => console.log(111));
-  
+
     //this.productsControl.controls.forEach(
     //  control => {
     //    control.valueChanges.subscribe(
@@ -87,11 +85,11 @@ export class EditInvoiceComponent implements OnInit {
     //  }
     //)
   }
-  
+
   get productsControl(): FormArray {
     return this.editInvoiceForm.get('products') as FormArray;
   };
-  
+
   createForm() {
     this.editInvoiceForm = this.formBuilder.group({
       invoiceId: null,

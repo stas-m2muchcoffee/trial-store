@@ -5,10 +5,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule } from '@angular/material/dialog';
 
-import { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
+
 import { NewInvoiceComponent } from './new-invoice.component';
 import { NewInvoiceRoutingModule } from './new-invoice-routing.module';
 import { ModalWindowNewInvoiceComponent } from './modal-window-new-invoice/modal-window-new-invoice.component';
+import {InvoiceItemComponent} from '../invoice-item/invoice-item.component';
 
 @NgModule({
   imports: [
@@ -22,9 +24,9 @@ import { ModalWindowNewInvoiceComponent } from './modal-window-new-invoice/modal
   ],
   declarations: [
     NewInvoiceComponent,
-    ModalWindowNewInvoiceComponent
+    ModalWindowNewInvoiceComponent,
+    InvoiceItemComponent
   ],
-  exports: [],
   entryComponents: [
     ModalWindowNewInvoiceComponent
   ]
