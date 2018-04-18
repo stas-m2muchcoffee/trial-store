@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { ViewInvoiceComponent } from './view-invoice.component';
-import { InvoiceItemsResolverService } from '../../shared/resolvers/invoice-items-resolver.service';
+import { InvoiceItemsResolverService } from '../../core/resolvers/invoice-items-resolver.service';
 
 const routes: Routes = [
   { path: '',

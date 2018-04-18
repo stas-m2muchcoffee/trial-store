@@ -14,25 +14,19 @@ const httpOptions = {
 
 @Injectable()
 export class InvoiceService {
-  
   invoices$: Observable<Invoice[]>;
-  
   constructor(
     private http: HttpClient
   ) { }
-  
-  getInvoices(): void {
-    this.invoices$ = this.http.get<Invoice[]>('invoices');
+  getInvoices(): Observable<Invoice[]> {
+    return this.invoices$ = this.http.get<Invoice[]>('invoices');
   }
-  
   getInvoice(id: number | string): Observable<Invoice> {
     return this.http.get<Invoice>(`invoices/${id}`);
   }
-  
   createInvoice(invoice: Invoice): Observable<Invoice> {
     return this.http.post<Invoice>('invoices', invoice, httpOptions);
   }
-  
   deleteInvoice(id: number): Observable<{}>  {
     return this.http.delete(`invoices/${id}`, httpOptions);
   }

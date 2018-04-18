@@ -1,10 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { ProductsResolverService } from '../core/resolvers/products-resolver.service';
+
 import { ProductsComponent } from './products.component';
-import { ProductsResolverService } from '../shared/resolvers/products-resolver.service';
-
-
 
 const routes: Routes = [
   { path: '',

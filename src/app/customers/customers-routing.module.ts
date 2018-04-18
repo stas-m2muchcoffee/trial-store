@@ -2,9 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { CustomersComponent } from './customers.component';
-import { CustomersResolverService } from '../shared/resolvers/customers-resolver.service';
-
-
+import {CustomersResolverService} from '../core/resolvers/customers-resolver.service';
 
 const routes: Routes = [
   { path: '',
