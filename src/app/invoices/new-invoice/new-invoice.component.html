@@ -6,21 +6,27 @@
           <mat-select [formControl]="customer_id" placeholder="Select Name">
             <mat-option [value]="customer?.id" *ngFor="let customer of customers$ | async">{{ customer?.name }}</mat-option>
           </mat-select>
-          <!--<mat-error *ngIf="customer_id?.invalid">This field is required</mat-error>-->
+          <mat-error *ngIf="customer_id?.invalid">This field is required</mat-error>
         </mat-form-field>
         <div fxFlexAlign="row" fxLayoutGap="2%">
-          <p fxFlex="50%">Products</p>
-          <p fxFlex="20%" class="center">Qty</p>
-          <p fxFlex="20%" class="center">Price</p>
+          <div fxFlex="90%" fxLayoutGap="2%">
+            <p fxFlex="50%">Products</p>
+            <p fxFlex="25%">Qty</p>
+            <p fxFlex="25%">Price</p>
+          </div>
           <span fxFlex="10%"></span>
         </div>
-        <ng-container formArrayName="items">
-          <ng-container *ngFor="let item of items?.controls">
+        <div formArrayName="items">
+          <div *ngFor="let item of items?.controls; let i=index" fxLayoutGap="2%">
             <app-invoice-item
+              fxFlex="100%"
               [item] = "item"
+              [productPrice] = "productPrices[i]"
+              (invoicePriceChange) = "getTotal($event, i)"
             ></app-invoice-item>
-          </ng-container>
-        </ng-container>
+            <button fxFlex="10%" mat-button color="primary" (click)="deleteInvoice(i)">X</button>
+          </div>
+        </div>
         <mat-form-field>
           <mat-select [formControl]="addProduct" placeholder="Add Product">
             <mat-option [value]="product?.id" *ngFor="let product of products$ | async">{{ product?.name }}</mat-option>
@@ -28,15 +34,15 @@
         </mat-form-field>
         <hr>
         <div fxFlexAlign="row" fxLayoutGap="2%" class="total">
-          <p fxFlex="58%" class="center blue f24">Total</p>
-          <p fxFlex="42%" class="center f24">${{ total.value }}</p>
+          <p fxFlex="58%" class="f24">Total</p>
+          <p fxFlex="42%" class="f24">${{ total | number: '1.2-2' }}</p>
         </div>
       </div>
       <div fxFlex="15%" fxFlexAlign="center">
-        <p class="center blue">Discount, %</p>
+        <p>Discount, %</p>
         <mat-form-field>
           <input matInput type="number" [formControl]="discount" min="0" max="50">
-          <!--<mat-error *ngIf="discount?.invalid">The discount should be 0-50%</mat-error>-->
+          <mat-error *ngIf="discount?.invalid">The discount should be 0-50%</mat-error>
         </mat-form-field>
       </div>
     </div>

@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import {Form, FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material';
 
-import {Subscription} from 'rxjs/Subscription';
+import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 
 import { CustomerService } from '../../core/services/customer.service';
@@ -27,13 +27,16 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
   addProductSubscription: Subscription;
+  discountChangeSubscription: Subscription;
+  productPrice = 0;
+  productPrices: number[] = [];
+  total = 0;
 
   constructor(
     private customerService: CustomerService,
     private invoiceService: InvoiceService,
     private productService: ProductService,
     private invoiceItemsService: InvoiceItemsService,
-    private formBuilder: FormBuilder,
     private dialog: MatDialog,
     private modalService: ModalService
   ) {}
@@ -46,9 +49,6 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   }
   get discount(): FormControl {
     return this.newInvoiceForm.get('discount') as FormControl;
-  }
-  get total(): FormControl {
-    return this.newInvoiceForm.get('total') as FormControl;
   }
   get addProduct(): FormControl {
     return this.newInvoiceForm.get('addProduct') as FormControl;
@@ -70,40 +70,62 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     .subscribe(product => {
       this.addItem(product);
     });
+
+    this.discountChangeSubscription = this.discount.valueChanges
+    .subscribe(() => this.getTotal());
   }
   ngOnDestroy() {
-
+    this.addProductSubscription.unsubscribe();
+    this.discountChangeSubscription.unsubscribe();
   }
 
   createForm() {
     this.newInvoiceForm = new FormGroup({
-      customer_id: new FormControl(null),
-      items: new FormArray([]),
-      discount: new FormControl(0),
-      total: new FormControl(0),
+      customer_id: new FormControl(null, Validators.required),
+      items: new FormArray([], Validators.minLength(1)),
+      discount: new FormControl(0, [Validators.min(0), Validators.max(50)]),
       addProduct: new FormControl(null)
     });
   }
   addItem(product: Product) {
     this.items.push(new FormGroup({
-      invoice_id: new FormControl(null),
       product_id: new FormControl(product.id),
-      quantity: new FormControl(1),
-      price: new FormControl(product.price)
+      quantity: new FormControl(1, Validators.min(1)),
     }));
+    this.productPrices.push(product.price);
+    this.getTotal();
+  }
+  getTotal(productPrice?: number, i?: number) {
+    let total = 0;
+    if (productPrice) {
+      this.productPrices[i] = productPrice;
+    }
+    this.productPrices.forEach((price) => {
+      total += price;
+    });
+    this.total = total * (1 - this.discount.value / 100);
+  }
+  deleteInvoice(i: number) {
+    this.items.removeAt(i);
+    this.productPrices.splice(i, 1);
+    this.getTotal();
+  }
+  createInvoice() {
+    if (this.newInvoiceForm.valid) {
+      this.invoiceService.createInvoice({...this.newInvoiceForm.value, total: this.total})
+      .subscribe((inv) => {
+        console.log(inv);
+      });
+    }
+    console.log({...this.newInvoiceForm.value, total: this.total});
   }
   canDeactivate(): Observable<boolean> | boolean {
     if (this.newInvoiceForm.dirty) {
-      this.openModal();
+      this.dialog.open(ModalWindowNewInvoiceComponent);
       return this.modalService.navigateAwaySelection$;
     } else {
       return true;
     }
-  }
-  openModal(): void {
-    this.dialog.open(ModalWindowNewInvoiceComponent, {
-      width: '250px',
-    });
   }
 }
 
