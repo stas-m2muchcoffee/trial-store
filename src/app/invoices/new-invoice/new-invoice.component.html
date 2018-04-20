@@ -21,11 +21,11 @@
             <app-invoice-item
               fxFlex="100%"
               [item] = "item"
-              [productPrice] = "productPrices[i]"
-              (invoicePriceChange) = "getTotal($event, i)"
+              [products] = "products$ | async"
             ></app-invoice-item>
             <button fxFlex="10%" mat-button color="primary" (click)="deleteInvoice(i)">X</button>
           </div>
+          <mat-error *ngIf="items?.invalid">Add min 1 product</mat-error>
         </div>
         <mat-form-field>
           <mat-select [formControl]="addProduct" placeholder="Add Product">

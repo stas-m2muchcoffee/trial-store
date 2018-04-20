@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { HttpHeaders } from '@angular/common/http';
 
-import {Invoice} from '../interfaces/invoice';
+import { Invoice } from '../interfaces/invoice';
+import 'rxjs/add/operator/shareReplay';
 
 const httpOptions = {
   headers: new HttpHeaders({

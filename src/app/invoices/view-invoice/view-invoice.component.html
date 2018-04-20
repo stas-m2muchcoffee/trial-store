@@ -12,12 +12,12 @@
         <div fxFlexAlign="row" fxLayoutGap="2%" *ngFor="let invoiceItem of (invoiceItems$ | async)">
           <p fxFlex="60%" class="gray">{{ invoiceItem?.product?.name }}</p>
           <p fxFlex="20%" class="gray center">{{ invoiceItem?.quantity }}</p>
-          <p fxFlex="20%" class="gray center">${{ invoiceItem?.product?.price * invoiceItem?.quantity }}</p>
+          <p fxFlex="20%" class="gray center">${{ (invoiceItem?.product?.price * invoiceItem?.quantity) | number: '1.2-2' }}</p>
         </div>
         <hr>
         <div fxFlexAlign="row" fxLayoutGap="2%" class="total">
           <p fxFlex="58%" class="center blue f24">Total</p>
-          <p fxFlex="42%" class="center f24">${{ (invoice$ | async)?.total }}</p>
+          <p fxFlex="42%" class="center f24">${{ (invoice$ | async)?.total | number: '1.2-2' }}</p>
         </div>
       </div>
     </div>

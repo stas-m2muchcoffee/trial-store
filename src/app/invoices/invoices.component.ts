@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material';
+
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/map';
-import { MatDialog } from '@angular/material';
 
 import { InvoiceService } from '../core/services/invoice.service';
 import { CustomerService } from '../core/services/customer.service';
 import { Invoice } from '../core/interfaces/invoice';
 import { Customer } from '../core/interfaces/customer';
+
 import { ModalWindowComponent } from './modal-window/modal-window.component';
 
 @Component({
   selector: 'app-invoices',
   templateUrl: './invoices.component.html',
-  styleUrls: ['./invoices.component.scss']
 })
 export class InvoicesComponent implements OnInit {
   invoice$: Observable<Invoice[]>;

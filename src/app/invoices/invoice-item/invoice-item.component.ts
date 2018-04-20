@@ -1,11 +1,9 @@
-import { Component, OnInit, Input, Output, OnDestroy, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 
-import { Product } from '../../core/interfaces/product';
-import { ProductService } from '../../core/services/product.service';
+import 'rxjs/add/operator/startWith';
 
 @Component({
   selector: 'app-invoice-item',
@@ -13,17 +11,13 @@ import { ProductService } from '../../core/services/product.service';
   styleUrls: ['./invoice-item.component.scss']
 })
 export class InvoiceItemComponent implements OnInit, OnDestroy {
-  products$: Observable<Product[]>;
+
   itemChangeSubscription: Subscription;
   invoicePrice = 0;
 
-  constructor(
-    private productService: ProductService
-  ) {}
-
   @Input() item;
+  @Input() products;
   @Input() productPrice;
-  @Output() invoicePriceChange = new EventEmitter<number>();
 
   get product_id(): FormControl {
     return this.item.get('product_id') as FormControl;
@@ -33,18 +27,13 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.products$ = this.productService.products$;
-
-    this.itemChangeSubscription = Observable.combineLatest(
-      this.products$,
-      this.item.valueChanges
-    )
-    .map(([products, item]: [Product[], any]) => {
-      return products.find((product) => product.id === item.product_id);
+    this.itemChangeSubscription = this.item.valueChanges
+    .startWith(this.item.value)
+    .map((item) => {
+      return this.products.find((product) => product.id === item.product_id);
     })
     .subscribe(product => {
       this.invoicePrice = product.price * this.quantity.value;
-      this.invoicePriceChange.emit(this.invoicePrice);
     });
   }
 
