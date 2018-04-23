@@ -2,6 +2,7 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material';
 
 import { ToolbarModule } from '../toolbar/toolbar.module';
 
@@ -17,12 +18,16 @@ import { CustomersResolverService } from './resolvers/customers-resolver.service
 import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceItemsResolverService } from './resolvers/invoice-items-resolver.service';
 import { CanDeactivateNewInvoiceGuard } from './guards/can-deactivate-new-invoice.guard';
+import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
+
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatDialogModule
   ],
   exports: [
     ToolbarModule
@@ -35,11 +40,13 @@ import { CanDeactivateNewInvoiceGuard } from './guards/can-deactivate-new-invoic
     ProductsResolverService,
     CustomersResolverService,
     InvoicesResolverService,
+    InvoiceResolverService,
     InvoiceItemsResolverService,
     httpInterceptorProviders,
     CanDeactivateNewInvoiceGuard,
-    ModalService
-  ],
+    ModalService,
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
+  ]
 })
 export class CoreModule {
   constructor(

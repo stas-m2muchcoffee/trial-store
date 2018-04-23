@@ -4,9 +4,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { InvoiceItemsResolverService } from '../../core/resolvers/invoice-items-resolver.service';
 import { ProductsResolverService } from '../../core/resolvers/products-resolver.service';
 import { CustomersResolverService } from '../../core/resolvers/customers-resolver.service';
+import { InvoicesResolverService } from '../../core/resolvers/invoices-resolver.service';
+import { InvoiceResolverService } from '../../core/resolvers/invoice-resolver.service';
 
 import { ViewInvoiceComponent } from './view-invoice.component';
-import { InvoicesResolverService } from '../../core/resolvers/invoices-resolver.service';
 
 const routes: Routes = [
   {
@@ -16,7 +17,8 @@ const routes: Routes = [
       invoiceItems: InvoiceItemsResolverService,
       customers: CustomersResolverService,
       products: ProductsResolverService,
-      invoices: InvoicesResolverService
+      invoices: InvoicesResolverService,
+      invoice: InvoiceResolverService
     },
   },
 ];

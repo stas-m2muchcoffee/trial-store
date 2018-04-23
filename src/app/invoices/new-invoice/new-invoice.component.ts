@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/shareReplay';
 
@@ -17,8 +18,7 @@ import { ModalService } from '../../core/services/modal.service';
 import { Customer } from '../../core/interfaces/customer';
 import { Product } from '../../core/interfaces/product';
 import { InvoiceItem } from '../../core/interfaces/invoice-item';
-
-import { ModalWindowNewInvoiceComponent } from './modal-window-new-invoice/modal-window-new-invoice.component';
+import { Invoice } from '../../core/interfaces/invoice';
 
 @Component({
   selector: 'app-new-invoice',
@@ -31,6 +31,8 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   products$: Observable<Product[]>;
   addProductSubscription: Subscription;
   itemsChangeSubscription: Subscription;
+  createInvoiceSubscription: Subscription;
+  createInvoice$: Subject<Invoice> = new Subject<Invoice>();
   total = 0;
 
   constructor(
@@ -78,19 +80,25 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
       this.products$,
       this.discount.valueChanges.startWith(this.discount.value)
     )
-    .map(([items, products]: [InvoiceItem[], Product[]]) => {
-      return items.map((item) => {
-        item.product = products.find((product) => product.id === item.product_id);
-        return item;
+      .map(([items, products]: [InvoiceItem[], Product[]]) => {
+        return items.map((item) => {
+          item.product = products.find((product) => product.id === item.product_id);
+          return item;
+        });
+      })
+      .subscribe(items => {
+        this.getTotal(items);
       });
-    })
-    .subscribe(items => {
-      this.getTotal(items);
-    });
+
+    this.createInvoiceSubscription = this.createInvoice$.mergeMap((invoice) => this.invoiceService.createInvoice(invoice))
+      .subscribe(() => {
+        return this.router.navigate(['/invoices']);
+      });
   }
   ngOnDestroy() {
     this.addProductSubscription.unsubscribe();
     this.itemsChangeSubscription.unsubscribe();
+    this.createInvoiceSubscription.unsubscribe();
   }
   createForm() {
     this.newInvoiceForm = new FormGroup({
@@ -117,16 +125,12 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   }
   createInvoice() {
     if (this.newInvoiceForm.valid) {
-      this.invoiceService.createInvoice({...this.newInvoiceForm.value, total: this.total})
-      .subscribe(() => {
-        return this.router.navigate(['/invoices']);
-      });
+      this.createInvoice$.next({...this.newInvoiceForm.value, total: this.total} as Invoice);
     }
   }
   canDeactivate(): Observable<boolean> | boolean {
     if (this.newInvoiceForm.dirty) {
-      this.dialog.open(ModalWindowNewInvoiceComponent);
-      return this.modalService.navigateAwaySelection$;
+      return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
     } else {
       return true;
     }

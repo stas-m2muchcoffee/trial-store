@@ -1,22 +1,30 @@
 import { NgModule } from '@angular/core';
+import { MatButtonModule } from '@angular/material';
 
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
 import { AppRoutingModule } from './app-routing.module';
 
+import { ModalWindowComponent } from './modal-window/modal-window.component';
+
 import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ModalWindowComponent
   ],
   imports: [
     CoreModule,
     SharedModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatButtonModule
   ],
   bootstrap: [
     AppComponent
+  ],
+  entryComponents: [
+    ModalWindowComponent
   ]
 })
 export class AppModule { }

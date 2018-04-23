@@ -3,9 +3,8 @@ import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 
-import { InvoiceItem } from '../interfaces/invoice-item';
-
 import { InvoiceItemsService } from '../services/invoice-items.service';
+import { InvoiceItem } from '../interfaces/invoice-item';
 
 @Injectable()
 export class InvoiceItemsResolverService implements Resolve<InvoiceItem[]> {

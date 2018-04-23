@@ -1,8 +1,18 @@
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material';
 
-import { Subject } from 'rxjs/Subject';
+import { ModalWindowComponent } from '../../modal-window/modal-window.component';
 
 @Injectable()
 export class ModalService {
-  navigateAwaySelection$: Subject<boolean> = new Subject<boolean>();
+  constructor(
+    private dialog: MatDialog
+  ) {}
+  confirmModal(message: string) {
+    return this.dialog.open(
+      ModalWindowComponent,
+      {data: {message: message}}
+      )
+      .afterClosed();
+  }
 }

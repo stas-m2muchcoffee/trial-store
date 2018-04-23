@@ -26,9 +26,9 @@ export class ViewInvoiceComponent implements OnInit {
     private productService: ProductService,
     private invoiceService: InvoiceService,
     private customerService: CustomerService
-  ) { }
+  ) {}
   ngOnInit() {
-    this.invoice$ = this.invoiceItemsService.invoice$;
+    this.invoice$ = this.invoiceService.invoice$;
     this.invoiceItems$ = Observable.combineLatest(
       this.invoiceItemsService.invoiceItems$,
       this.invoiceItemsService.invoiceItems$

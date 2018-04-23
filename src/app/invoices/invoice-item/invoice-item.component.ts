@@ -17,7 +17,6 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
 
   @Input() item;
   @Input() products;
-  @Input() productPrice;
 
   get product_id(): FormControl {
     return this.item.get('product_id') as FormControl;

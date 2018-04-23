@@ -13,6 +13,9 @@ export class CustomersResolverService implements Resolve<Customer[]> {
     private customerService: CustomerService
   ) {}
   resolve(): Observable<Customer[]> {
+    if (this.customerService.customers$) {
+      return this.customerService.customers$;
+    }
     return this.customerService.getCustomers();
   }
 }

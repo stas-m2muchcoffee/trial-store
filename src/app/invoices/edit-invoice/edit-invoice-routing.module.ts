@@ -4,17 +4,17 @@ import { Routes, RouterModule } from '@angular/router';
 import { EditInvoiceComponent } from './edit-invoice.component';
 import { InvoiceItemsResolverService } from '../../core/resolvers/invoice-items-resolver.service';
 import { CustomersResolverService } from '../../core/resolvers/customers-resolver.service';
-import { InvoicesResolverService } from '../../core/resolvers/invoices-resolver.service';
 import { ProductsResolverService } from '../../core/resolvers/products-resolver.service';
+import { InvoiceResolverService } from '../../core/resolvers/invoice-resolver.service';
 
 const routes: Routes = [
   { path: '',
     component: EditInvoiceComponent,
     resolve : {
-      invoiceItems: InvoiceItemsResolverService,
       customers: CustomersResolverService,
-      invoices: InvoicesResolverService,
-      products: ProductsResolverService
+      products: ProductsResolverService,
+      invoiceItems: InvoiceItemsResolverService,
+      invoice: InvoiceResolverService,
     }
   }
 ];
