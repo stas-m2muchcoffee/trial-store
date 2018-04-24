@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import {Component, OnInit, Input, OnDestroy, EventEmitter, Output} from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
@@ -17,6 +17,7 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
 
   @Input() item;
   @Input() products;
+  @Output() updateInvoiceItem = new EventEmitter();
 
   get product_id(): FormControl {
     return this.item.get('product_id') as FormControl;
@@ -34,6 +35,8 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
     .subscribe(product => {
       this.invoicePrice = product.price * this.quantity.value;
     });
+
+    this.item.valueChanges.subscribe((item) => this.updateInvoiceItem.emit(item));
   }
 
   ngOnDestroy() {

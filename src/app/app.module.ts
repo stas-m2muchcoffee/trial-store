@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { MatButtonModule } from '@angular/material';
 
 import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
@@ -17,8 +16,7 @@ import { AppComponent } from './app.component';
   imports: [
     CoreModule,
     SharedModule,
-    AppRoutingModule,
-    MatButtonModule
+    AppRoutingModule
   ],
   bootstrap: [
     AppComponent

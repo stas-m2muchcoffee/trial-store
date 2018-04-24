@@ -23,8 +23,9 @@
               fxFlex="100%"
               [item] = "item"
               [products] = "products$ | async"
+              (updateInvoiceItem) = "updateInvoiceItem($event)"
             ></app-invoice-item>
-            <button fxFlex="10%" mat-button color="primary" (click)="deleteInvoice(i)">X</button>
+            <button fxFlex="10%" mat-button color="primary" (click)="deleteInvoiceItem(i, item)">X</button>
           </div>
           <mat-error *ngIf="items?.hasError('required')">Add min 1 product</mat-error>
         </div>
@@ -44,6 +45,5 @@
         <p>{{(invoice$ | async).discount}}</p>
       </div>
     </div>
-    <button mat-raised-button color="primary" (click)="updateInvoice()">Update Invoice</button>
   </form>
 </div>

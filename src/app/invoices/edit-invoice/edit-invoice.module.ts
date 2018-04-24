@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule, MatInputModule } from '@angular/material';
+import { MatInputModule } from '@angular/material';
 
 import { SharedModule } from '../../shared/shared.module';
 
@@ -17,7 +17,6 @@ import { EditInvoiceComponent } from './edit-invoice.component';
     SharedModule,
     MatSelectModule,
     MatInputModule,
-    MatButtonModule,
     InvoiceItemModule
   ],
   declarations: [

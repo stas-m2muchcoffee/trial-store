@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/combineLatest';
+import 'rxjs/add/observable/zip';
 
 import { InvoiceItemsService } from '../../core/services/invoice-items.service';
 import { ProductService } from '../../core/services/product.service';
@@ -32,7 +33,9 @@ export class ViewInvoiceComponent implements OnInit {
     this.invoiceItems$ = Observable.combineLatest(
       this.invoiceItemsService.invoiceItems$,
       this.invoiceItemsService.invoiceItems$
-        .switchMap(invoices => Observable.zip(...invoices.map(invoice => this.productService.getProduct(invoice.product_id))))
+        .switchMap(invoices => {
+          return Observable.zip(...invoices.map(invoice => this.productService.getProduct(invoice.product_id)));
+        })
     )
     .map(([invoiceItems, products]: [InvoiceItem[], Product[]]) => {
       return invoiceItems.map((invoiceItem) => {

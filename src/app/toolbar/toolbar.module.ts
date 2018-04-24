@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material';
-import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 
 import { AppRoutingModule } from '../app-routing.module';
@@ -17,7 +16,6 @@ import { ToolbarComponent } from './toolbar.component';
     MatToolbarModule,
     MatMenuModule,
     MatIconModule,
-    MatButtonModule,
     MatChipsModule,
     AppRoutingModule
   ],

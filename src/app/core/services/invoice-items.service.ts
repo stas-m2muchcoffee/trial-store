@@ -5,8 +5,6 @@ import { Observable } from 'rxjs/Observable';
 
 import { InvoiceItem } from '../interfaces/invoice-item';
 
-import { InvoiceService } from './invoice.service';
-
 const httpOptions = {
   headers: new HttpHeaders({
     'Content-Type':  'application/json; charset=utf-8'
@@ -18,8 +16,7 @@ export class InvoiceItemsService {
   invoiceItems$: Observable<InvoiceItem[]>;
 
   constructor(
-    private http: HttpClient,
-    private invoiceService: InvoiceService
+    private http: HttpClient
   ) { }
   getInvoiceItems(id: number | string): Observable<InvoiceItem[]> {
     return this.invoiceItems$ = this.http.get<InvoiceItem[]>(`invoices/${id}/items`).publishLast().refCount();
@@ -27,7 +24,10 @@ export class InvoiceItemsService {
   createInvoiceItem(invoiceItem, invoiceId): Observable<InvoiceItem> {
     return this.http.post<InvoiceItem>(`invoices/${invoiceId}/items`, invoiceItem, httpOptions);
   }
-  updateInvoice(invoiceItem, invoiceId): Observable<InvoiceItem> {
-    return this.http.put<InvoiceItem>(`invoices/${invoiceId}/items`, invoiceItem, httpOptions);
+  updateInvoiceItem(invoiceItem, InvoiceItemId, invoiceId): Observable<InvoiceItem> {
+    return this.http.put<InvoiceItem>(`invoices/${invoiceId}/items/${InvoiceItemId}`, invoiceItem, httpOptions);
+  }
+  deleteInvoiceItem(InvoiceItemId, invoiceId): Observable<{}> {
+    return this.http.delete(`invoices/${invoiceId}/items/${InvoiceItemId}`, httpOptions);
   }
 }
