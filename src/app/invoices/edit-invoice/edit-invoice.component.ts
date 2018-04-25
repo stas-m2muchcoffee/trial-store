@@ -7,6 +7,7 @@ import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/mapTo';
 import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/filter';
 
 import { Customer } from '../../core/interfaces/customer';
 import { CustomerService } from '../../core/services/customer.service';
@@ -70,16 +71,6 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     this.invoiceItemsSubscription = this.invoiceItems$.subscribe(invoiceItems => this.invoiceItems = invoiceItems);
     // начальная инициализация формы
     this.createForm();
-    this.customer_id.setValue(this.invoice.customer_id);
-    this.invoiceItems.forEach((invoiceItem) => {
-      this.items.push(
-        new FormGroup({
-          product_id: new FormControl(invoiceItem.product_id),
-          quantity: new FormControl(invoiceItem.quantity, [Validators.min(1), Validators.required]),
-          id: new FormControl(invoiceItem.id)
-        })
-      );
-    });
     // изменение кастомера
     this.customerChangeSubscription = this.customer_id.valueChanges
       .switchMap((customer_id) => this.invoiceService.updateInvoice({customer_id: customer_id} as Invoice, this.invoice.id))
@@ -98,7 +89,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     this.deleteInvoiceSubscription = this.deleteInvoiceItem$
       .switchMap((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id))
       .switchMap(() => this.invoiceService.updateInvoice({total: this.total} as Invoice, this.invoice.id))
-      .subscribe();
+      .subscribe(res => console.log(111, res), err => console.log(222, err));
     // изменение item
     this.updateInvoiceSubscription = this.updateInvoiceItem$
       .debounceTime(500)
@@ -134,6 +125,17 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       customer_id: new FormControl(null, Validators.required),
       items: new FormArray([], [Validators.minLength(1), Validators.required]),
       addProduct: new FormControl(null)
+    });
+
+    this.customer_id.setValue(this.invoice.customer_id);
+    this.invoiceItems.forEach((invoiceItem) => {
+      this.items.push(
+        new FormGroup({
+          product_id: new FormControl(invoiceItem.product_id),
+          quantity: new FormControl(invoiceItem.quantity, [Validators.min(1), Validators.required]),
+          id: new FormControl(invoiceItem.id)
+        })
+      );
     });
   }
   addItem(item: InvoiceItem) {

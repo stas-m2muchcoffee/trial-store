@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/throw';
 
 import { InvoiceItem } from '../interfaces/invoice-item';
 
@@ -27,7 +29,11 @@ export class InvoiceItemsService {
   updateInvoiceItem(invoiceItem, InvoiceItemId, invoiceId): Observable<InvoiceItem> {
     return this.http.put<InvoiceItem>(`invoices/${invoiceId}/items/${InvoiceItemId}`, invoiceItem, httpOptions);
   }
-  deleteInvoiceItem(InvoiceItemId, invoiceId): Observable<{}> {
-    return this.http.delete(`invoices/${invoiceId}/items/${InvoiceItemId}`, httpOptions);
+  deleteInvoiceItem(InvoiceItemId, invoiceId): Observable<InvoiceItem> {
+    return this.http.delete(`invoices/${invoiceId}/items/${InvoiceItemId}`, httpOptions)
+      .catch(error => {
+        console.log(error);
+        return Observable.throw(error);
+      });
   }
 }
