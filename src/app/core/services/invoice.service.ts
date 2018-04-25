@@ -33,6 +33,10 @@ export class InvoiceService {
     return this.http.delete(`invoices/${id}`, httpOptions);
   }
   updateInvoice(invoice: Invoice, id: number | string): Observable<Invoice> {
-    return this.http.put<Invoice>(`invoices/${id}`, invoice, httpOptions);
+    return this.http.put<Invoice>(`invoices/${id}`, invoice, httpOptions)
+      // .catch(error => {
+      //   console.log(error);
+      //   return Observable.throw(error);
+      // });
   }
 }

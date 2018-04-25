@@ -6,4 +6,5 @@ export interface InvoiceItem {
   product_id: number;
   quantity: number;
   product?: Product;
+  error?: boolean;
 }
