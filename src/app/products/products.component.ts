@@ -11,6 +11,7 @@ import { Product } from '../core/interfaces/product';
 })
 export class ProductsComponent implements OnInit {
   products$: Observable<Product[]>;
+
   displayedColumns = ['name', 'price'];
   constructor(
     private productService: ProductService

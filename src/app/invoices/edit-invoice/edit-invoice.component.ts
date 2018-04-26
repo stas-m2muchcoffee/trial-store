@@ -83,26 +83,31 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       .subscribe(
         () => {},
         (error) => {
-          return this.modalService.confirmModal(`Error invoice: status - ${error.status}, answer - ${error.statusText}`);}
+          return this.modalService.confirmModal(`Error invoice: status - ${error.status}, answer - ${error.statusText}`);
+        }
       );
     // добавление продукта
     this.addProductSubscription = this.addProduct.valueChanges
       .switchMap((product_id) => {
-        return this.invoiceItemsService.createInvoiceItem({product_id: product_id, quantity: 1}, this.invoice.id)
+        return this.invoiceItemsService.createInvoiceItem({product_id: product_id, quantity: 1}, this.invoice.id);
       })
       .map(item => { this.addItem(item); })
       .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
       .subscribe(
         () => {},
         (error) => {
-          return this.modalService.confirmModal(`Error: status - ${error.status}, answer - ${error.statusText}`)
+          return this.modalService.confirmModal(`Error: status - ${error.status}, answer - ${error.statusText}`);
         }
       );
     // удаление item
     this.deleteInvoiceSubscription = this.deleteInvoiceItem$
-      .switchMap((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id))
-      .filter(res => res === {})
-      .map(() => { this.items.removeAt(this.i); this.i = null; })
+      .switchMap((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id)
+        .filter(item => {console.log(123, item); return item === {}})
+        .map(() => { this.items.removeAt(this.i); this.i = null; })
+      )
+      // .switchMap((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id))
+      // .filter(res => res === {})
+      // .map(() => { this.items.removeAt(this.i); this.i = null; })
       .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
       .subscribe();
     // изменение item

@@ -38,9 +38,9 @@ export class InvoiceItemsService {
     return this.http.put<InvoiceItem>(`invoices/${invoiceId}/items/${InvoiceItemId}`, invoiceItem, httpOptions)
   }
   deleteInvoiceItem(InvoiceItemId, invoiceId): Observable<{}> {
-    return this.http.delete(`invoicest/${invoiceId}/items/${InvoiceItemId}`, httpOptions)
+    return this.http.delete(`invoices/${invoiceId}/items/${InvoiceItemId}`, httpOptions)
       .pipe(
-        catchError(this.handleError('deleteInvoiceItem', {}))
+        catchError(this.handleError('deleteInvoiceItem', ))
       );
   }
 }
