@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 
 import { InvoiceService } from '../core/services/invoice.service';
+import {ProductService} from '../core/services/product.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -13,7 +14,8 @@ import { InvoiceService } from '../core/services/invoice.service';
 export class ToolbarComponent implements OnInit {
   countInvoices$: Observable<number>;
   constructor(
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private productService: ProductService
   ) {}
   ngOnInit() {
     this.invoiceService.getInvoices();

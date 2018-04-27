@@ -12,11 +12,19 @@ import { Product } from '../core/interfaces/product';
 export class ProductsComponent implements OnInit {
   products$: Observable<Product[]>;
 
-  displayedColumns = ['name', 'price'];
+  displayedColumns = ['id', 'name', 'price'];
   constructor(
     private productService: ProductService
   ) { }
   ngOnInit() {
     this.products$ = this.productService.products$;
+  }
+
+  addProduct() {
+    this.productService.addProduct();
+  }
+
+  deleteProducts(id) {
+    this.productService.deleteProducts(id);
   }
 }
