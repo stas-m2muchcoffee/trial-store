@@ -12,7 +12,7 @@ import { Product } from '../core/interfaces/product';
 export class ProductsComponent implements OnInit {
   products$: Observable<Product[]>;
 
-  displayedColumns = ['id', 'name', 'price'];
+  displayedColumns = ['id', 'name', 'price', 'del'];
   constructor(
     private productService: ProductService
   ) { }
@@ -24,7 +24,7 @@ export class ProductsComponent implements OnInit {
     this.productService.addProduct();
   }
 
-  deleteProducts(id) {
+  deleteProduct(id) {
     this.productService.deleteProducts(id);
   }
 }

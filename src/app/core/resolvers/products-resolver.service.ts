@@ -3,10 +3,11 @@ import { Resolve } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/isEmpty';
+import 'rxjs/add/operator/switchMap';
 
 import { ProductService } from '../services/product.service';
 import { Product } from '../interfaces/product';
+import 'rxjs/add/operator/switchMapTo';
 
 @Injectable()
 export class ProductsResolverService implements Resolve<Product[]> {
@@ -14,10 +15,13 @@ export class ProductsResolverService implements Resolve<Product[]> {
     private productService: ProductService
   ) {}
   resolve(): Observable<Product[]> {
-    if (!this.productService.products$.isEmpty()) {
-      return this.productService.products$;
-    }
-    return this.productService.getProducts()
+    return this.productService.isData$
+      .switchMap((isData) => {
+        if (isData) {
+          return this.productService.products$;
+        }
+        return this.productService.getProducts();
+      })
       .take(1);
   }
 }

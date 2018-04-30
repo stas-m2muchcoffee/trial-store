@@ -15,12 +15,16 @@
       <mat-cell *matCellDef="let element"> {{element?.price}} </mat-cell>
     </ng-container>
 
+    <ng-container matColumnDef="del">
+      <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
+      <mat-cell *matCellDef="let element">
+        <button mat-raised-button color="warn" (click)="deleteProduct(element.id)">Delete</button>
+      </mat-cell>
+    </ng-container>
+
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
 
-  <button (click)="addProduct()">add product</button>
-  <hr>
-  <input type="number" #inp>
-  <button (click)="deleteProducts(inp.value)">Delete</button>
+  <button mat-raised-button color="primary" (click)="addProduct()">Add product</button>
 </div>

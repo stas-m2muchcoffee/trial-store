@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -7,15 +7,13 @@ import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/mergeAll';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/mapTo';
-import 'rxjs/add/observable/of';
 import 'rxjs/add/observable/combineLatest';
-
-import { Product } from '../interfaces/product';
 import 'rxjs/add/operator/scan';
 import 'rxjs/add/observable/merge';
+import 'rxjs/add/operator/publishBehavior';
+
+import { Product } from '../interfaces/product';
+import { Action } from '../interfaces/action';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -25,18 +23,19 @@ const httpOptions = {
 
 @Injectable()
 export class ProductService {
-  products$: Observable<Product[]>;
-  action$: Observable<any>;
+  products$: ConnectableObservable<Product[]>;
+  action$: Observable<Action>;
 
-  receivedProductsSub$: Subject<any> = new Subject<any>();
+  receivedProductsSub$: Subject<Observable<Product[]>> = new Subject<Observable<Product[]>>();
   _receivedProducts$: ConnectableObservable<Product[]>;
-  addedProductSub$: Subject<any> = new Subject<any>();
+  addedProductSub$: Subject<Observable<Product>> = new Subject<Observable<Product>>();
   _addedProduct$: ConnectableObservable<Product>;
-  deletedProductSub$: Subject<any> = new Subject<any>();
+  deletedProductSub$: Subject<Observable<Product>> = new Subject<Observable<Product>>();
   _deletedProduct$: ConnectableObservable<Product>;
+  isData$: ConnectableObservable<boolean>;
 
   entities$: Observable<{}>;
-  ids$: Observable<any>;
+  ids$: Observable<number[]>;
 
   private newAddProduct = { name: 'newAddProduct', price: 13 };
 
@@ -60,17 +59,25 @@ export class ProductService {
         return { type: 'get', payload: products };
       }),
       this._addedProduct$.map((product) => {
-        return { type: 'add', payload: product };
+        return { type: 'add', payload: [product] };
       }),
       this._deletedProduct$.map((product) => {
-        return { type: 'del', payload: product };
+        return { type: 'del', payload: [product] };
       })
     );
 
-    this.entities$ = this.action$.scan((products, action) => {
-      switch (action.type) {
+    this.isData$ = this.action$.scan((isData: boolean, action: Action) => {
+      if (action.type === 'get' || action.type === 'add' || action.type === 'del') {
+        return true;
+      }
+    }, false)
+      .publishBehavior(false);
+    this.isData$.connect();
+
+    this.entities$ = this.action$.scan((products: {}, { type, payload }: Action) => {
+      switch (type) {
         case 'get': {
-          return action.payload.reduce((accumProducts, currentProduct) => {
+          return payload.reduce((accumProducts: {}, currentProduct: Product) => {
             return {
               ...accumProducts,
               [currentProduct.id]: currentProduct,
@@ -78,28 +85,34 @@ export class ProductService {
           }, {});
         }
         case 'add': {
-          products[action.payload.id] = action.payload;
-          return products;
+          return payload.reduce((accumProducts: {}, currentProduct: Product) => {
+            return {
+              ...accumProducts,
+              [currentProduct.id]: currentProduct,
+            };
+          }, products);
         }
         case 'del': {
-          delete products[action.payload.id];
-          return products;
+          return payload.reduce((accumProducts: {}, { id }: Product) => {
+            delete accumProducts[id];
+            return accumProducts;
+          }, products);
         }
       }
     }, {});
 
-    this.ids$ = this.action$.scan((ids, action) => {
-      switch (action.type) {
+    this.ids$ = this.action$.scan((ids: number[], { type, payload }: Action) => {
+      switch (type) {
         case 'get': {
-          return action.payload.map(product => product.id);
+          return payload.map(product => product.id);
         }
         case 'add': {
-          ids.push(action.payload.id);
-          return ids;
+          return payload.reduce((accumIds: number[], { id }: Product) => [...accumIds, id], ids);
         }
         case 'del': {
-          ids.splice(ids.indexOf(action.payload.id), 1);
-          return ids;
+          return payload.reduce((accumIds: number[], currentProduct: Product) =>
+            accumIds.filter(id => currentProduct.id !== id)
+          , ids);
         }
       }
     }, []);
@@ -108,17 +121,19 @@ export class ProductService {
       this.entities$,
       this.ids$
     )
-      .map(([entities, ids]) => {
+      .map(([entities, ids]: [{}, number[]]) => {
         return ids.map(id => entities[id]);
-      });
+      })
+      .publishReplay(1);
+    this.products$.connect();
   }
 
   getProduct(id: number | string): Observable<Product> {
     return this.http.get<Product>(`products/${id}`).publishReplay(1);
   }
 
-  getProducts() {
-    this.receivedProductsSub$.next(this.http.get<Product>('products'));
+  getProducts(): Observable<Product[]> {
+    this.receivedProductsSub$.next(this.http.get<Product[]>('products'));
     return this.products$;
   }
 
