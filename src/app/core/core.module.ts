@@ -20,6 +20,7 @@ import { InvoiceItemsResolverService } from './resolvers/invoice-items-resolver.
 import { CanDeactivateNewInvoiceGuard } from './guards/can-deactivate-new-invoice.guard';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { HttpErrorHandlerService } from './services/http-error-handler.service';
+import { StateManagement } from './state-management';
 
 import { MatDialogModule } from '@angular/material/dialog';
 
@@ -47,6 +48,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     CanDeactivateNewInvoiceGuard,
     ModalService,
     HttpErrorHandlerService,
+    StateManagement,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
   ]
 })

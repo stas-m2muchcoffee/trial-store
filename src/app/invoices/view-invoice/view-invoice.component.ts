@@ -33,16 +33,16 @@ export class ViewInvoiceComponent implements OnInit {
     this.invoiceItems$ = Observable.combineLatest(
       this.invoiceItemsService.invoiceItems$,
       this.invoiceItemsService.invoiceItems$
-        .switchMap(invoices => {
+        .switchMap((invoices) => {
           return Observable.zip(...invoices.map(invoice => this.productService.getProduct(invoice.product_id)));
         })
     )
-    .map(([invoiceItems, products]: [InvoiceItem[], Product[]]) => {
-      return invoiceItems.map((invoiceItem) => {
-        invoiceItem.product = products.find((product) => product.id === invoiceItem.product_id);
-        return invoiceItem;
+      .map(([invoiceItems, products]: [InvoiceItem[], Product[]]) => {
+        return invoiceItems.map((invoiceItem) => {
+          invoiceItem.product = products.find((product) => product.id === invoiceItem.product_id);
+          return invoiceItem;
+        });
       });
-    });
     this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
   }
 }

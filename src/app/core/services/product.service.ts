@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
 import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/mergeAll';
@@ -14,6 +13,11 @@ import 'rxjs/add/operator/publishBehavior';
 
 import { Product } from '../interfaces/product';
 import { Action } from '../interfaces/action';
+import { StateManagement, StateRequests } from '../state-management';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/delay';
+import 'rxjs/add/operator/do';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -24,124 +28,64 @@ const httpOptions = {
 @Injectable()
 export class ProductService {
   products$: ConnectableObservable<Product[]>;
-  action$: Observable<Action>;
-
-  receivedProductsSub$: Subject<Observable<Product[]>> = new Subject<Observable<Product[]>>();
-  _receivedProducts$: ConnectableObservable<Product[]>;
-  addedProductSub$: Subject<Observable<Product>> = new Subject<Observable<Product>>();
-  _addedProduct$: ConnectableObservable<Product>;
-  deletedProductSub$: Subject<Observable<Product>> = new Subject<Observable<Product>>();
-  _deletedProduct$: ConnectableObservable<Product>;
   isData$: ConnectableObservable<boolean>;
-
-  entities$: Observable<{}>;
-  ids$: Observable<number[]>;
-
+  stateManagement: StateManagement<Product> = new StateManagement<Product>();
+  addedProduct$: ConnectableObservable<Product>;
+  removeProduct$: ConnectableObservable<any>;
   private newAddProduct = { name: 'newAddProduct', price: 13 };
 
   constructor(
     private http: HttpClient
   ) {
-    this._receivedProducts$ = this.receivedProductsSub$
-      .mergeAll().publishReplay(1);
-    this._receivedProducts$.connect();
-
-    this._addedProduct$ = this.addedProductSub$
-      .mergeAll().publishReplay(1);
-    this._addedProduct$.connect();
-
-    this._deletedProduct$ = this.deletedProductSub$
-      .mergeAll().publishReplay(1);
-    this._deletedProduct$.connect();
-
-    this.action$ = Observable.merge(
-      this._receivedProducts$.map((products) => {
-        return { type: 'get', payload: products };
-      }),
-      this._addedProduct$.map((product) => {
-        return { type: 'add', payload: [product] };
-      }),
-      this._deletedProduct$.map((product) => {
-        return { type: 'del', payload: [product] };
-      })
-    );
-
-    this.isData$ = this.action$.scan((isData: boolean, action: Action) => {
-      if (action.type === 'get' || action.type === 'add' || action.type === 'del') {
+    this.isData$ = this.stateManagement.responseData$.scan((isData: boolean, { type }: Action) => {
+      if (+type === StateRequests.GetList || +type === StateRequests.Add || +type === StateRequests.Remove || +type === StateRequests.Get) {
         return true;
       }
     }, false)
       .publishBehavior(false);
     this.isData$.connect();
 
-    this.entities$ = this.action$.scan((products: {}, { type, payload }: Action) => {
-      switch (type) {
-        case 'get': {
-          return payload.reduce((accumProducts: {}, currentProduct: Product) => {
-            return {
-              ...accumProducts,
-              [currentProduct.id]: currentProduct,
-            };
-          }, {});
-        }
-        case 'add': {
-          return payload.reduce((accumProducts: {}, currentProduct: Product) => {
-            return {
-              ...accumProducts,
-              [currentProduct.id]: currentProduct,
-            };
-          }, products);
-        }
-        case 'del': {
-          return payload.reduce((accumProducts: {}, { id }: Product) => {
-            delete accumProducts[id];
-            return accumProducts;
-          }, products);
-        }
-      }
-    }, {});
-
-    this.ids$ = this.action$.scan((ids: number[], { type, payload }: Action) => {
-      switch (type) {
-        case 'get': {
-          return payload.map(product => product.id);
-        }
-        case 'add': {
-          return payload.reduce((accumIds: number[], { id }: Product) => [...accumIds, id], ids);
-        }
-        case 'del': {
-          return payload.reduce((accumIds: number[], currentProduct: Product) =>
-            accumIds.filter(id => currentProduct.id !== id)
-          , ids);
-        }
-      }
-    }, []);
-
     this.products$ = Observable.combineLatest(
-      this.entities$,
-      this.ids$
+      this.stateManagement.entities$,
+      this.stateManagement.collectionIds$
     )
       .map(([entities, ids]: [{}, number[]]) => {
         return ids.map(id => entities[id]);
       })
       .publishReplay(1);
     this.products$.connect();
+
+    this.addedProduct$ = Observable.combineLatest(
+      this.stateManagement.entities$,
+      this.stateManagement.addEntityId$
+    )
+      .map(([entities, id]) => entities[id])
+      .publishReplay(1);
+    this.addedProduct$.connect();
+
+    this.removeProduct$ = this.stateManagement.responseData$
+      .filter(responseData => responseData.type === StateRequests.Remove)
+      .map(responseData => responseData.value[0])
+      .publishReplay(1);
+    this.removeProduct$.connect();
   }
 
   getProduct(id: number | string): Observable<Product> {
-    return this.http.get<Product>(`products/${id}`).publishReplay(1);
+    this.stateManagement.get$.next(this.http.get<Product>(`products/${id}`));
+    return this.stateManagement.responseData$
+      .filter(responseData => responseData.type === StateRequests.Get)
+      .map((responseData) => responseData.value[0]);
   }
-
   getProducts(): Observable<Product[]> {
-    this.receivedProductsSub$.next(this.http.get<Product[]>('products'));
+    this.stateManagement.getList$.next(this.http.get<Product[]>('products'));
     return this.products$;
   }
-
   addProduct() {
-    this.addedProductSub$.next(this.http.post<Product>('products', this.newAddProduct, httpOptions));
+    this.stateManagement.add$.next(this.http.post<Product>('products', this.newAddProduct, httpOptions));
+    return this.addedProduct$;
   }
-
   deleteProducts(id) {
-    this.deletedProductSub$.next(this.http.delete<Product>(`products/${id}`, httpOptions));
+    this.stateManagement.remove$.next(this.http.delete<Product>(`products/${id}`, httpOptions));
+    return this.removeProduct$;
   }
 }

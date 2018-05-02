@@ -28,3 +28,5 @@
 
   <button mat-raised-button color="primary" (click)="addProduct()">Add product</button>
 </div>
+
+<p *ngIf="(viewTemplateProduct$ | async)">{{ viewTemplateProduct$ | async | json }}</p>

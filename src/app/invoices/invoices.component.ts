@@ -36,7 +36,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     this.getTransformInvoices();
     this.deleteInvoiceChoiceSubscription = this.deleteInvoice$
       .switchMap((id) => {
-        return this.modalService.confirmModal('Do you want to delete an invoice?', true)
+        return this.modalService.confirmModal('Do you want to delete an invoice?')
           .filter((choice) => choice)
           .mapTo(id);
       })

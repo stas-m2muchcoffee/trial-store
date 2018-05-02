@@ -9,7 +9,7 @@ export class ModalService {
   constructor(
     private dialog: MatDialog
   ) {}
-  confirmModal(message: string, twoBtn: boolean) {
+  confirmModal(message: string, twoBtn: boolean = true) {
     return this.dialog.open(
       ModalWindowComponent,
       {data: {message: message, twoBtn: twoBtn}}
