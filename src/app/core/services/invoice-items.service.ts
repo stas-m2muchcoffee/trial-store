@@ -2,14 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/observable/throw';
 import { catchError } from 'rxjs/operators';
 
 import { InvoiceItem } from '../interfaces/invoice-item';
 
 import { HandleError, HttpErrorHandlerService } from './http-error-handler.service';
-import 'rxjs/add/observable/of';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -24,9 +21,9 @@ export class InvoiceItemsService {
 
   constructor(
     private http: HttpClient,
-    httpErrorHandler: HttpErrorHandlerService
+    httpErrorHandlerService: HttpErrorHandlerService
   ) {
-    this.handleError = httpErrorHandler.createHandleError('InvoiceItemsService');
+    this.handleError = httpErrorHandlerService.createHandleError('InvoiceItemsService');
   }
   getInvoiceItems(id: number | string): Observable<InvoiceItem[]> {
     return this.invoiceItems$ = this.http.get<InvoiceItem[]>(`invoices/${id}/items`).publishLast().refCount();
@@ -35,12 +32,12 @@ export class InvoiceItemsService {
     return this.http.post<InvoiceItem>(`invoices/${invoiceId}/items`, invoiceItem, httpOptions);
   }
   updateInvoiceItem(invoiceItem, InvoiceItemId, invoiceId): Observable<InvoiceItem> {
-    return this.http.put<InvoiceItem>(`invoices/${invoiceId}/items/${InvoiceItemId}`, invoiceItem, httpOptions)
+    return this.http.put<InvoiceItem>(`invoices/${invoiceId}/items/${InvoiceItemId}`, invoiceItem, httpOptions);
   }
   deleteInvoiceItem(InvoiceItemId, invoiceId): Observable<{}> {
-    return this.http.delete(`invoices/${invoiceId}/items/${InvoiceItemId}`, httpOptions)
+    return this.http.delete(`invoices1/${invoiceId}/items/${InvoiceItemId}`, httpOptions)
       .pipe(
-        catchError(this.handleError('deleteInvoiceItem', ))
+        catchError(this.handleError('deleteInvoiceItem', {}, false))
       );
   }
 }

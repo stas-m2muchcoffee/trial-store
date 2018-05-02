@@ -130,7 +130,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   }
   canDeactivate(): Observable<boolean> | boolean {
     if (this.newInvoiceForm.dirty) {
-      return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
+      return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?', true);
     } else {
       return true;
     }

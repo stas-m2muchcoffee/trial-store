@@ -83,7 +83,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       .subscribe(
         () => {},
         (error) => {
-          return this.modalService.confirmModal(`Error invoice: status - ${error.status}, answer - ${error.statusText}`);
+          return this.modalService.confirmModal(`Error invoice: status - ${error.status}, answer - ${error.statusText}`, false);
         }
       );
     // добавление продукта
@@ -96,18 +96,15 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       .subscribe(
         () => {},
         (error) => {
-          return this.modalService.confirmModal(`Error: status - ${error.status}, answer - ${error.statusText}`);
+          return this.modalService.confirmModal(`Error: status - ${error.status}, answer - ${error.statusText}`, false);
         }
       );
     // удаление item
     this.deleteInvoiceSubscription = this.deleteInvoiceItem$
       .switchMap((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id)
-        .filter(item => {console.log(123, item); return item === {}})
+        .filter(item => item === {})
         .map(() => { this.items.removeAt(this.i); this.i = null; })
       )
-      // .switchMap((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id))
-      // .filter(res => res === {})
-      // .map(() => { this.items.removeAt(this.i); this.i = null; })
       .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
       .subscribe();
     // изменение item
@@ -118,7 +115,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       .subscribe(
         () => {},
         (error) => {
-          return this.modalService.confirmModal(`Error: status - ${error.status}, answer - ${error.statusText}`);
+          return this.modalService.confirmModal(`Error: status - ${error.status}, answer - ${error.statusText}`, false);
         }
       );
     // изменение form array для подсчета total

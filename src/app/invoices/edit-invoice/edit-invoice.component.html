@@ -1,5 +1,5 @@
 <div class="container">
-  <span>Invoice #{{ (invoice$ | async).id }}</span>
+  <span>Invoice #{{ (invoice$ | async)?.id }}</span>
   <form [formGroup]="editInvoiceForm">
     <div fxLayout="row" fxLayoutAlign="center" fxLayoutGap="5%">
       <div fxFlex="80%">
@@ -42,7 +42,7 @@
       </div>
       <div fxFlex="15%" fxFlexAlign="center">
         <p>Discount, %</p>
-        <p>{{(invoice$ | async).discount}}</p>
+        <p>{{(invoice$ | async)?.discount}}</p>
       </div>
     </div>
   </form>
