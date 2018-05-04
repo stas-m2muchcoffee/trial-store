@@ -13,6 +13,5 @@ import { PageNotFoundRoutingModule } from './page-not-found-routing.module';
   declarations: [
     PageNotFoundComponent
   ],
-  exports: []
 })
 export class PageNotFoundModule { }

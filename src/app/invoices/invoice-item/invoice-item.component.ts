@@ -2,7 +2,6 @@ import {Component, OnInit, Input, OnDestroy, EventEmitter, Output} from '@angula
 import { FormControl } from '@angular/forms';
 
 import { Subscription } from 'rxjs/Subscription';
-
 import 'rxjs/add/operator/startWith';
 
 @Component({
@@ -11,7 +10,6 @@ import 'rxjs/add/operator/startWith';
   styleUrls: ['./invoice-item.component.scss']
 })
 export class InvoiceItemComponent implements OnInit, OnDestroy {
-
   itemChangeSubscription: Subscription;
   invoicePrice = 0;
 
@@ -30,13 +28,12 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
     this.itemChangeSubscription = this.item.valueChanges
     .startWith(this.item.value)
     .map((item) => {
+      this.updateInvoiceItem.emit(item);
       return this.products.find((product) => product.id === item.product_id);
     })
     .subscribe(product => {
       this.invoicePrice = product.price * this.quantity.value;
     });
-
-    this.item.valueChanges.subscribe((item) => this.updateInvoiceItem.emit(item));
   }
 
   ngOnDestroy() {

@@ -11,9 +11,11 @@ import { Customer } from '../core/interfaces/customer';
 export class CustomersComponent implements OnInit {
   customers$: Observable<Customer[]>;
   displayedColumns = ['name', 'address', 'phone'];
+
   constructor(
     private customerService: CustomerService
   ) {}
+
   ngOnInit() {
     this.customers$ = this.customerService.customers$;
   }

@@ -5,10 +5,11 @@ import { ModalWindowComponent } from '../../modal-window/modal-window.component'
 
 @Injectable()
 export class ModalService {
-  twoBtn: boolean;
+
   constructor(
     private dialog: MatDialog
   ) {}
+
   confirmModal(message: string, twoBtn: boolean = true) {
     return this.dialog.open(
       ModalWindowComponent,

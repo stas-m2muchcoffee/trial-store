@@ -15,7 +15,6 @@ import { CustomerService } from '../core/services/customer.service';
 import { ModalService } from '../core/services/modal.service';
 import { Invoice } from '../core/interfaces/invoice';
 import { Customer } from '../core/interfaces/customer';
-import 'rxjs/add/operator/publishReplay';
 
 @Component({
   selector: 'app-invoices',
@@ -33,8 +32,10 @@ export class InvoicesComponent implements OnInit, OnDestroy {
     private invoiceService: InvoiceService,
     private customerService: CustomerService
   ) {}
+
   ngOnInit() {
-    this.getTransformInvoices();
+    this.invoice$ = this.getTransformInvoices();
+
     this.deleteInvoiceChoiceSubscription = this.deleteInvoice$
       .switchMap((id) => {
         return this.modalService.confirmModal('Do you want to delete an invoice?')
@@ -46,23 +47,26 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         console.log('deleted');
       });
   }
+
   ngOnDestroy() {
     this.deleteInvoiceChoiceSubscription.unsubscribe();
   }
+
   getTransformInvoices() {
-    this.invoice$ = Observable.combineLatest(
+    return Observable.combineLatest(
       this.invoiceService.invoices$,
       this.customerService.customers$
     )
       .map(([invoices, customers]: [Invoice[], Customer[]]) => {
         return invoices
-          .filter((invoice) => invoice !== undefined)
+          // .filter((invoice) => invoice !== undefined)
           .map((invoice) => {
             invoice.customer = customers.find((customer) => customer.id === invoice.customer_id);
             return invoice;
         });
       });
   }
+
   deleteInvoice(id: number): void {
     this.deleteInvoice$.next(id);
   }

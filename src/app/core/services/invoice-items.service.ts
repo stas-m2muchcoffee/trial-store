@@ -7,12 +7,13 @@ import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/do';
 
-import { InvoiceItem } from '../interfaces/invoice-item';
 import { StateManagement, StateRequests } from '../../shared/state-management';
 
+import { InvoiceItem } from '../interfaces/invoice-item';
+
 import { HandleError, HttpErrorHandlerService } from './http-error-handler.service';
+import {catchError} from 'rxjs/operators';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -71,14 +72,17 @@ export class InvoiceItemsService {
     this.stateManagement.getList$.next(this.http.get<InvoiceItem[]>(`invoices/${id}/items`));
     return this.invoiceItems$;
   }
+
   createInvoiceItem(invoiceItem, invoiceId): Observable<InvoiceItem> {
     this.stateManagement.add$.next(this.http.post<InvoiceItem>(`invoices/${invoiceId}/items`, invoiceItem, httpOptions));
     return this.addedInvoiceItem$;
   }
+
   updateInvoiceItem(invoiceItem, InvoiceItemId, invoiceId): Observable<InvoiceItem> {
     this.stateManagement.update$.next(this.http.put<InvoiceItem>(`invoices/${invoiceId}/items/${InvoiceItemId}`, invoiceItem, httpOptions));
     return this.updatedInvoiceItem$;
   }
+
   deleteInvoiceItem(InvoiceItemId, invoiceId): Observable<InvoiceItem> {
     this.stateManagement.remove$.next(this.http.delete<InvoiceItem>(`invoices/${invoiceId}/items/${InvoiceItemId}`, httpOptions));
     return this.removeInvoiceItem$;

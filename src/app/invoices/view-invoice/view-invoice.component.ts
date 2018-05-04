@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/combineLatest';
-import 'rxjs/add/observable/zip';
 
 import { InvoiceItemsService } from '../../core/services/invoice-items.service';
 import { ProductService } from '../../core/services/product.service';
@@ -45,6 +44,8 @@ export class ViewInvoiceComponent implements OnInit {
       this.invoice$,
       this.customerService.customers$
     )
-      .map(([invoice, customers]: [Invoice, Customer[]]) => customers.find((customer) => customer.id === invoice.customer_id));
+      .map(([invoice, customers]: [Invoice, Customer[]]) =>
+        customers.find((customer) => customer.id === invoice.customer_id)
+      );
   }
 }

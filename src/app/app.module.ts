@@ -23,6 +23,6 @@ import { AppComponent } from './app.component';
   ],
   entryComponents: [
     ModalWindowComponent
-  ]
+  ],
 })
-export class AppModule { }
+export class AppModule {}

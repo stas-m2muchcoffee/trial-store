@@ -3,12 +3,18 @@ import { MAT_DIALOG_DATA , MatDialogRef} from '@angular/material';
 
 @Component({
   selector: 'app-modal-window',
-  templateUrl: './modal-window.component.html',
-  styleUrls: ['./modal-window.component.scss']
+  template: '<p>{{ message }}</p>' +
+    '<button mat-raised-button (click)="choose(true)">Ok</button>' +
+    '<button mat-raised-button *ngIf="twoBtn" (click)="choose(false)">No</button>',
+  styles: [
+    'p {text-align: center; margin-bottom: 20px;}',
+    'button {width: 49%;}'
+  ],
 })
 export class ModalWindowComponent {
   message: string;
   twoBtn: boolean;
+
   constructor(
     public dialogRef: MatDialogRef<ModalWindowComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
@@ -16,6 +22,7 @@ export class ModalWindowComponent {
     this.message = this.data.message;
     this.twoBtn = this.data.twoBtn;
   }
+
   choose(choice: boolean) {
     this.dialogRef.close(choice);
   }

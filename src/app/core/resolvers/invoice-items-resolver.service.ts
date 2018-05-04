@@ -9,9 +9,11 @@ import { InvoiceItem } from '../interfaces/invoice-item';
 
 @Injectable()
 export class InvoiceItemsResolverService implements Resolve<InvoiceItem[]> {
+
   constructor(
     private invoiceItemsService: InvoiceItemsService
   ) {}
+
   resolve(route: ActivatedRouteSnapshot): Observable<InvoiceItem[]> {
     const id = route.paramMap.get('id');
     return this.invoiceItemsService.getInvoiceItems(id)

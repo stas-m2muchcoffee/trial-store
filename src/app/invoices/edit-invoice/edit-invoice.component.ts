@@ -5,14 +5,10 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/mapTo';
 import 'rxjs/add/operator/debounceTime';
-import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/take';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/mergeAll';
-import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/filter';
 
 import { Customer } from '../../core/interfaces/customer';
 import { CustomerService } from '../../core/services/customer.service';
@@ -23,6 +19,7 @@ import { InvoiceItemsService } from '../../core/services/invoice-items.service';
 import { Invoice } from '../../core/interfaces/invoice';
 import { InvoiceService } from '../../core/services/invoice.service';
 import { ModalService } from '../../core/services/modal.service';
+import {isBoolean} from 'util';
 
 @Component({
   selector: 'app-edit-invoice',
@@ -39,8 +36,10 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
   invoiceItemsSubscription: Subscription;
   itemsChangeSubscription: Subscription;
   customerChangeSubscription: Subscription;
+  addProduct$: Observable<InvoiceItem>;
   addProductSubscription: Subscription;
   deleteInvoiceSubscription: Subscription;
+  updateInvoiceItemSubscription: Subscription;
   updateInvoiceSubscription: Subscription;
   removeInvoiceItem$: Subject<number> = new Subject<number>();
   updateInvoiceItem$: Subject<InvoiceItem> = new Subject<InvoiceItem>();
@@ -89,27 +88,36 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       .subscribe();
 
     // добавление продукта
-    this.addProductSubscription = this.addProduct.valueChanges
-      .switchMap((product_id) => this.invoiceItemsService.createInvoiceItem({product_id: product_id, quantity: 1}, this.invoice.id)
-        .take(1)
-      )
-      .map(item => this.addItem(item))
-      .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
-      .subscribe();
+    this.addProduct$ = this.addProduct.valueChanges
+    .filter((id) => id)
+    .switchMap((product_id) => this.invoiceItemsService.createInvoiceItem({product_id: product_id, quantity: 1}, this.invoice.id)
+      .take(1)
+    );
+
+    this.addProductSubscription = this.addProduct$
+    .subscribe((item) => {
+      this.addItem(item);
+      this.addProduct.reset(null, {emitEvent: false});
+    });
+
+    this.updateInvoiceSubscription = this.addProduct$
+    .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
+    .subscribe();
 
     // удаление item
     this.deleteInvoiceSubscription = this.removeInvoiceItem$
-      .map((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id))
-      .map(() => {
-        this.items.removeAt(this.i); this.i = null;
-      })
+      .switchMap((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id)
+        .debounceTime(500)
+        .take(1)
+      )
+      .map(() => { this.items.removeAt(this.i); this.i = null; })
       .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
       .subscribe();
 
     // изменение item
-    this.updateInvoiceSubscription = this.updateInvoiceItem$
-      .map((item) => this.invoiceItemsService.updateInvoiceItem(item, item.id, this.invoice.id))
+    this.updateInvoiceItemSubscription = this.updateInvoiceItem$
       .debounceTime(500)
+      .map((item) => this.invoiceItemsService.updateInvoiceItem(item, item.id, this.invoice.id))
       .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
       .subscribe();
 
@@ -126,6 +134,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       })
       .subscribe((items) => this.getTotal(items));
   }
+
   ngOnDestroy() {
     this.invoiceSubscription.unsubscribe();
     this.invoiceItemsSubscription.unsubscribe();
@@ -133,8 +142,9 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     this.customerChangeSubscription.unsubscribe();
     this.addProductSubscription.unsubscribe();
     this.deleteInvoiceSubscription.unsubscribe();
-    this.updateInvoiceSubscription.unsubscribe();
+    this.updateInvoiceItemSubscription.unsubscribe();
   }
+
   createForm() {
     this.editInvoiceForm = new FormGroup({
       customer_id: new FormControl(null, Validators.required),
@@ -144,8 +154,9 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     });
     this.customer_id.setValue(this.invoice.customer_id);
     this.total.setValue(this.invoice.total);
-    this.invoiceItems.forEach((invoiceItem) => this.addItem(invoiceItem));
+    this.invoiceItems.forEach((item) => this.addItem(item));
   }
+
   addItem(item: InvoiceItem) {
     this.items.push(new FormGroup({
       product_id: new FormControl(item.product_id),
@@ -153,6 +164,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       id: new FormControl(item.id)
     }));
   }
+
   getTotal(items) {
     let total = 0;
     items.forEach((item) => {
@@ -160,15 +172,25 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     });
     this.total.setValue(total);
   }
+
   deleteInvoiceItem(i: number, item: FormGroup) {
     if (this.editInvoiceForm.valid && this.items.length > 1) {
       this.removeInvoiceItem$.next(item.value.id);
       this.i = i;
     }
   }
+
   updateInvoiceItem(item: InvoiceItem) {
     if (this.editInvoiceForm.valid && item.quantity !== null) {
       this.updateInvoiceItem$.next(item);
+    }
+  }
+
+  canDeactivate(): Observable<boolean> | boolean {
+    if (this.editInvoiceForm.invalid) {
+      return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
+    } else {
+      return true;
     }
   }
 }

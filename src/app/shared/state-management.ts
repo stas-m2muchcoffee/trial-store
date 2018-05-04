@@ -56,10 +56,11 @@ export class StateManagement<T> {
           return {...acc, ...newEnteties};
         }
         case StateRequests.Update: {
+          const accum = {...acc};
           data.value.forEach((entity) => {
-            acc[entity.id] = entity;
+            accum[entity.id] = entity;
           });
-          return acc;
+          return accum;
         }
         case StateRequests.Remove: {
           data.value.forEach((entity) => {

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanDeactivate } from '@angular/router';
+
 import { Observable } from 'rxjs/Observable';
 
 import { NewInvoiceComponent } from '../../invoices/new-invoice/new-invoice.component';

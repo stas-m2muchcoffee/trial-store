@@ -3,24 +3,33 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
-import 'rxjs/add/operator/publishLast';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/publishReplay';
 
-import { StateManagement } from '../../shared/state-management';
+import { StateManagement, StateRequests } from '../../shared/state-management';
+
 import { Customer } from '../interfaces/customer';
+import { Action } from '../interfaces/action';
 
 @Injectable()
 export class CustomerService {
-
+  isData$: ConnectableObservable<boolean>;
   stateManagement: StateManagement<Customer> = new StateManagement<Customer>();
   customers$: ConnectableObservable<Customer[]>;
 
   constructor(
     private http: HttpClient
   ) {
+    this.isData$ = this.stateManagement.responseData$
+      .scan((isData: boolean, {type}: Action) => {
+        if (type === StateRequests.GetList) {
+          return true;
+        }
+      }, false)
+      .publishBehavior(false);
+    this.isData$.connect();
+
     this.customers$ = Observable.combineLatest(
       this.stateManagement.entities$,
       this.stateManagement.collectionIds$

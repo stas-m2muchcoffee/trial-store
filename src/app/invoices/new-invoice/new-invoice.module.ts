@@ -10,6 +10,7 @@ import { InvoiceItemModule } from '../invoice-item/invoice-item.module';
 
 import { NewInvoiceComponent } from './new-invoice.component';
 import { NewInvoiceRoutingModule } from './new-invoice-routing.module';
+
 @NgModule({
   imports: [
     SharedModule,

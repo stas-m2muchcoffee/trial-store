@@ -18,6 +18,7 @@ import { CustomersResolverService } from './resolvers/customers-resolver.service
 import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceItemsResolverService } from './resolvers/invoice-items-resolver.service';
 import { CanDeactivateNewInvoiceGuard } from './guards/can-deactivate-new-invoice.guard';
+import { CanDeactivateEditInvoiceGuard } from './guards/can-deactivate-edit-invoice.guard';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { HttpErrorHandlerService } from './services/http-error-handler.service';
 
@@ -45,12 +46,14 @@ import { MatDialogModule } from '@angular/material/dialog';
     InvoiceItemsResolverService,
     httpInterceptorProviders,
     CanDeactivateNewInvoiceGuard,
+    CanDeactivateEditInvoiceGuard,
     ModalService,
     HttpErrorHandlerService,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}}
   ]
 })
 export class CoreModule {
+
   constructor(
     @Optional() @SkipSelf() parentModule: CoreModule
   ) {
