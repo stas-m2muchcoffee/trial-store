@@ -11,6 +11,7 @@ import { ProductService } from '../core/services/product.service';
 import { Product } from '../core/interfaces/product';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/debounceTime';
 
 
 @Component({
@@ -23,7 +24,7 @@ export class ProductsComponent implements OnInit {
   viewTemplateProduct$: Observable<Product>;
   addProduct$: Subject<any> = new Subject<any>();
   removeProduct$: Subject<any> = new Subject<any>();
-  addProductRequest: Observable<Product>;
+  addProductRequest$: Observable<Product>;
   removeProductRequest: Observable<Product>;
   displayedColumns = ['id', 'name', 'price', 'del'];
 
@@ -33,30 +34,29 @@ export class ProductsComponent implements OnInit {
   ngOnInit() {
     this.products$ = this.productService.products$;
 
-    this.addProductRequest = this.addProduct$
-      .switchMap(() => this.productService.addProduct())
-      .shareReplay(1);
-    this.addProductRequest.subscribe();
-
-    this.viewTemplateProduct$ = Observable.merge(
-      this.addProductRequest,
-      this.addProductRequest
-        .delay(2000)
-        .mapTo(null)
-    );
-
-    this.removeProductRequest = this.removeProduct$
-      .switchMap((id) => this.productService.deleteProducts(id))
-      .shareReplay(1);
-    this.removeProductRequest.subscribe();
+    // this.addProductRequest$ = this.addProduct$
+    //   .switchMap(() => this.productService.addProduct())
+    //   .shareReplay(1);
+    // this.addProductRequest$.subscribe();
+    //
+    // this.viewTemplateProduct$ = Observable.merge(
+    //   this.addProductRequest$,
+    //   this.addProductRequest$
+    //     .debounceTime(2000)
+    //     .mapTo(null)
+    // );
+    //
+    // this.removeProductRequest = this.removeProduct$
+    //   .switchMap((id) => this.productService.deleteProducts(id))
+    //   .shareReplay(1);
+    // this.removeProductRequest.subscribe();
   }
 
-  addProduct() {
-    this.addProduct$.next(null);
-  }
-
-  deleteProduct(id) {
-    this.removeProduct$.next(id);
-    // this.productService.deleteProducts(id);
-  }
+  // addProduct() {
+  //   this.addProduct$.next(null);
+  // }
+  //
+  // deleteProduct(id) {
+  //   this.removeProduct$.next(id);
+  // }
 }

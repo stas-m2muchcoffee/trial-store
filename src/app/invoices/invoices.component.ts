@@ -15,6 +15,7 @@ import { CustomerService } from '../core/services/customer.service';
 import { ModalService } from '../core/services/modal.service';
 import { Invoice } from '../core/interfaces/invoice';
 import { Customer } from '../core/interfaces/customer';
+import 'rxjs/add/operator/publishReplay';
 
 @Component({
   selector: 'app-invoices',
@@ -54,9 +55,11 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       this.customerService.customers$
     )
       .map(([invoices, customers]: [Invoice[], Customer[]]) => {
-        return invoices.map((invoice) => {
-          invoice.customer = customers.find((customer) => customer.id === invoice.customer_id);
-          return invoice;
+        return invoices
+          .filter((invoice) => invoice !== undefined)
+          .map((invoice) => {
+            invoice.customer = customers.find((customer) => customer.id === invoice.customer_id);
+            return invoice;
         });
       });
   }

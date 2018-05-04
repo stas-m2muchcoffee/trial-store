@@ -14,6 +14,7 @@ export enum StateRequests {
   GetList,
   Add,
   Remove,
+  Update
 }
 
 export class StateManagement<T> {
@@ -21,6 +22,7 @@ export class StateManagement<T> {
   remove$: Subject<Observable<T>> = new Subject();
   get$: Subject<Observable<T>> = new Subject();
   getList$: Subject<Observable<T[]>> = new Subject();
+  update$: Subject<Observable<T>> = new Subject();
 
   responseData$: ConnectableObservable<any>;
 
@@ -28,6 +30,7 @@ export class StateManagement<T> {
   collectionIds$: Observable<number[]>;
   entityId$: Observable<number>;
   addEntityId$: Observable<number>;
+  updateEntityId$: Observable<number>;
 
   constructor() {
 
@@ -36,6 +39,7 @@ export class StateManagement<T> {
       this.remove$.mergeAll().map((value) => ({type: StateRequests.Remove, value: [value]})),
       this.get$.mergeAll().map((value) => ({type: StateRequests.Get, value: [value]})),
       this.getList$.mergeAll().map((value) => ({type: StateRequests.GetList, value: value})),
+      this.update$.mergeAll().map((value) => ({type: StateRequests.Update, value: [value]})),
     )
     .publishReplay(1);
     this.responseData$.connect();
@@ -50,6 +54,12 @@ export class StateManagement<T> {
             return {...accValue, [entity.id]: entity};
           }, {});
           return {...acc, ...newEnteties};
+        }
+        case StateRequests.Update: {
+          data.value.forEach((entity) => {
+            acc[entity.id] = entity;
+          });
+          return acc;
         }
         case StateRequests.Remove: {
           data.value.forEach((entity) => {
@@ -87,6 +97,7 @@ export class StateManagement<T> {
 
     this.entityId$ = this.responseData$.let(this.getId(StateRequests.Get));
     this.addEntityId$ = this.responseData$.let(this.getId(StateRequests.Add));
+    this.updateEntityId$ = this.responseData$.let(this.getId(StateRequests.Update));
   }
 
   getId(requestType) {

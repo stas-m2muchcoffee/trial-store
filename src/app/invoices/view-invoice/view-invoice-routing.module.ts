@@ -16,9 +16,9 @@ const routes: Routes = [
     resolve: {
       invoiceItems: InvoiceItemsResolverService,
       customers: CustomersResolverService,
-      products: ProductsResolverService,
       invoices: InvoicesResolverService,
-      invoice: InvoiceResolverService
+      invoice: InvoiceResolverService,
+      products: ProductsResolverService,
     },
   },
 ];

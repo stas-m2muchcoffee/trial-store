@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/take';
 
 import { InvoiceItemsService } from '../services/invoice-items.service';
 import { InvoiceItem } from '../interfaces/invoice-item';
@@ -13,6 +14,7 @@ export class InvoiceItemsResolverService implements Resolve<InvoiceItem[]> {
   ) {}
   resolve(route: ActivatedRouteSnapshot): Observable<InvoiceItem[]> {
     const id = route.paramMap.get('id');
-    return this.invoiceItemsService.getInvoiceItems(id);
+    return this.invoiceItemsService.getInvoiceItems(id)
+      .take(1);
   }
 }

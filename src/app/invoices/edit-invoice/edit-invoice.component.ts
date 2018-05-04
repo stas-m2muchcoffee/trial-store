@@ -9,6 +9,10 @@ import 'rxjs/add/operator/mapTo';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/mergeAll';
+import 'rxjs/add/operator/shareReplay';
+import 'rxjs/add/operator/startWith';
 
 import { Customer } from '../../core/interfaces/customer';
 import { CustomerService } from '../../core/services/customer.service';
@@ -38,7 +42,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
   addProductSubscription: Subscription;
   deleteInvoiceSubscription: Subscription;
   updateInvoiceSubscription: Subscription;
-  deleteInvoiceItem$: Subject<number> = new Subject<number>();
+  removeInvoiceItem$: Subject<number> = new Subject<number>();
   updateInvoiceItem$: Subject<InvoiceItem> = new Subject<InvoiceItem>();
   invoice: Invoice;
   invoiceItems: InvoiceItem[];
@@ -75,52 +79,43 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
     this.invoice$ = this.invoiceService.invoice$;
     this.invoiceSubscription = this.invoice$.subscribe(invoice => this.invoice = invoice);
     this.invoiceItemsSubscription = this.invoiceItems$.subscribe(invoiceItems => this.invoiceItems = invoiceItems);
+
     // начальная инициализация формы
     this.createForm();
+
     // изменение кастомера
     this.customerChangeSubscription = this.customer_id.valueChanges
       .switchMap((customer_id) => this.invoiceService.updateInvoice({customer_id: customer_id} as Invoice, this.invoice.id))
-      .subscribe(
-        () => {},
-        (error) => {
-          return this.modalService.confirmModal(`Error invoice: status - ${error.status}, answer - ${error.statusText}`, false);
-        }
-      );
+      .subscribe();
+
     // добавление продукта
     this.addProductSubscription = this.addProduct.valueChanges
-      .switchMap((product_id) => {
-        return this.invoiceItemsService.createInvoiceItem({product_id: product_id, quantity: 1}, this.invoice.id);
-      })
-      .map(item => { this.addItem(item); })
-      .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
-      .subscribe(
-        () => {},
-        (error) => {
-          return this.modalService.confirmModal(`Error: status - ${error.status}, answer - ${error.statusText}`, false);
-        }
-      );
-    // удаление item
-    this.deleteInvoiceSubscription = this.deleteInvoiceItem$
-      .switchMap((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id)
-        .filter(item => item === {})
-        .map(() => { this.items.removeAt(this.i); this.i = null; })
+      .switchMap((product_id) => this.invoiceItemsService.createInvoiceItem({product_id: product_id, quantity: 1}, this.invoice.id)
+        .take(1)
       )
+      .map(item => this.addItem(item))
       .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
       .subscribe();
+
+    // удаление item
+    this.deleteInvoiceSubscription = this.removeInvoiceItem$
+      .map((itemId) => this.invoiceItemsService.deleteInvoiceItem(itemId, this.invoice.id))
+      .map(() => {
+        this.items.removeAt(this.i); this.i = null;
+      })
+      .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
+      .subscribe();
+
     // изменение item
     this.updateInvoiceSubscription = this.updateInvoiceItem$
+      .map((item) => this.invoiceItemsService.updateInvoiceItem(item, item.id, this.invoice.id))
       .debounceTime(500)
-      .switchMap((item) => this.invoiceItemsService.updateInvoiceItem(item, item.id, this.invoice.id))
       .switchMap(() => this.invoiceService.updateInvoice({...this.editInvoiceForm.value} as Invoice, this.invoice.id))
-      .subscribe(
-        () => {},
-        (error) => {
-          return this.modalService.confirmModal(`Error: status - ${error.status}, answer - ${error.statusText}`, false);
-        }
-      );
+      .subscribe();
+
     // изменение form array для подсчета total
     this.itemsChangeSubscription = Observable.combineLatest(
-      this.items.valueChanges,
+      this.items.valueChanges.startWith(this.items.value),
       this.products$
     )
       .map(([items, products]: [InvoiceItem[], Product[]]) => {
@@ -147,18 +142,9 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
       total: new FormControl(null),
       addProduct: new FormControl(null)
     });
-
     this.customer_id.setValue(this.invoice.customer_id);
     this.total.setValue(this.invoice.total);
-    this.invoiceItems.forEach((invoiceItem) => {
-      this.items.push(
-        new FormGroup({
-          product_id: new FormControl(invoiceItem.product_id),
-          quantity: new FormControl(invoiceItem.quantity, [Validators.min(1), Validators.required]),
-          id: new FormControl(invoiceItem.id)
-        })
-      );
-    });
+    this.invoiceItems.forEach((invoiceItem) => this.addItem(invoiceItem));
   }
   addItem(item: InvoiceItem) {
     this.items.push(new FormGroup({
@@ -176,7 +162,7 @@ export class EditInvoiceComponent implements OnInit, OnDestroy {
   }
   deleteInvoiceItem(i: number, item: FormGroup) {
     if (this.editInvoiceForm.valid && this.items.length > 1) {
-      this.deleteInvoiceItem$.next(item.value.id);
+      this.removeInvoiceItem$.next(item.value.id);
       this.i = i;
     }
   }

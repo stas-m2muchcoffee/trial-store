@@ -1,6 +1,6 @@
 import { Product } from './product';
 
 export interface Action {
-  type: string;
+  type: number;
   payload: Product[];
 }

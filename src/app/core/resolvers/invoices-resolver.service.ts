@@ -6,6 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { Invoice } from '../interfaces/invoice';
 
 import { InvoiceService } from '../services/invoice.service';
+import 'rxjs/add/operator/take';
 
 @Injectable()
 export class InvoicesResolverService implements Resolve<Invoice[]> {
@@ -13,9 +14,10 @@ export class InvoicesResolverService implements Resolve<Invoice[]> {
     private invoiceService: InvoiceService
   ) {}
   resolve(): Observable<Invoice[]> {
-    if (this.invoiceService.invoices$) {
-      return this.invoiceService.invoices$;
-    }
-    return this.invoiceService.getInvoices();
+    // if (this.invoiceService.invoices$) {
+    //   return this.invoiceService.invoices$;
+    // }
+    return this.invoiceService.getInvoices()
+      .take(1);
   }
 }

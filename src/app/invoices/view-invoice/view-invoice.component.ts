@@ -32,10 +32,7 @@ export class ViewInvoiceComponent implements OnInit {
     this.invoice$ = this.invoiceService.invoice$;
     this.invoiceItems$ = Observable.combineLatest(
       this.invoiceItemsService.invoiceItems$,
-      this.invoiceItemsService.invoiceItems$
-        .switchMap((invoices) => {
-          return Observable.zip(...invoices.map(invoice => this.productService.getProduct(invoice.product_id)));
-        })
+      this.productService.products$
     )
       .map(([invoiceItems, products]: [InvoiceItem[], Product[]]) => {
         return invoiceItems.map((invoiceItem) => {
@@ -43,6 +40,11 @@ export class ViewInvoiceComponent implements OnInit {
           return invoiceItem;
         });
       });
-    this.customer$ = this.invoice$.switchMap(invoice => this.customerService.getCustomer(invoice.customer_id));
+
+    this.customer$ = Observable.combineLatest(
+      this.invoice$,
+      this.customerService.customers$
+    )
+      .map(([invoice, customers]: [Invoice, Customer[]]) => customers.find((customer) => customer.id === invoice.customer_id));
   }
 }

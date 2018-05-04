@@ -11,6 +11,6 @@ import { ViewInvoiceComponent } from './view-invoice.component';
   ],
   declarations: [
     ViewInvoiceComponent
-  ]
+  ],
 })
 export class ViewInvoiceModule { }
