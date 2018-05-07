@@ -16,15 +16,13 @@ const routes: Routes = [
   },
   {
     path: 'new',
-    loadChildren: 'app/invoices/new-invoice/new-invoice.module#NewInvoiceModule'
-  },
-  {
-    path: 'view/:id',
-    loadChildren: 'app/invoices/view-invoice/view-invoice.module#ViewInvoiceModule'
+    loadChildren: 'app/invoices/new-invoice/new-invoice.module#NewInvoiceModule',
+    data: {type: 'new'},
   },
   {
     path: 'edit/:id',
-    loadChildren: 'app/invoices/edit-invoice/edit-invoice.module#EditInvoiceModule'
+    loadChildren: 'app/invoices/new-invoice/new-invoice.module#NewInvoiceModule',
+    data: {type: 'edit'},
   },
 ];
 

@@ -8,15 +8,18 @@ import { Invoice } from '../interfaces/invoice';
 import { InvoiceService } from '../services/invoice.service';
 
 @Injectable()
-export class InvoiceResolverService implements Resolve<Invoice> {
+export class InvoiceResolverService implements Resolve<Invoice | boolean> {
 
   constructor(
     private invoiceService: InvoiceService
   ) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<Invoice> {
+  resolve(route: ActivatedRouteSnapshot): Observable<Invoice> | boolean {
     const id = route.paramMap.get('id');
-    return this.invoiceService.getInvoice(id)
+    if (id) {
+      return this.invoiceService.getInvoice(id)
       .take(1);
+    }
+    return false;
   }
 }

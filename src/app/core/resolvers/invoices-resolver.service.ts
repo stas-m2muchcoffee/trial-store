@@ -15,13 +15,15 @@ export class InvoicesResolverService implements Resolve<Invoice[]> {
   ) {}
 
   resolve(): Observable<Invoice[]> {
-    return this.invoiceService.isData$
-      .switchMap((isData) => {
-        if (isData) {
-          return this.invoiceService.invoices$;
-        }
-        return this.invoiceService.getInvoices();
-      })
-      .take(1);
+    // return this.invoiceService.isData$
+    //   .switchMap((isData) => {
+    //     if (isData) {
+    //       return this.invoiceService.invoices$;
+    //     }
+    //     return this.invoiceService.getInvoices();
+    //   })
+    //   .take(1);
+
+    return this.invoiceService.getInvoices().take(1);
   }
 }

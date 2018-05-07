@@ -6,17 +6,22 @@ import 'rxjs/add/operator/take';
 
 import { InvoiceItemsService } from '../services/invoice-items.service';
 import { InvoiceItem } from '../interfaces/invoice-item';
+import 'rxjs/add/operator/switchMapTo';
 
 @Injectable()
-export class InvoiceItemsResolverService implements Resolve<InvoiceItem[]> {
+export class InvoiceItemsResolverService implements Resolve<InvoiceItem[] | boolean> {
 
   constructor(
     private invoiceItemsService: InvoiceItemsService
   ) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<InvoiceItem[]> {
+  resolve(route: ActivatedRouteSnapshot): Observable<InvoiceItem[]> | boolean {
     const id = route.paramMap.get('id');
-    return this.invoiceItemsService.getInvoiceItems(id)
+    if (id) {
+      return this.invoiceItemsService.state.responseDataRequests$
+      .switchMapTo(this.invoiceItemsService.getInvoiceItems(id))
       .take(1);
+    }
+    return false;
   }
 }
