@@ -1,18 +1,21 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {HttpHeaders} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { HttpHeaders } from '@angular/common/http';
 
-import {Observable} from 'rxjs/Observable';
-import {ConnectableObservable} from 'rxjs/observable/ConnectableObservable';
-import 'rxjs/add/observable/combineLatest';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/publishReplay';
-import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/debounceTime';
 
-import {StateManagement, StateRequests} from '../../shared/state-management';
+import { StateManagement } from '../../shared/state-management';
 
 import { Invoice } from '../interfaces/invoice';
-import { Action } from '../interfaces/action';
+import { CustomerService } from './customer.service';
+import { InvoiceItemsService } from './invoice-items.service';
+import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/shareReplay';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -22,85 +25,108 @@ const httpOptions = {
 
 @Injectable()
 export class InvoiceService {
-  isData$: ConnectableObservable<boolean>;
-  invoices$: ConnectableObservable<Invoice[]>;
-  invoice$: ConnectableObservable<Invoice>;
-  addedInvoice$: ConnectableObservable<Invoice>;
-  updatedInvoice$: ConnectableObservable<Invoice>;
-  deletedInvoice$: ConnectableObservable<Invoice>;
-  stateManagement: StateManagement<Invoice> = new StateManagement<Invoice>();
+  invoices$: Observable<Invoice[]>;
+  invoice$: Observable<Invoice>;
+  addedInvoice$: Observable<Invoice>;
+  updatedInvoice$: Observable<Invoice>;
+  state: StateManagement<Invoice>;
 
-  constructor(private http: HttpClient) {
-    this.isData$ = this.stateManagement.responseData$
-    .scan((isData: boolean, {type}: Action) => {
-      if (type === StateRequests.GetList || type === StateRequests.Add || type === StateRequests.Get) {
-        return true;
-      }
-    }, false)
-    .publishBehavior(false);
-    this.isData$.connect();
+  constructor(
+    private http: HttpClient,
+    private customerService: CustomerService,
+    private invoiceItemsService: InvoiceItemsService,
+  ) {
+    this.state = new StateManagement<Invoice>();
 
     this.invoices$ = Observable.combineLatest(
-      this.stateManagement.entities$,
-      this.stateManagement.collectionIds$
+      this.state.entities$,
+      this.state.collectionIds$
     )
-    .map(([entities, ids]: [{ [index: number]: Invoice }, number[]]) => ids.map((id) => entities[id]))
-    .publishReplay(1);
-    this.invoices$.connect();
+    .map(([entities, ids]: [{ [index: number]: Invoice }, number[]]) =>
+      ids.filter((id) => entities[id]).map((id) => entities[id])
+    )
+    // add customer
+    .combineLatest(this.customerService.customers$)
+    .map(([invoices, customers]) => {
+      return invoices.map((invoice) => {
+        return ({
+          ...invoice,
+          customer: customers.find((customer) => customer.id === invoice.customer_id)
+        });
+      });
+    })
+    // add items
+    .combineLatest(this.invoiceItemsService.invoiceItems$.startWith([]))
+    .map(([invoices, items]) => {
+      return invoices.map((invoice) => {
+        return ({
+          ...invoice,
+          items: items.filter((item) => item.invoice_id === invoice.id)
+        });
+      });
+    })
+    .shareReplay(1);
 
     this.invoice$ = Observable.combineLatest(
-      this.stateManagement.entities$,
-      this.stateManagement.entityId$
+      this.state.entities$,
+      this.state.entityId$
     )
     .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id])
-    .publishReplay(1);
-    this.invoice$.connect();
+    // add customer
+    .combineLatest(this.customerService.customers$)
+    .map(([invoice, customers]) => {
+      return ({
+        ...invoice,
+        customer: customers.find((customer) => customer.id === invoice.customer_id)
+      });
+    })
+    // add invoices
+    .combineLatest(this.invoiceItemsService.invoiceItems$.startWith([]))
+    .map(([invoice, items]) => {
+      return ({
+        ...invoice,
+        items: items.filter((item) => item.invoice_id === invoice.id)
+      });
+    })
+    .share();
 
     this.addedInvoice$ = Observable.combineLatest(
-      this.stateManagement.entities$,
-      this.stateManagement.addEntityId$
+      this.state.entities$,
+      this.state.addEntityId$
     )
-    .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id])
-    .publishReplay(1);
-    this.addedInvoice$.connect();
+    .debounceTime(10)
+    .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id]);
 
     this.updatedInvoice$ = Observable.combineLatest(
-      this.stateManagement.entities$,
-      this.stateManagement.updateEntityId$
+      this.state.entities$,
+      this.state.updateEntityId$
     )
-    .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id])
-    .publishReplay(1);
-    this.updatedInvoice$.connect();
-
-    this.deletedInvoice$ = this.stateManagement.responseData$
-    .filter((responseData) => responseData.type === StateRequests.Remove)
-    .map((responseData) => responseData.value[0])
-    .publishReplay(1);
-    this.deletedInvoice$.connect();
+    .debounceTime(10)
+    .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id]);
   }
 
   getInvoices(): Observable<Invoice[]> {
-    this.stateManagement.getList$.next(this.http.get<Invoice[]>('invoices'));
+    this.state.getList$.next(this.http.get<Invoice[]>('invoices'));
     return this.invoices$;
   }
 
   getInvoice(id: number | string): Observable<Invoice> {
-    this.stateManagement.get$.next(this.http.get<Invoice>(`invoices/${id}`));
+    this.state.get$.next(this.http.get<Invoice>(`invoices/${id}`));
     return this.invoice$;
   }
 
   createInvoice(invoice: Invoice): Observable<Invoice> {
-    this.stateManagement.add$.next(this.http.post<Invoice>('invoices', invoice, httpOptions));
+    this.state.add$.next(this.http.post<Invoice>('invoices', invoice, httpOptions));
     return this.addedInvoice$;
   }
 
-  deleteInvoice(id: number): Observable<Invoice> {
-    this.stateManagement.remove$.next(this.http.delete<Invoice>(`invoices/${id}`, httpOptions));
-    return this.deletedInvoice$;
+  deleteInvoice(invoice: Invoice): Observable<Invoice> {
+    this.state.remove$.next(this.http.delete<Invoice>(`invoices/${invoice.id}`, httpOptions).mapTo(invoice));
+    return this.state.removeResponse$;
   }
 
-  updateInvoice(invoice: Invoice, id: number | string): Observable<Invoice> {
-    this.stateManagement.update$.next(this.http.put<Invoice>(`invoices/${id}`, invoice, httpOptions));
+  updateInvoice(invoice: Invoice): Observable<Invoice> {
+    this.state.update$.next(this.http.put<Invoice>(`invoices/${invoice.id}`, invoice, httpOptions));
     return this.updatedInvoice$;
   }
 }

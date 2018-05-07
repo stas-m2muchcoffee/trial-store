@@ -16,13 +16,15 @@ export class ProductsResolverService implements Resolve<Product[]> {
   ) {}
 
   resolve(): Observable<Product[]> {
-    return this.productService.isData$
-      .switchMap((isData) => {
-        if (isData) {
-          return this.productService.products$;
-        }
-        return this.productService.getProducts();
-      })
-      .take(1);
+    // return this.productService.isData$
+    //   .switchMap((isData) => {
+    //     if (isData) {
+    //       return this.productService.products$;
+    //     }
+    //     return this.productService.getProducts();
+    //   })
+    //   .take(1);
+
+    return this.productService.getProducts().take(1);
   }
 }

@@ -2,7 +2,7 @@ import {Component, OnInit, OnDestroy} from '@angular/core';
 import {FormArray, FormControl, FormGroup} from '@angular/forms';
 import {Validators} from '@angular/forms';
 import {MatDialog} from '@angular/material';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
@@ -10,6 +10,15 @@ import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/withLatestFrom';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/do';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/observable/merge';
+import 'rxjs/add/operator/switchMapTo';
+import 'rxjs/add/operator/skip';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
 
 import {CustomerService} from '../../core/services/customer.service';
 import {InvoiceService} from '../../core/services/invoice.service';
@@ -27,15 +36,18 @@ import {Invoice} from '../../core/interfaces/invoice';
   styleUrls: ['./new-invoice.component.scss']
 })
 export class NewInvoiceComponent implements OnInit, OnDestroy {
-  newInvoiceForm: FormGroup;
+  invoiceForm: FormGroup;
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
-  addProductSubscription: Subscription;
-  itemsChangeSubscription: Subscription;
+  addInvoiceItemSubscription: Subscription;
+  updateInvoiceSubscription: Subscription;
+  setTotalSubscription: Subscription;
   createInvoiceSubscription: Subscription;
-  createInvoice$: Subject<Invoice> = new Subject<Invoice>();
-  total = 0;
+  addInvoiceItem = new FormControl(null);
+  createInvoice$: Subject<Invoice>;
   flag = false;
+  invoice: Invoice;
+  invoiceItems: InvoiceItem[];
 
   constructor(
     private customerService: CustomerService,
@@ -44,57 +56,51 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     private invoiceItemsService: InvoiceItemsService,
     private dialog: MatDialog,
     private modalService: ModalService,
-    private router: Router) {}
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   get customer_id(): FormControl {
-    return this.newInvoiceForm.get('customer_id') as FormControl;
+    return this.invoiceForm.get('customer_id') as FormControl;
   }
 
   get items(): FormArray {
-    return this.newInvoiceForm.get('items') as FormArray;
+    return this.invoiceForm.get('items') as FormArray;
   }
 
   get discount(): FormControl {
-    return this.newInvoiceForm.get('discount') as FormControl;
+    return this.invoiceForm.get('discount') as FormControl;
   }
 
-  get addProduct(): FormControl {
-    return this.newInvoiceForm.get('addProduct') as FormControl;
+  get total(): FormControl {
+    return this.invoiceForm.get('total') as FormControl;
+  }
+
+  get isEdit() {
+    return this.route.snapshot.data.type === 'edit';
   }
 
   ngOnInit() {
+    this.createInvoice$ = new Subject<Invoice>();
+
+    this.invoice = this.route.snapshot.data.invoice || null;
+    this.invoiceItems = this.route.snapshot.data.invoiceItems || [];
+
     this.createForm();
 
     this.customers$ = this.customerService.customers$;
     this.products$ = this.productService.products$;
 
-    this.addProductSubscription = this.addProduct.valueChanges
-    .filter((id) => id)
-    .withLatestFrom(this.products$)
-    .map(([productId, products]: [number, Product[]]) =>
-      products.find(({ id }: Product) => id === productId)
+    this.setTotalSubscription = Observable.combineLatest(
+      this.items.valueChanges.startWith(this.items.value),
+      this.discount.valueChanges.startWith(this.discount.value),
     )
-    .subscribe(product => {
-      this.addItem(product);
-      this.addProduct.reset(null, {emitEvent: false});
-    });
-
-    this.itemsChangeSubscription = Observable.combineLatest(
-      this.items.valueChanges,
-      this.products$,
-      this.discount.valueChanges.startWith(this.discount.value)
-    )
-    .map(([items, products]: [InvoiceItem[], Product[]]) => {
-      return items.map((item) => {
-        const product = products.find(({ id }: Product) => id === item.product_id);
-        return {
-          ...item,
-          product
-        };
-      });
+    .map(([items, discount]: [InvoiceItem[], number]) => {
+      const total = items.reduce((acc, item) => acc + item.price, 0);
+      return total * (1 - discount / 100);
     })
-    .subscribe(items => {
-      this.getTotal(items);
+    .subscribe(total => {
+      this.total.setValue(total);
     });
 
     this.createInvoiceSubscription = this.createInvoice$
@@ -103,49 +109,86 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
       this.flag = true;
       return this.router.navigate(['/invoices']);
     });
+
+    this.addInvoiceItemSubscription = this.addInvoiceItem.valueChanges
+    .switchMap(product_id => {
+      if (this.isEdit) {
+        return this.invoiceItemsService.createInvoiceItem({
+          invoice_id: this.invoice.id,
+          product_id: product_id,
+          quantity: 1,
+        })
+        .take(1);
+      }
+      return Observable.of({product_id} as InvoiceItem);
+    })
+    .subscribe(
+      (invoiceItem) => {
+        this.addItem(invoiceItem);
+        this.addInvoiceItem.reset(null, {emitEvent: false});
+      }
+    );
+
+    this.updateInvoiceSubscription = Observable.merge(
+      this.customer_id.valueChanges,
+      this.total.valueChanges,
+      this.discount.valueChanges
+    )
+    .filter(() => this.isEdit)
+    .debounceTime(500)
+    .skip(1)
+    .distinctUntilChanged()
+    .subscribe(() => {
+      this.invoiceService.updateInvoice(this.invoiceForm.value);
+    });
   }
 
   ngOnDestroy() {
-    this.addProductSubscription.unsubscribe();
-    this.itemsChangeSubscription.unsubscribe();
+    this.addInvoiceItemSubscription.unsubscribe();
+    this.setTotalSubscription.unsubscribe();
     this.createInvoiceSubscription.unsubscribe();
   }
 
   createForm() {
-    this.newInvoiceForm = new FormGroup({
+    this.invoiceForm = new FormGroup({
+      id: new FormControl(null),
       customer_id: new FormControl(null, Validators.required),
       items: new FormArray([], [Validators.minLength(1), Validators.required]),
       discount: new FormControl(0, [Validators.min(0), Validators.max(50), Validators.required]),
-      addProduct: new FormControl(null)
+      total: new FormControl(0),
     });
-  }
-
-  addItem(product: Product) {
-    this.items.push(new FormGroup({
-      product_id: new FormControl(product.id),
-      quantity: new FormControl(1, [Validators.min(1), Validators.required]),
-    }));
-  }
-
-  getTotal(items) {
-    this.total = 0;
-    items.forEach((item) => {
-      this.total += (item.product.price * item.quantity) * (1 - this.discount.value / 100);
-    });
-  }
-
-  deleteInvoice(i: number) {
-    this.items.removeAt(i);
-  }
-
-  createInvoice() {
-    if (this.newInvoiceForm.valid) {
-      this.createInvoice$.next({...this.newInvoiceForm.value, total: this.total} as Invoice);
+    if (this.isEdit) {
+      this.invoiceForm.reset(this.invoice);
+      this.invoiceItems.map((invoiceItem) => {
+        this.addItem(invoiceItem);
+      });
     }
   }
 
+  addItem(invoiceItem: InvoiceItem) {
+    this.items.push(
+      new FormGroup({
+        id: new FormControl(invoiceItem.id),
+        invoice_id: new FormControl(invoiceItem.invoice_id),
+        product_id: new FormControl(invoiceItem.product_id),
+        quantity: new FormControl(invoiceItem.quantity || 1, [Validators.min(1), Validators.required]),
+        price: new FormControl(0),
+      })
+    );
+  }
+
+  createInvoice() {
+    if (this.invoiceForm.valid) {
+      this.createInvoice$.next({...this.invoiceForm.value} as Invoice);
+    }
+  }
+
+  deleteItem(i: number) {
+    this.items.removeAt(i);
+  }
+
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.newInvoiceForm.dirty && !this.flag) {
+    if (this.invoiceForm.dirty && !this.flag) {
       return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
     } else {
       return true;

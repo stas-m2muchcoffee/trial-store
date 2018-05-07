@@ -25,7 +25,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
   displayedColumns = ['invoice_id', 'customer_name', 'discount', 'total', 'actions'];
   deleteInvoiceChoiceSubscription: Subscription;
 
-  deleteInvoice$: Subject<number> = new Subject<number>();
+  deleteInvoice$: Subject<Invoice> = new Subject<Invoice>();
 
   constructor(
     private modalService: ModalService,
@@ -67,7 +67,7 @@ export class InvoicesComponent implements OnInit, OnDestroy {
       });
   }
 
-  deleteInvoice(id: number): void {
-    this.deleteInvoice$.next(id);
+  deleteInvoice(invoice: Invoice): void {
+    this.deleteInvoice$.next(invoice);
   }
 }

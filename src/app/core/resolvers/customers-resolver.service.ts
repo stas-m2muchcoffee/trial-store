@@ -16,13 +16,16 @@ export class CustomersResolverService implements Resolve<Customer[]> {
   ) {}
 
   resolve(): Observable<Customer[]> {
-    return this.customerService.isData$
-      .switchMap((isData) => {
-        if (isData) {
-          return this.customerService.customers$;
-        }
-        return this.customerService.getCustomers();
-      })
-      .take(1);
+    // return this.customerService.isData$
+    //   .switchMap((isData) => {
+    //     if (isData) {
+    //       return this.customerService.customers$;
+    //     }
+    //     return this.customerService.getCustomers();
+    //   })
+    //   .take(1);
+
+    return this.customerService.getCustomers()
+    .take(1);
   }
 }

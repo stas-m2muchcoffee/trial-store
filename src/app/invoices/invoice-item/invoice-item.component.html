@@ -8,5 +8,6 @@
     <input matInput type="number" [formControl]="quantity" min="1">
     <mat-error *ngIf="quantity?.invalid">Min quantity 1</mat-error>
   </mat-form-field>
-  <p fxFlex="25%">${{ invoicePrice | number: '1.2-2' }}</p>
+  <p fxFlex="25%">${{ price.value | number: '1.2-2' }}</p>
+  <button fxFlex="10%" mat-button color="primary" (click)="deleteInvoiceItem()">X</button>
 </div>

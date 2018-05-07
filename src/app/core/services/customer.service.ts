@@ -2,45 +2,34 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/publishReplay';
 
-import { StateManagement, StateRequests } from '../../shared/state-management';
+import { StateManagement } from '../../shared/state-management';
 
 import { Customer } from '../interfaces/customer';
-import { Action } from '../interfaces/action';
 
 @Injectable()
 export class CustomerService {
-  isData$: ConnectableObservable<boolean>;
-  stateManagement: StateManagement<Customer> = new StateManagement<Customer>();
-  customers$: ConnectableObservable<Customer[]>;
+  state: StateManagement<Customer>;
+  customers$: Observable<Customer[]>;
 
   constructor(
     private http: HttpClient
   ) {
-    this.isData$ = this.stateManagement.responseData$
-      .scan((isData: boolean, {type}: Action) => {
-        if (type === StateRequests.GetList) {
-          return true;
-        }
-      }, false)
-      .publishBehavior(false);
-    this.isData$.connect();
+    this.state = new StateManagement<Customer>();
 
     this.customers$ = Observable.combineLatest(
-      this.stateManagement.entities$,
-      this.stateManagement.collectionIds$
+      this.state.entities$,
+      this.state.collectionIds$
     )
-      .map(([entities, ids]: [{ [index: number]: Customer }, number[]]) => ids.map((id) => entities[id]))
-      .publishReplay(1);
-    this.customers$.connect();
+    .map(([entities, ids]: [{ [index: number]: Customer }, number[]]) =>
+      ids.filter((id) => entities[id]).map((id) => entities[id])
+    );
   }
 
   getCustomers(): Observable<Customer[]> {
-    this.stateManagement.getList$.next(this.http.get<Customer[]>('customers'));
+    this.state.getList$.next(this.http.get<Customer[]>('customers'));
     return this.customers$;
   }
 }
