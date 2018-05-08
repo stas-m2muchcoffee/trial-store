@@ -8,7 +8,9 @@ const routes: Routes = [
   {
     path: '',
     component: CustomersComponent,
-    resolve: { customers: CustomersResolverService },
+    resolve: {
+      customers: CustomersResolverService,
+    },
   },
 ];
 

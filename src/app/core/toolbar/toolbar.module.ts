@@ -4,8 +4,8 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material';
 import { MatChipsModule } from '@angular/material/chips';
 
-import { AppRoutingModule } from '../app-routing.module';
-import { SharedModule } from '../shared/shared.module';
+import { SharedModule } from '../../shared/shared.module';
+import { AppRoutingModule } from '../../app-routing.module';
 
 import { ToolbarComponent } from './toolbar.component';
 

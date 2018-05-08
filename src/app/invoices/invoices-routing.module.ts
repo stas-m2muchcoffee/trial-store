@@ -16,12 +16,12 @@ const routes: Routes = [
   },
   {
     path: 'new',
-    loadChildren: 'app/invoices/new-invoice/new-invoice.module#NewInvoiceModule',
+    loadChildren: 'app/invoices/invoice/invoice.module#InvoiceModule',
     data: {type: 'new'},
   },
   {
     path: 'edit/:id',
-    loadChildren: 'app/invoices/new-invoice/new-invoice.module#NewInvoiceModule',
+    loadChildren: 'app/invoices/invoice/invoice.module#InvoiceModule',
     data: {type: 'edit'},
   },
 ];

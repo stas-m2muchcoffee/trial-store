@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material';
 
-import { ToolbarModule } from '../toolbar/toolbar.module';
+import { ToolbarModule } from './toolbar/toolbar.module';
 
 import { throwIfAlreadyLoaded } from './module-import-guard';
 import { ProductService } from './services/product.service';
@@ -17,7 +17,7 @@ import { ProductsResolverService } from './resolvers/products-resolver.service';
 import { CustomersResolverService } from './resolvers/customers-resolver.service';
 import { InvoicesResolverService } from './resolvers/invoices-resolver.service';
 import { InvoiceItemsResolverService } from './resolvers/invoice-items-resolver.service';
-import { CanDeactivateNewInvoiceGuard } from './guards/can-deactivate-new-invoice.guard';
+import { InvoiceGuard } from './guards/invoice.guard';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { HttpErrorHandlerService } from './services/http-error-handler.service';
 
@@ -44,7 +44,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     InvoiceResolverService,
     InvoiceItemsResolverService,
     httpInterceptorProviders,
-    CanDeactivateNewInvoiceGuard,
+    InvoiceGuard,
     ModalService,
     HttpErrorHandlerService,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},

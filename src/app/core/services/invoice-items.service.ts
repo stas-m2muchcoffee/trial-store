@@ -6,11 +6,11 @@ import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/shareReplay';
 
-import { StateManagement } from '../../shared/state-management';
+import { StateManagement } from '../../shared/utils/state-management';
 
 import { InvoiceItem } from '../interfaces/invoice-item';
-import 'rxjs/add/operator/shareReplay';
 
 const httpOptions = {
   headers: new HttpHeaders({

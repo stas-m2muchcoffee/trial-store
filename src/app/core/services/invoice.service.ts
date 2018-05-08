@@ -3,19 +3,21 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
+import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/debounceTime';
 
-import { StateManagement } from '../../shared/state-management';
+import {StateManagement, StateRequests} from '../../shared/utils/state-management';
 
 import { Invoice } from '../interfaces/invoice';
 import { CustomerService } from './customer.service';
 import { InvoiceItemsService } from './invoice-items.service';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
+import 'rxjs/add/operator/publishBehavior';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -30,6 +32,7 @@ export class InvoiceService {
   addedInvoice$: Observable<Invoice>;
   updatedInvoice$: Observable<Invoice>;
   state: StateManagement<Invoice>;
+  isData$: ConnectableObservable<boolean>;
 
   constructor(
     private http: HttpClient,
@@ -37,6 +40,15 @@ export class InvoiceService {
     private invoiceItemsService: InvoiceItemsService,
   ) {
     this.state = new StateManagement<Invoice>();
+
+    this.isData$ = this.state.responseDataRequests$
+    .scan((isData: boolean, {type}) => {
+      if (type === StateRequests.GetList) {
+        return true;
+      }
+    }, false)
+    .publishBehavior(false);
+    this.isData$.connect();
 
     this.invoices$ = Observable.combineLatest(
       this.state.entities$,
@@ -46,7 +58,7 @@ export class InvoiceService {
       ids.filter((id) => entities[id]).map((id) => entities[id])
     )
     // add customer
-    .combineLatest(this.customerService.customers$)
+    .combineLatest(this.customerService.customers$.startWith([]))
     .map(([invoices, customers]) => {
       return invoices.map((invoice) => {
         return ({

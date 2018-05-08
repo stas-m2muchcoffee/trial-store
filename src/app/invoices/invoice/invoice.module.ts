@@ -3,26 +3,30 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
 
 import { SharedModule } from '../../shared/shared.module';
 
 import { InvoiceItemModule } from '../invoice-item/invoice-item.module';
 
-import { NewInvoiceComponent } from './new-invoice.component';
-import { NewInvoiceRoutingModule } from './new-invoice-routing.module';
+import { InvoiceComponent } from './invoice.component';
+import { InvoiceRoutingModule } from './invoice-routing.module';
 
 @NgModule({
   imports: [
     SharedModule,
-    NewInvoiceRoutingModule,
+    InvoiceRoutingModule,
     MatSelectModule,
     MatInputModule,
     MatFormFieldModule,
     MatDialogModule,
-    InvoiceItemModule
+    InvoiceItemModule,
+    MatDividerModule,
+    MatListModule,
   ],
   declarations: [
-    NewInvoiceComponent
+    InvoiceComponent
   ],
 })
-export class NewInvoiceModule { }
+export class InvoiceModule { }

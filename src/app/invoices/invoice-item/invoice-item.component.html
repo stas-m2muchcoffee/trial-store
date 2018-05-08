@@ -1,13 +1,19 @@
-<div fxLayoutGap="2%">
-  <mat-form-field fxFlex="50%">
-    <mat-select [formControl]="product_id">
-      <mat-option [value]="product?.id" *ngFor="let product of products">{{ product?.name }}</mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field fxFlex="25%">
-    <input matInput type="number" [formControl]="quantity" min="1">
-    <mat-error *ngIf="quantity?.invalid">Min quantity 1</mat-error>
-  </mat-form-field>
-  <p fxFlex="25%">${{ price.value | number: '1.2-2' }}</p>
-  <button fxFlex="10%" mat-button color="primary" (click)="deleteInvoiceItem()">X</button>
-</div>
+<mat-list fxLayoutAlign="space-between" fxLayout.xs="column">
+  <mat-list-item>
+    <mat-form-field>
+      <mat-select [formControl]="product_id">
+        <mat-option [value]="product?.id" *ngFor="let product of products">{{ product?.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-list-item>
+  <mat-list-item>
+    <mat-form-field>
+      <input matInput type="number" [formControl]="quantity" min="1">
+      <mat-error *ngIf="quantity?.invalid">Min quantity 1</mat-error>
+    </mat-form-field>
+  </mat-list-item>
+  <mat-list-item>${{ price.value | number: '1.2-2' }}</mat-list-item>
+  <mat-list-item>
+    <button mat-raised-button mat-button color="primary" (click)="deleteInvoiceItem()">X</button>
+  </mat-list-item>
+</mat-list>

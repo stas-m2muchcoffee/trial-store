@@ -1,7 +1,7 @@
 import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormArray, FormControl, FormGroup} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, FormGroupDirective, NgForm} from '@angular/forms';
 import {Validators} from '@angular/forms';
-import {MatDialog} from '@angular/material';
+import {ErrorStateMatcher, MatDialog} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {Subscription} from 'rxjs/Subscription';
@@ -30,12 +30,25 @@ import {Product} from '../../core/interfaces/product';
 import {InvoiceItem} from '../../core/interfaces/invoice-item';
 import {Invoice} from '../../core/interfaces/invoice';
 
+export class RawProductErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    const itemsCount = (form.control.get('items') as FormArray).length;
+
+    return !!(
+      control &&
+      (control.invalid || !itemsCount) &&
+      (control.dirty || control.touched || isSubmitted)
+    );
+  }
+}
+
 @Component({
-  selector: 'app-new-invoice',
-  templateUrl: './new-invoice.component.html',
-  styleUrls: ['./new-invoice.component.scss']
+  selector: 'app-invoice',
+  templateUrl: './invoice.component.html',
+  styleUrls: ['./invoice.component.scss']
 })
-export class NewInvoiceComponent implements OnInit, OnDestroy {
+export class InvoiceComponent implements OnInit, OnDestroy {
   invoiceForm: FormGroup;
   customers$: Observable<Customer[]>;
   products$: Observable<Product[]>;
@@ -48,6 +61,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   flag = false;
   invoice: Invoice;
   invoiceItems: InvoiceItem[];
+  rawProductMatcher = new RawProductErrorStateMatcher();
 
   constructor(
     private customerService: CustomerService,
@@ -99,7 +113,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
       const total = items.reduce((acc, item) => acc + item.price, 0);
       return total * (1 - discount / 100);
     })
-    .subscribe(total => {
+    .subscribe((total) => {
       this.total.setValue(total);
     });
 
@@ -153,7 +167,7 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
     this.invoiceForm = new FormGroup({
       id: new FormControl(null),
       customer_id: new FormControl(null, Validators.required),
-      items: new FormArray([], [Validators.minLength(1), Validators.required]),
+      items: new FormArray([], [Validators.required, Validators.minLength(1)]),
       discount: new FormControl(0, [Validators.min(0), Validators.max(50), Validators.required]),
       total: new FormControl(0),
     });
@@ -188,10 +202,11 @@ export class NewInvoiceComponent implements OnInit, OnDestroy {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.invoiceForm.dirty && !this.flag) {
-      return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
-    } else {
+    if (this.isEdit) {
       return true;
+    } else if ((this.invoiceForm.dirty || this.items.value.length) && !this.flag) {
+      return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
     }
+    return true;
   }
 }
