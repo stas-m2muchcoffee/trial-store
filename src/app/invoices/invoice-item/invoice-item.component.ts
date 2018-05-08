@@ -74,7 +74,7 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
 
     this.updateInvoiceItemSubscription = Observable.merge(
       this.product_id.valueChanges,
-      this.quantity.valueChanges
+      this.quantity.valueChanges,
     )
     .filter(() => this.isEdit)
     .filter(() => this.quantity.value)

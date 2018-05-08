@@ -7,6 +7,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs/Subscription';
 import {Observable} from 'rxjs/Observable';
 import {Subject} from 'rxjs/Subject';
+import {ConnectableObservable} from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/withLatestFrom';
@@ -19,6 +20,8 @@ import 'rxjs/add/operator/switchMapTo';
 import 'rxjs/add/operator/skip';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/publish';
+import 'rxjs/add/operator/publishReplay';
 
 import {CustomerService} from '../../core/services/customer.service';
 import {InvoiceService} from '../../core/services/invoice.service';
@@ -29,6 +32,9 @@ import {Customer} from '../../core/interfaces/customer';
 import {Product} from '../../core/interfaces/product';
 import {InvoiceItem} from '../../core/interfaces/invoice-item';
 import {Invoice} from '../../core/interfaces/invoice';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/first';
+import 'rxjs/add/operator/delay';
 
 export class RawProductErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -62,6 +68,8 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   invoice: Invoice;
   invoiceItems: InvoiceItem[];
   rawProductMatcher = new RawProductErrorStateMatcher();
+  openModal$: Subject<boolean>;
+  flag$: ConnectableObservable<boolean>;
 
   constructor(
     private customerService: CustomerService,
@@ -71,8 +79,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private modalService: ModalService,
     private router: Router,
-    private route: ActivatedRoute
-  ) {}
+    private route: ActivatedRoute) {}
 
   get customer_id(): FormControl {
     return this.invoiceForm.get('customer_id') as FormControl;
@@ -95,6 +102,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.openModal$ = new Subject<boolean>();
     this.createInvoice$ = new Subject<Invoice>();
 
     this.invoice = this.route.snapshot.data.invoice || null;
@@ -155,6 +163,19 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     .subscribe(() => {
       this.invoiceService.updateInvoice(this.invoiceForm.value);
     });
+
+    this.flag$ = this.openModal$
+    .switchMap(() => {
+      if (this.isEdit) {
+        return Observable.of(true);
+      } else if ((this.invoiceForm.dirty || this.items.value.length) && !this.flag) {
+        return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
+      }
+      return Observable.of(true);
+    })
+    .delay(10)
+    .publish();
+    this.flag$.connect();
   }
 
   ngOnDestroy() {
@@ -202,11 +223,13 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    if (this.isEdit) {
-      return true;
-    } else if ((this.invoiceForm.dirty || this.items.value.length) && !this.flag) {
-      return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
-    }
-    return true;
+    this.openModal$.next();
+    return this.flag$.take(1);
+    // if (this.isEdit) {
+    //   return true;
+    // } else if ((this.invoiceForm.dirty || this.items.value.length) && !this.flag) {
+    //   return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
+    // }
+    // return true;
   }
 }
