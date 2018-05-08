@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { CustomersComponent } from './customers.component';
 import { CustomersResolverService } from '../core/resolvers/customers-resolver.service';
+
+import { CustomersComponent } from './customers.component';
 
 const routes: Routes = [
   {

@@ -51,7 +51,6 @@ import { MatDialogModule } from '@angular/material/dialog';
   ]
 })
 export class CoreModule {
-
   constructor(
     @Optional() @SkipSelf() parentModule: CoreModule
   ) {
