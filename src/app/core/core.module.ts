@@ -20,6 +20,7 @@ import { InvoiceItemsResolverService } from './resolvers/invoice-items-resolver.
 import { InvoiceGuard } from './guards/invoice.guard';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { HttpErrorHandlerService } from './services/http-error-handler.service';
+import { SpinnerService } from './services/spinner.service';
 
 import { MatDialogModule } from '@angular/material/dialog';
 
@@ -48,6 +49,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     ModalService,
     HttpErrorHandlerService,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
+    SpinnerService,
   ]
 })
 export class CoreModule {
