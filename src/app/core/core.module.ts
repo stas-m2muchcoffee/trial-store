@@ -21,6 +21,7 @@ import { InvoiceGuard } from './guards/invoice.guard';
 import { InvoiceResolverService } from './resolvers/invoice-resolver.service';
 import { HttpErrorHandlerService } from './services/http-error-handler.service';
 import { SpinnerService } from './services/spinner.service';
+import { SpinnerModule } from './spinner/spinner.module';
 
 import { MatDialogModule } from '@angular/material/dialog';
 
@@ -30,9 +31,11 @@ import { MatDialogModule } from '@angular/material/dialog';
     BrowserAnimationsModule,
     HttpClientModule,
     MatDialogModule,
+    SpinnerModule,
   ],
   exports: [
     ToolbarModule,
+    SpinnerModule,
   ],
   providers: [
     ProductService,
@@ -50,7 +53,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     HttpErrorHandlerService,
     {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
     SpinnerService,
-  ]
+  ],
 })
 export class CoreModule {
   constructor(

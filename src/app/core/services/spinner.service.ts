@@ -14,7 +14,6 @@ export class SpinnerService {
     this.showSpinnerSub$ = new Subject<boolean>();
 
     this.showSpinner$ = this.showSpinnerSub$
-        .map(res => res)
         .publish();
     this.showSpinner$.connect();
   }
