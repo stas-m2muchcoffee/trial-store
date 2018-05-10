@@ -23,14 +23,11 @@ import { HttpErrorHandlerService } from './services/http-error-handler.service';
 import { SpinnerService } from './services/spinner.service';
 import { SpinnerModule } from './spinner/spinner.module';
 
-import { MatDialogModule } from '@angular/material/dialog';
-
 @NgModule({
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MatDialogModule,
     SpinnerModule,
   ],
   exports: [
@@ -51,7 +48,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     InvoiceGuard,
     ModalService,
     HttpErrorHandlerService,
-    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: false}},
+    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}},
     SpinnerService,
   ],
 })

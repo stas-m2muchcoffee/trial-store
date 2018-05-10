@@ -1,5 +1,4 @@
 import { NgModule } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
 
 import { SharedModule } from '../shared/shared.module';
 
@@ -10,7 +9,6 @@ import { InvoicesRoutingModule } from './invoices-routing.module';
   imports: [
     SharedModule,
     InvoicesRoutingModule,
-    MatDialogModule,
   ],
   declarations: [
     InvoicesComponent,

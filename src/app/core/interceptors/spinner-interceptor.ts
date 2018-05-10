@@ -2,17 +2,17 @@ import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent } from '@angular/c
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/finally';
 
 import { SpinnerService } from '../services/spinner.service';
-import 'rxjs/add/operator/finally';
 
 @Injectable()
 export class SpinnerInterceptor implements HttpInterceptor {
-    constructor(private spinnerService: SpinnerService) {}
+  constructor(private spinnerService: SpinnerService) {}
 
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        this.spinnerService.start();
-        return next.handle(req)
-            .finally(() => this.spinnerService.stop());
-    }
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    this.spinnerService.start();
+    return next.handle(req)
+      .finally(() => this.spinnerService.stop());
+  }
 }

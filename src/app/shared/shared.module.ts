@@ -4,6 +4,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule, MatTableModule } from '@angular/material';
+import { MatDialogModule } from '@angular/material';
 
 @NgModule({
   exports: [
@@ -12,7 +13,8 @@ import { MatButtonModule, MatTableModule } from '@angular/material';
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatDialogModule,
   ]
 })
 export class SharedModule { }
