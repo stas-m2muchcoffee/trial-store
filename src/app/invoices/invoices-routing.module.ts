@@ -15,9 +15,9 @@ const routes: Routes = [
     },
   },
   {
-    path: 'new',
+    path: 'create',
     loadChildren: 'app/invoices/invoice/invoice.module#InvoiceModule',
-    data: {type: 'new'},
+    data: {type: 'create'},
   },
   {
     path: 'edit/:id',
