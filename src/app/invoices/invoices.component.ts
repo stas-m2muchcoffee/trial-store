@@ -8,6 +8,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/mapTo';
 import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/operator/switchMap';
 
 import { InvoiceService } from '../core/services/invoice.service';
 import { ModalService } from '../core/services/modal.service';
@@ -39,8 +40,9 @@ export class InvoicesComponent implements OnInit, OnDestroy {
         .filter((choice) => choice)
         .mapTo(id);
     })
-    .subscribe((id) => {
-      this.invoiceService.deleteInvoice(id);
+    .switchMap((id) => this.invoiceService.deleteInvoice(id))
+    .subscribe((invoice) => {
+      this.modalService.confirmModal(`Invoice number ${invoice.id} was deleted`, false);
     });
   }
 
