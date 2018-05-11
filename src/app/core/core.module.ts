@@ -2,7 +2,6 @@ import { NgModule, Optional, SkipSelf } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { MAT_DIALOG_DEFAULT_OPTIONS } from '@angular/material';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
 
@@ -48,7 +47,6 @@ import { SpinnerModule } from './spinner/spinner.module';
     InvoiceGuard,
     ModalService,
     HttpErrorHandlerService,
-    {provide: MAT_DIALOG_DEFAULT_OPTIONS, useValue: {hasBackdrop: true}},
     SpinnerService,
   ],
 })

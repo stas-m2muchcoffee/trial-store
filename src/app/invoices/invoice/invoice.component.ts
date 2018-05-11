@@ -1,13 +1,13 @@
-import {Component, OnInit, OnDestroy} from '@angular/core';
-import {FormArray, FormControl, FormGroup, FormGroupDirective, NgForm} from '@angular/forms';
-import {Validators} from '@angular/forms';
-import {ErrorStateMatcher, MatDialog} from '@angular/material';
-import {ActivatedRoute, Router} from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormArray, FormControl, FormGroup, FormGroupDirective, NgForm } from '@angular/forms';
+import { Validators } from '@angular/forms';
+import { ErrorStateMatcher, MatDialog } from '@angular/material';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import {Subscription} from 'rxjs/Subscription';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
-import {ConnectableObservable} from 'rxjs/observable/ConnectableObservable';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/observable/combineLatest';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/observable/of';
@@ -22,15 +22,15 @@ import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/operator/delay';
 
-import {CustomerService} from '../../core/services/customer.service';
-import {InvoiceService} from '../../core/services/invoice.service';
-import {ProductService} from '../../core/services/product.service';
-import {InvoiceItemsService} from '../../core/services/invoice-items.service';
-import {ModalService} from '../../core/services/modal.service';
-import {Customer} from '../../core/interfaces/customer';
-import {Product} from '../../core/interfaces/product';
-import {InvoiceItem} from '../../core/interfaces/invoice-item';
-import {Invoice} from '../../core/interfaces/invoice';
+import { CustomerService } from '../../core/services/customer.service';
+import { InvoiceService } from '../../core/services/invoice.service';
+import { ProductService } from '../../core/services/product.service';
+import { InvoiceItemsService } from '../../core/services/invoice-items.service';
+import { ModalService } from '../../core/services/modal.service';
+import { Customer } from '../../core/interfaces/customer';
+import { Product } from '../../core/interfaces/product';
+import { InvoiceItem } from '../../core/interfaces/invoice-item';
+import { Invoice } from '../../core/interfaces/invoice';
 
 export class RawProductErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -219,8 +219,8 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   }
 
   createInvoice() {
-    this.openModalSub$.complete();
     if (this.invoiceForm.valid) {
+      this.openModalSub$.complete();
       this.createInvoice$.next({...this.invoiceForm.value} as Invoice);
     }
   }

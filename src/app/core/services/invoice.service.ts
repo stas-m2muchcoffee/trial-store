@@ -9,15 +9,15 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/share';
+import 'rxjs/add/operator/shareReplay';
+import 'rxjs/add/operator/publishBehavior';
 
-import {StateManagement, StateRequests} from '../../shared/utils/state-management';
+import { StateManagement, StateRequests } from '../../shared/utils/state-management';
 
 import { Invoice } from '../interfaces/invoice';
 import { CustomerService } from './customer.service';
 import { InvoiceItemsService } from './invoice-items.service';
-import 'rxjs/add/operator/share';
-import 'rxjs/add/operator/shareReplay';
-import 'rxjs/add/operator/publishBehavior';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -58,12 +58,12 @@ export class InvoiceService {
       ids.filter((id) => entities[id]).map((id) => entities[id])
     )
     // add customer
-    .combineLatest(this.customerService.customers$.startWith([]))
-    .map(([invoices, customers]) => {
+    .combineLatest(this.customerService.state.entities$.startWith({}))
+    .map(([invoices, entitiesCustomers]) => {
       return invoices.map((invoice) => {
         return ({
           ...invoice,
-          customer: customers.find((customer) => customer.id === invoice.customer_id)
+          customer: entitiesCustomers[invoice.customer_id],
         });
       });
     })
@@ -85,11 +85,11 @@ export class InvoiceService {
     )
     .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id])
     // add customer
-    .combineLatest(this.customerService.customers$)
-    .map(([invoice, customers]) => {
+    .combineLatest(this.customerService.state.entities$.startWith({}))
+    .map(([invoice, entitiesCustomers]) => {
       return ({
         ...invoice,
-        customer: customers.find((customer) => customer.id === invoice.customer_id)
+        customer: entitiesCustomers[invoice.customer_id],
       });
     })
     // add invoices
@@ -102,19 +102,22 @@ export class InvoiceService {
     })
     .share();
 
-    this.addedInvoice$ = Observable.combineLatest(
-      this.state.entities$,
-      this.state.addEntityId$
-    )
-    .debounceTime(10)
-    .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id]);
+    this.addedInvoice$ = this.getEntity('add');
+    this.updatedInvoice$ = this.getEntity('update');
+  }
 
-    this.updatedInvoice$ = Observable.combineLatest(
+  getEntity(typeRequest: string) {
+    let pathId;
+    switch (typeRequest) {
+      case 'update': pathId = this.state.updateEntityId$; break;
+      case 'add': pathId = this.state.addEntityId$; break;
+    }
+    return Observable.combineLatest(
       this.state.entities$,
-      this.state.updateEntityId$
+      pathId
     )
     .debounceTime(10)
-    .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id]);
+    .map(([entities, id]) => entities[id]);
   }
 
   getInvoices(): Observable<Invoice[]> {

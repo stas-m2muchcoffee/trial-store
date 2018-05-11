@@ -9,7 +9,6 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/let';
 import 'rxjs/add/operator/share';
 
-
 export enum StateRequests {
   Get,
   GetList,
@@ -17,7 +16,6 @@ export enum StateRequests {
   Update,
   Remove,
 }
-
 
 export class StateManagement<T> {
   add$: Subject<Observable<T>> = new Subject();
