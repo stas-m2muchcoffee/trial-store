@@ -63,7 +63,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   invoice: Invoice;
   invoiceItems: InvoiceItem[];
   rawProductMatcher = new RawProductErrorStateMatcher();
-  navigationPermissionSub$: Subject<boolean>;
+  onCanDeactivate$: Subject<boolean>;
   navigationPermission$: ConnectableObservable<boolean>;
   createInvoiceRequest$: Observable<Invoice>;
   isSuccessfulResponse$: Observable<boolean>;
@@ -101,7 +101,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.navigationPermissionSub$ = new Subject<boolean>();
+    this.onCanDeactivate$ = new Subject<boolean>();
     this.createInvoice$ = new Subject<Invoice>();
 
     this.invoice = this.route.snapshot.data.invoice || null;
@@ -145,7 +145,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     })
     .subscribe(
       (invoiceItem) => {
-        this.items.push(this.addItem(invoiceItem));
+        this.items.push(this.createItemFormGroup(invoiceItem));
         this.addInvoiceItem.reset(null, {emitEvent: false});
       }
     );
@@ -169,7 +169,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
     this.navigationPermission$ = Observable.merge(
       this.isSuccessfulResponse$,
-      this.navigationPermissionSub$,
+      this.onCanDeactivate$,
     )
     .switchMap((isSuccessfulResponse) => {
       if ((this.invoiceForm.touched || this.items.value.length) && !(this.isEdit || isSuccessfulResponse)) {
@@ -199,13 +199,13 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     });
     if (this.isEdit) {
       this.invoiceForm.reset(this.invoice);
-      const itemsFormGroup = this.invoiceItems.map((invoiceItem) => this.addItem(invoiceItem));
+      const itemsFormGroup = this.invoiceItems.map((invoiceItem) => this.createItemFormGroup(invoiceItem));
       const itemsFormArray = new FormArray(itemsFormGroup);
       this.invoiceForm.setControl('items', itemsFormArray);
     }
   }
 
-  addItem(invoiceItem: InvoiceItem) {
+  createItemFormGroup(invoiceItem: InvoiceItem) {
     return new FormGroup({
       id: new FormControl(invoiceItem.id),
       invoice_id: new FormControl(invoiceItem.invoice_id),
@@ -217,7 +217,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
   createInvoice() {
     if (this.invoiceForm.valid) {
-      this.navigationPermissionSub$.complete();
+      this.onCanDeactivate$.complete();
       this.createInvoice$.next({...this.invoiceForm.value} as Invoice);
     }
   }
@@ -227,7 +227,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    this.navigationPermissionSub$.next();
+    this.onCanDeactivate$.next();
     return this.navigationPermission$;
   }
 }
