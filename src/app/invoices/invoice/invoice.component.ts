@@ -145,7 +145,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     })
     .subscribe(
       (invoiceItem) => {
-        this.addItem(invoiceItem);
+        this.items.push(this.addItem(invoiceItem));
         this.addInvoiceItem.reset(null, {emitEvent: false});
       }
     );
@@ -199,22 +199,20 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     });
     if (this.isEdit) {
       this.invoiceForm.reset(this.invoice);
-      this.invoiceItems.forEach((invoiceItem) => {
-        this.addItem(invoiceItem);
-      });
+      const itemsFormGroup = this.invoiceItems.map((invoiceItem) => this.addItem(invoiceItem));
+      const itemsFormArray = new FormArray(itemsFormGroup);
+      this.invoiceForm.setControl('items', itemsFormArray);
     }
   }
 
   addItem(invoiceItem: InvoiceItem) {
-    this.items.push(
-      new FormGroup({
-        id: new FormControl(invoiceItem.id),
-        invoice_id: new FormControl(invoiceItem.invoice_id),
-        product_id: new FormControl(invoiceItem.product_id),
-        quantity: new FormControl(invoiceItem.quantity || 1, [Validators.min(1), Validators.required]),
-        price: new FormControl(0),
-      })
-    );
+    return new FormGroup({
+      id: new FormControl(invoiceItem.id),
+      invoice_id: new FormControl(invoiceItem.invoice_id),
+      product_id: new FormControl(invoiceItem.product_id),
+      quantity: new FormControl(invoiceItem.quantity || 1, [Validators.min(1), Validators.required]),
+      price: new FormControl(0),
+    });
   }
 
   createInvoice() {
