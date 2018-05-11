@@ -11,18 +11,24 @@ const routes: Routes = [
     component: InvoicesComponent,
     resolve: {
       customers: CustomersResolverService,
-      invoices: InvoicesResolverService
+      invoices: InvoicesResolverService,
     },
-  },
-  {
-    path: 'create',
-    loadChildren: 'app/invoices/invoice/invoice.module#InvoiceModule',
-    data: {type: 'create'},
-  },
-  {
-    path: 'edit/:id',
-    loadChildren: 'app/invoices/invoice/invoice.module#InvoiceModule',
-    data: {type: 'edit'},
+    children: [
+      {
+        path: '',
+        loadChildren: 'app/invoices/invoice-list/invoice-list.module#InvoiceListModule',
+      },
+      {
+        path: 'create',
+        loadChildren: 'app/invoices/invoice/invoice.module#InvoiceModule',
+        data: {type: 'create'},
+      },
+      {
+        path: 'edit/:id',
+        loadChildren: 'app/invoices/invoice/invoice.module#InvoiceModule',
+        data: {type: 'edit'},
+      },
+    ]
   },
 ];
 
