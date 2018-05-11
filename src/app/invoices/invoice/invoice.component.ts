@@ -65,7 +65,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   rawProductMatcher = new RawProductErrorStateMatcher();
   openModalSub$: Subject<boolean>;
   navigationPermission$: ConnectableObservable<boolean>;
-  createInvoiceRequest$: ConnectableObservable<Invoice>;
+  createInvoiceRequest$: Observable<Invoice>;
   isSuccessfulResponse$: Observable<boolean>;
 
   constructor(
@@ -126,8 +126,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
     this.createInvoiceRequest$ = this.createInvoice$
     .mergeMap((invoice) => this.invoiceService.createInvoice(invoice))
-    .publishReplay(1);
-    this.createInvoiceRequest$.connect();
+    .shareReplay(1);
 
     this.createInvoiceSubscription = this.createInvoiceRequest$
     .subscribe(() => this.router.navigate(['./invoices']));
