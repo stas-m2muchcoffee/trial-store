@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { MatSelectModule } from '@angular/material/select';
-import { MatInputModule } from '@angular/material';
+import { MatIconModule, MatInputModule } from '@angular/material';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
@@ -16,7 +16,8 @@ import { InvoiceItemComponent } from './invoice-item.component';
     MatInputModule,
     MatFormFieldModule,
     MatDividerModule,
-    MatListModule
+    MatListModule,
+    MatIconModule,
   ],
   declarations: [
     InvoiceItemComponent

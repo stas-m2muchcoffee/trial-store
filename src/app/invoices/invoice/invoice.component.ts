@@ -76,7 +76,9 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private modalService: ModalService,
     private router: Router,
-    private route: ActivatedRoute) {}
+    private route: ActivatedRoute
+  ) {
+  }
 
   get customer_id(): FormControl {
     return this.invoiceForm.get('customer_id') as FormControl;
@@ -171,9 +173,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
       this.openModalSub$,
     )
     .switchMap((isSuccessfulResponse) => {
-      if (isSuccessfulResponse || this.isEdit) {
-        return Observable.of(true);
-      } else if ((this.invoiceForm.touched || this.items.value.length)) {
+      if ((this.invoiceForm.touched || this.items.value.length) && !(this.isEdit && isSuccessfulResponse)) {
         return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
       }
       return Observable.of(true);
@@ -200,7 +200,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     });
     if (this.isEdit) {
       this.invoiceForm.reset(this.invoice);
-      this.invoiceItems.map((invoiceItem) => {
+      this.invoiceItems.forEach((invoiceItem) => {
         this.addItem(invoiceItem);
       });
     }

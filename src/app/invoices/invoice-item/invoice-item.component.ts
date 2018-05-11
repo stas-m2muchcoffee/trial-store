@@ -53,12 +53,9 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
     this.deleteInvoiceItem$ = new Subject<InvoiceItem>();
 
     this.deleteInvoiceItemSubscription = this.deleteInvoiceItem$
-    .switchMap((item) => {
-      if (this.isEdit) {
-        return this.invoiceItemsService.deleteInvoiceItem(item);
-      }
-      return Observable.of(item);
-    })
+    .switchMap((item) =>
+      this.isEdit ? this.invoiceItemsService.deleteInvoiceItem(item) : Observable.of(item)
+    )
     .subscribe(() => this.delete.emit());
 
     this.price$ = Observable.merge(
@@ -76,8 +73,7 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
       this.product_id.valueChanges,
       this.quantity.valueChanges,
     )
-    .filter(() => this.isEdit)
-    .filter(() => this.quantity.value)
+    .filter(() => this.isEdit && this.quantity.value > 0)
     .debounceTime(500)
     .distinctUntilChanged()
     .switchMap(() => this.invoiceItemsService.updateInvoiceItem(this.item.value))
