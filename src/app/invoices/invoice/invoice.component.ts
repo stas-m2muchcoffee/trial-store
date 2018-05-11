@@ -57,13 +57,13 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   updateInvoiceSubscription: Subscription;
   setTotalSubscription: Subscription;
   createInvoiceSubscription: Subscription;
-  openModalSubscription: Subscription;
+  navigationPermissionSubscription: Subscription;
   addInvoiceItem = new FormControl(null);
   createInvoice$: Subject<Invoice>;
   invoice: Invoice;
   invoiceItems: InvoiceItem[];
   rawProductMatcher = new RawProductErrorStateMatcher();
-  openModalSub$: Subject<boolean>;
+  navigationPermissionSub$: Subject<boolean>;
   navigationPermission$: ConnectableObservable<boolean>;
   createInvoiceRequest$: Observable<Invoice>;
   isSuccessfulResponse$: Observable<boolean>;
@@ -101,7 +101,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.openModalSub$ = new Subject<boolean>();
+    this.navigationPermissionSub$ = new Subject<boolean>();
     this.createInvoice$ = new Subject<Invoice>();
 
     this.invoice = this.route.snapshot.data.invoice || null;
@@ -169,7 +169,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
     this.navigationPermission$ = Observable.merge(
       this.isSuccessfulResponse$,
-      this.openModalSub$,
+      this.navigationPermissionSub$,
     )
     .switchMap((isSuccessfulResponse) => {
       if ((this.invoiceForm.touched || this.items.value.length) && !(this.isEdit || isSuccessfulResponse)) {
@@ -179,14 +179,14 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     })
     .delay(10)
     .publish();
-    this.openModalSubscription = this.navigationPermission$.connect();
+    this.navigationPermissionSubscription = this.navigationPermission$.connect();
   }
 
   ngOnDestroy() {
     this.addInvoiceItemSubscription.unsubscribe();
     this.setTotalSubscription.unsubscribe();
     this.createInvoiceSubscription.unsubscribe();
-    this.openModalSubscription.unsubscribe();
+    this.navigationPermissionSubscription.unsubscribe();
   }
 
   createForm() {
@@ -219,7 +219,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
 
   createInvoice() {
     if (this.invoiceForm.valid) {
-      this.openModalSub$.complete();
+      this.navigationPermissionSub$.complete();
       this.createInvoice$.next({...this.invoiceForm.value} as Invoice);
     }
   }
@@ -229,7 +229,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    this.openModalSub$.next();
+    this.navigationPermissionSub$.next();
     return this.navigationPermission$;
   }
 }
