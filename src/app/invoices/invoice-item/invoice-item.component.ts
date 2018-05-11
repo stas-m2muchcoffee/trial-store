@@ -35,7 +35,7 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
   @Input() item;
   @Input() products;
   @Input() isEdit;
-  @Output() delete = new EventEmitter();
+  @Output() deleteInvoice = new EventEmitter();
 
   get product_id(): FormControl {
     return this.item.get('product_id') as FormControl;
@@ -56,7 +56,7 @@ export class InvoiceItemComponent implements OnInit, OnDestroy {
     .switchMap((item) =>
       this.isEdit ? this.invoiceItemsService.deleteInvoiceItem(item) : Observable.of(item)
     )
-    .subscribe(() => this.delete.emit());
+    .subscribe(() => this.deleteInvoice.emit());
 
     this.price$ = Observable.merge(
       this.product_id.valueChanges.startWith(this.product_id.value),

@@ -1,5 +1,4 @@
 <div class="container">
-
   <form [formGroup]="invoiceForm" #form="ngForm" fxLayout="column" fxLayoutGap="5%">
     <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutGap="5%">
       <div fxFlex="80%">
@@ -24,7 +23,7 @@
                 [item] = "item"
                 [products] = "products$ | async"
                 [isEdit]="isEdit"
-                (delete)="deleteItem(i)"
+                (deleteInvoice)="deleteItem(i)"
               ></app-invoice-item>
             </mat-list-item>
             <mat-divider></mat-divider>
@@ -61,5 +60,4 @@
     </div>
     <button mat-raised-button color="primary" *ngIf="!isEdit" (click)="createInvoice()">Create Invoice</button>
   </form>
-
 </div>

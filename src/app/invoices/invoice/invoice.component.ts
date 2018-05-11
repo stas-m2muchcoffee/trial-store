@@ -173,7 +173,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
       this.openModalSub$,
     )
     .switchMap((isSuccessfulResponse) => {
-      if ((this.invoiceForm.touched || this.items.value.length) && !(this.isEdit && isSuccessfulResponse)) {
+      if ((this.invoiceForm.touched || this.items.value.length) && !(this.isEdit || isSuccessfulResponse)) {
         return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
       }
       return Observable.of(true);
