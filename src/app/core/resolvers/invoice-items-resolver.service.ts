@@ -3,10 +3,10 @@ import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/switchMapTo';
 
 import { InvoiceItemsService } from '../services/invoice-items.service';
 import { InvoiceItem } from '../interfaces/invoice-item';
-import 'rxjs/add/operator/switchMapTo';
 
 @Injectable()
 export class InvoiceItemsResolverService implements Resolve<InvoiceItem[] | boolean> {
