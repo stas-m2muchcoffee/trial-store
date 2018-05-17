@@ -2,16 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/publishBehavior';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/withLatestFrom';
+import 'rxjs/add/operator/map';
 
 import { Store } from '@ngrx/store';
 
 import { AppState } from '../../ngrx/app-state/app-state';
-import * as ProductsActions from '../../ngrx/products/actions';
-import * as ProductsGetterState from '../../ngrx/products/states/products-getter.state';
+import * as productsActions from '../../ngrx/products/actions';
+import * as productsGetterState from '../../ngrx/products/states/products-getter.state';
 
 import { Product } from '../interfaces/product';
 
@@ -20,19 +19,18 @@ export class ProductService {
 
   products$: Observable<Product[]>;
 
-  isData$: ConnectableObservable<boolean>;
-  isSuccessfulRequest$: Subject<boolean> = new Subject<boolean>();
+  isData$: Observable<boolean>;
 
   constructor(
     private http: HttpClient,
     private store: Store<AppState>,
   ) {
-    this.isData$ = this.isSuccessfulRequest$
-    .publishBehavior(false);
-    this.isData$.connect();
+    this.isData$ = this.store.select(productsGetterState.getIsLoadedProducts);
 
-    this.products$ = this.store.select(ProductsGetterState.getProducts)
-    .filter(products => !!products.length);
+    this.products$ = this.store.select(productsGetterState.getProducts)
+    .withLatestFrom(this.isData$)
+    .filter(([products , isData]) => isData)
+    .map(([products, isData]) => products);
   }
 
   getProducts(): Observable<Product[]> {
@@ -40,7 +38,7 @@ export class ProductService {
   }
 
   dispatchGetListProductAction(): Observable<Product[]> {
-    this.store.dispatch(new ProductsActions.GetListProductAction);
+    this.store.dispatch(new productsActions.GetListProductAction);
     return this.products$;
   }
 }
