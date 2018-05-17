@@ -3,6 +3,12 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
+import { StoreModule } from '@ngrx/store';
+import { EffectsModule } from '@ngrx/effects';
+
+import { productReducer } from '../ngrx/products/reducers';
+import { ProductEffects } from '../ngrx/products/effects';
+
 import { ToolbarModule } from './toolbar/toolbar.module';
 
 import { throwIfAlreadyLoaded } from './module-import-guard';
@@ -28,6 +34,12 @@ import { SpinnerModule } from './spinner/spinner.module';
     BrowserAnimationsModule,
     HttpClientModule,
     SpinnerModule,
+    StoreModule.forRoot({
+      products: productReducer,
+    }),
+    EffectsModule.forRoot([
+      ProductEffects
+    ]),
   ],
   exports: [
     ToolbarModule,
