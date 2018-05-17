@@ -10,8 +10,8 @@ import 'rxjs/add/operator/filter';
 import { Store } from '@ngrx/store';
 
 import { AppState } from '../../ngrx/app-state/app-state';
-import * as ProductsActions from '../../ngrx/products/actions';
-import * as ProductsGetterState from '../../ngrx/products/states/products-getter.state';
+import * as productsActions from '../../ngrx/products/actions';
+import * as productsGetterState from '../../ngrx/products/states/products-getter.state';
 
 import { Product } from '../interfaces/product';
 
@@ -31,7 +31,7 @@ export class ProductService {
     .publishBehavior(false);
     this.isData$.connect();
 
-    this.products$ = this.store.select(ProductsGetterState.getProducts)
+    this.products$ = this.store.select(productsGetterState.getProducts)
     .filter(products => !!products.length);
   }
 
@@ -40,7 +40,7 @@ export class ProductService {
   }
 
   dispatchGetListProductAction(): Observable<Product[]> {
-    this.store.dispatch(new ProductsActions.GetListProductAction);
+    this.store.dispatch(new productsActions.GetListProductAction);
     return this.products$;
   }
 }
