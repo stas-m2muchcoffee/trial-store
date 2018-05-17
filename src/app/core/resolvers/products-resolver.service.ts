@@ -7,12 +7,13 @@ import 'rxjs/add/operator/switchMap';
 
 import { ProductService } from '../services/product.service';
 import { Product } from '../interfaces/product';
+import 'rxjs/add/operator/do';
 
 @Injectable()
 export class ProductsResolverService implements Resolve<Product[]> {
 
   constructor(
-    private productService: ProductService
+    private productService: ProductService,
   ) {}
 
   resolve(): Observable<Product[]> {
@@ -21,7 +22,7 @@ export class ProductsResolverService implements Resolve<Product[]> {
       if (isData) {
         return this.productService.products$;
       }
-      return this.productService.getProducts();
+      return this.productService.dispatchGetListProductAction();
     })
     .take(1);
   }
