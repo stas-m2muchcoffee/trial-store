@@ -16,9 +16,11 @@ export function productReducer(
         ...state,
         entities,
         collectionIds,
+        isLoadedProducts: true,
       };
     }
-    default:
+    default: {
       return state;
+    }
   }
 }

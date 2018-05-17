@@ -20,10 +20,9 @@ export class ProductEffects {
   .switchMap(() =>
     this.productService
     .getProducts()
-    .map((products) => {
-      this.productService.isSuccessfulRequest$.next(true);
-      return new ProductActions.GetListProductSuccessfulAction(products);
-    })
+    .map((products) =>
+      new ProductActions.GetListProductSuccessfulAction(products)
+    )
   );
 
   constructor(
