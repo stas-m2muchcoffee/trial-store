@@ -3,47 +3,44 @@ import { HttpClient } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
-import 'rxjs/add/operator/publishReplay';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/publishBehavior';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/observable/combineLatest';
-import 'rxjs/add/operator/scan';
+import 'rxjs/add/operator/filter';
 
-import { StateManagement, StateRequests } from '../../shared/utils/state-management';
+import { Store } from '@ngrx/store';
+
+import { AppState } from '../../ngrx/app-state/app-state';
+import * as ProductsActions from '../../ngrx/products/actions';
+import * as ProductsGetterState from '../../ngrx/products/states/products-getter.state';
 
 import { Product } from '../interfaces/product';
 
 @Injectable()
 export class ProductService {
+
   products$: Observable<Product[]>;
-  state: StateManagement<Product>;
+
   isData$: ConnectableObservable<boolean>;
+  isSuccessfulRequest$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private store: Store<AppState>,
   ) {
-    this.state = new StateManagement<Product>();
-
-    this.isData$ = this.state.responseDataRequests$
-    .scan((isData: boolean, {type}) => {
-      if (type === StateRequests.GetList) {
-        return true;
-      }
-    }, false)
+    this.isData$ = this.isSuccessfulRequest$
     .publishBehavior(false);
     this.isData$.connect();
 
-    this.products$ = Observable.combineLatest(
-      this.state.entities$,
-      this.state.collectionIds$
-    )
-      .map(([entities, ids]: [{ [index: number]: Product }, number[]]) =>
-        ids.filter((id) => entities[id]).map(id => entities[id])
-      );
+    this.products$ = this.store.select(ProductsGetterState.getProducts)
+    .filter(products => !!products.length);
   }
 
   getProducts(): Observable<Product[]> {
-    this.state.getList$.next(this.http.get<Product[]>('products'));
+    return this.http.get<Product[]>('products');
+  }
+
+  dispatchGetListProductAction(): Observable<Product[]> {
+    this.store.dispatch(new ProductsActions.GetListProductAction);
     return this.products$;
   }
 }
