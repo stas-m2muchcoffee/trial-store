@@ -3,17 +3,21 @@ import { ProductsState, initialState } from '../states';
 
 export function productReducer(
   state: ProductsState = initialState,
-  action,
+  {type, payload}: ProductActions.Actions,
 ): ProductsState {
-  switch (action.type) {
-    case ProductActions.ActionTypes.GET_LIST_SUCCESSFUL:
+  switch (type) {
+    case ProductActions.ActionTypes.GET_LIST_SUCCESSFUL: {
+      const entities = payload.reduce((accEntities, currentProduct) =>
+          ({...accEntities, [currentProduct.id]: currentProduct}),
+        {}
+      );
+      const collectionIds = payload.map(product => product.id);
       return {
         ...state,
-        entities: action.payload.reduce((entities, currentProduct) => {
-          return { ...entities, [currentProduct.id]: currentProduct}; }, {}),
-        collectionIds: action.payload.map(product => product.id),
+        entities,
+        collectionIds,
       };
-
+    }
     default:
       return state;
   }
