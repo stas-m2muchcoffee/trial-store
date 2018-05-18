@@ -16,12 +16,6 @@ export const getProductsCollectionIds = createSelector(
   (state: ProductsState) => state.collectionIds,
 );
 
-export const getIsLoadedProducts = createSelector(
-  getProductsState,
-  (state: ProductsState) => state.isLoadedProducts,
-);
-
-
 export const getProducts = createSelector(
   getProductsEntities,
   getProductsCollectionIds,

@@ -7,26 +7,21 @@ import 'rxjs/add/operator/map';
 import { Action } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 
-import { ProductService } from '../../../core/services/product.service';
-
 import * as ProductActions from '../actions';
+import * as ProductsRequestsActions from '../../products-requests/actions';
+import 'rxjs/add/operator/filter';
 
 @Injectable()
-export class ProductEffects {
+export class ProductsEffects {
 
   @Effect()
   products$: Observable<Action> = this.actions$
   .ofType(ProductActions.ActionTypes.GET_LIST)
-  .switchMap(() =>
-    this.productService
-    .getProducts()
-    .map((products) =>
-      new ProductActions.GetListProductSuccessfulAction(products)
-    )
+  .map(() =>
+    new ProductsRequestsActions.GetListProductsAction
   );
 
   constructor(
     private actions$: Actions,
-    private productService: ProductService,
   ) {}
 }

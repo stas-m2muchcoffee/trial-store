@@ -1,7 +1,7 @@
 import * as ProductActions from '../actions/products-actions';
 import { ProductsState, initialState } from '../states';
 
-export function productReducer(
+export function productsReducer(
   state: ProductsState = initialState,
   {type, payload}: ProductActions.Actions,
 ): ProductsState {
@@ -16,7 +16,6 @@ export function productReducer(
         ...state,
         entities,
         collectionIds,
-        isLoadedProducts: true,
       };
     }
     default: {
