@@ -7,9 +7,11 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
 import { productsReducer } from '../ngrx/products/reducers';
+import { requestsReducer } from '../ngrx/requests/reducers';
 import { productsRequestsReducer } from '../ngrx/requests/nested-states/products/reducers';
 import { ProductsEffects } from '../ngrx/products/effects';
 import { ProductsRequestsEffects } from '../ngrx/requests/nested-states/products/effects';
+import { AppReducer, reducers } from '../ngrx/app-state/app-state';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
 
@@ -36,10 +38,7 @@ import { SpinnerModule } from './spinner/spinner.module';
     BrowserAnimationsModule,
     HttpClientModule,
     SpinnerModule,
-    StoreModule.forRoot({
-      products: productsReducer,
-      productsRequests: productsRequestsReducer,
-    }),
+    StoreModule.forRoot(reducers),
     EffectsModule.forRoot([
       ProductsEffects,
       ProductsRequestsEffects,

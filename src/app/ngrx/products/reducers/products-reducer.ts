@@ -1,10 +1,10 @@
 import * as ProductActions from '../actions/products-actions';
-import { ProductsState, initialState } from '../states';
+import { IProductsState, initialState } from '../states';
 
 export function productsReducer(
-  state: ProductsState = initialState,
+  state: IProductsState = initialState,
   {type, payload}: ProductActions.Actions,
-): ProductsState {
+): IProductsState {
   switch (type) {
     case ProductActions.ActionTypes.GET_LIST_SUCCESSFUL: {
       const entities = payload.reduce((accEntities, currentProduct) =>

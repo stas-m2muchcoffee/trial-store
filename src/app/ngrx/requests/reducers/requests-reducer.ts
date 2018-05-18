@@ -1,8 +1,6 @@
 import { IRequestsState, requestsInitialState } from '../states';
 
-import {
-  productsRequestsReducer,
-} from './index';
+import { productsRequestsReducer } from '../nested-states/products/reducers';
 
 export function requestsReducer(
   state = requestsInitialState,

@@ -2,18 +2,18 @@ import { createSelector } from '@ngrx/store';
 
 import { AppState } from '../../app-state/app-state';
 
-import { ProductsState } from './';
+import { IProductsState } from './';
 
 const getProductsState = (state: AppState) => state.products;
 
 export const getProductsEntities = createSelector(
   getProductsState,
-  (state: ProductsState) => state.entities,
+  (state: IProductsState) => state.entities,
 );
 
 export const getProductsCollectionIds = createSelector(
   getProductsState,
-  (state: ProductsState) => state.collectionIds,
+  (state: IProductsState) => state.collectionIds,
 );
 
 export const getProducts = createSelector(

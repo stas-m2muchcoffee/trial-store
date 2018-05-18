@@ -1,7 +1,18 @@
-import { ProductsState } from '../products/states';
-import { IProductsRequestsState } from '../requests/nested-states/products/states';
+import { combineReducers } from '@ngrx/store';
+
+import { IProductsState } from '../products/states';
+import { productsReducer } from '../products/reducers';
+import { IRequestsNestedState } from '../requests/states';
+import { requestsReducer } from '../requests/reducers';
 
 export interface AppState {
-  readonly products: ProductsState;
-  readonly productsRequests: IProductsRequestsState;
+  readonly products: IProductsState;
+  readonly requests: IRequestsNestedState;
 }
+
+export const reducers = {
+  products: productsReducer,
+  requests: requestsReducer,
+};
+
+export const AppReducer = combineReducers(reducers);

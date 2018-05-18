@@ -1,6 +1,6 @@
 // states
 import {
-  IProductsRequestsState
+  IProductsRequestsState,
 } from './index';
 
 export interface IRequestsState {
