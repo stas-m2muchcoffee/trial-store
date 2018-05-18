@@ -11,6 +11,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/app-state/app-state';
 import * as productsActions from '../../ngrx/products/actions';
 import * as productsGetterState from '../../ngrx/products/states/products-getter.state';
+import * as productsRequestsGetterState from '../../ngrx/products-requests/states/products-requests-getter.state';
 
 import { Product } from '../interfaces/product';
 
@@ -25,7 +26,7 @@ export class ProductService {
     private http: HttpClient,
     private store: Store<AppState>,
   ) {
-    this.isData$ = this.store.select(productsGetterState.getIsLoadedProducts);
+    this.isData$ = this.store.select(productsRequestsGetterState.getIsLoadedProductsRequests);
 
     this.products$ = this.store.select(productsGetterState.getProducts)
     .withLatestFrom(this.isData$)
