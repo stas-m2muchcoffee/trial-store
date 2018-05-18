@@ -7,7 +7,6 @@ import 'rxjs/add/operator/switchMap';
 
 import { ProductService } from '../services/product.service';
 import { Product } from '../interfaces/product';
-import 'rxjs/add/operator/do';
 
 @Injectable()
 export class ProductsResolverService implements Resolve<Product[]> {

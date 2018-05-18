@@ -22,7 +22,7 @@ export function productsRequestsReducer (
         ...state,
         loading: false,
         loaded: true,
-        status: '',
+        status: 'success',
         data: payload,
       };
     }

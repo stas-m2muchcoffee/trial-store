@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 
-import { Product } from '../../../core/interfaces/product';
+import { Product } from '../../../../../core/interfaces/product';
 
 
 const PRODUCTS_REQUESTS = 'Products-requests';

@@ -7,9 +7,9 @@ import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
 import { productsReducer } from '../ngrx/products/reducers';
-import { productsRequestsReducer } from '../ngrx/products-requests/reducers';
+import { productsRequestsReducer } from '../ngrx/requests/nested-states/products/reducers';
 import { ProductsEffects } from '../ngrx/products/effects';
-import { ProductsRequestsEffects } from '../ngrx/products-requests/effects';
+import { ProductsRequestsEffects } from '../ngrx/requests/nested-states/products/effects';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
 

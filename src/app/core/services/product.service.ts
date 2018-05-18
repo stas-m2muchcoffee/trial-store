@@ -11,7 +11,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../ngrx/app-state/app-state';
 import * as productsActions from '../../ngrx/products/actions';
 import * as productsGetterState from '../../ngrx/products/states/products-getter.state';
-import * as productsRequestsGetterState from '../../ngrx/products-requests/states/products-requests-getter.state';
+import * as productsRequestsGetterState from '../../ngrx/requests/nested-states/products/states/products-requests-getter.state';
 
 import { Product } from '../interfaces/product';
 

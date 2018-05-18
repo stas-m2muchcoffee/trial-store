@@ -9,9 +9,9 @@ import 'rxjs/add/observable/of';
 import { Actions, Effect } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
 
-import { ProductService } from '../../../core/services/product.service';
+import { ProductService } from '../../../../../core/services/product.service';
 
-import * as productsActions from '../../products/actions';
+import * as productsActions from '../../../../products/actions';
 
 import * as productsRequestsActions from '../actions';
 

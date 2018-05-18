@@ -8,7 +8,7 @@ import { Action } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 
 import * as ProductActions from '../actions';
-import * as ProductsRequestsActions from '../../products-requests/actions';
+import * as ProductsRequestsActions from '../../requests/nested-states/products/actions';
 import 'rxjs/add/operator/filter';
 
 @Injectable()
