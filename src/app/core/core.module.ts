@@ -6,8 +6,10 @@ import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
-import { productReducer } from '../ngrx/products/reducers';
-import { ProductEffects } from '../ngrx/products/effects';
+import { productsReducer } from '../ngrx/products/reducers';
+import { productsRequestsReducer } from '../ngrx/products-requests/reducers';
+import { ProductsEffects } from '../ngrx/products/effects';
+import { ProductsRequestsEffects } from '../ngrx/products-requests/effects';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
 
@@ -35,10 +37,12 @@ import { SpinnerModule } from './spinner/spinner.module';
     HttpClientModule,
     SpinnerModule,
     StoreModule.forRoot({
-      products: productReducer,
+      products: productsReducer,
+      productsRequests: productsRequestsReducer,
     }),
     EffectsModule.forRoot([
-      ProductEffects
+      ProductsEffects,
+      ProductsRequestsEffects,
     ]),
   ],
   exports: [
