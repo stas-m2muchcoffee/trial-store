@@ -28,10 +28,10 @@ export class ProductsRequestsEffects {
     .catch((error) => Observable.of(new productsRequestsActions.GetListFailProductsAction(error)))
   );
 
-  @Effect()
-  products$: Observable<Action> = this.actions$
-  .ofType<productsActions.Actions>(productsRequestsActions.ActionTypes.REQUEST_SUCCESS)
-  .map((action) => new productsActions.GetListProductSuccessfulAction(action.payload));
+  // @Effect()
+  // products$: Observable<Action> = this.actions$
+  // .ofType<productsActions.Actions>(productsRequestsActions.ActionTypes.REQUEST_SUCCESS)
+  // .map((action) => new productsActions.GetListProductSuccessfulAction(action.payload));
 
   constructor(
     private actions$: Actions,

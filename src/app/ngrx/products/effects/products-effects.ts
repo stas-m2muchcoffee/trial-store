@@ -7,19 +7,24 @@ import 'rxjs/add/operator/map';
 import { Action } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 
-import * as ProductActions from '../actions';
-import * as ProductsRequestsActions from '../../requests/nested-states/products/actions';
-import 'rxjs/add/operator/filter';
+import * as productsRequestsActions from '../../requests/nested-states/products/actions';
+
+import * as productsActions from '../actions';
 
 @Injectable()
 export class ProductsEffects {
 
   @Effect()
-  products$: Observable<Action> = this.actions$
-  .ofType(ProductActions.ActionTypes.GET_LIST)
+  productsRequest$: Observable<Action> = this.actions$
+  .ofType(productsActions.ActionTypes.GET_LIST)
   .map(() =>
-    new ProductsRequestsActions.GetListProductsAction
+    new productsRequestsActions.GetListProductsAction
   );
+
+  @Effect()
+  products$: Observable<Action> = this.actions$
+  .ofType<productsActions.Actions>(productsRequestsActions.ActionTypes.REQUEST_SUCCESS)
+  .map((action) => new productsActions.GetListProductSuccessfulAction(action.payload));
 
   constructor(
     private actions$: Actions,
