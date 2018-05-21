@@ -1,12 +1,12 @@
-import * as customersActions from '../actions/customers-actions';
-import { ICustomersState, initialState } from '../states';
+import * as invoiceItemsActions from '../actions/invoice-items-actions';
+import { IInvoiceItemsState, initialState } from '../states';
 
-export function customersReducer(
-  state: ICustomersState = initialState,
-  {type, payload}: customersActions.Actions,
-): ICustomersState {
+export function invoiceItemsReducer(
+  state: IInvoiceItemsState = initialState,
+  {type, payload}: invoiceItemsActions.Actions,
+): IInvoiceItemsState {
   switch (type) {
-    case customersActions.ActionTypes.GET_LIST_SUCCESSFUL: {
+    case invoiceItemsActions.ActionTypes.GET_LIST_SUCCESSFUL: {
       const entities = payload.reduce((accEntities, currentCustomer) =>
           ({...accEntities, [currentCustomer.id]: currentCustomer}),
         {}
