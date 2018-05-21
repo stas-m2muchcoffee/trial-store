@@ -1,10 +1,12 @@
 // states
 import {
   IProductsRequestsState,
+  ICustomersRequestsState,
 } from './index';
 
 export interface IRequestsState {
   productsRequestsState?:  IProductsRequestsState;
+  customersRequestsState?: ICustomersRequestsState;
 }
 
 export interface IRequestsNestedState {

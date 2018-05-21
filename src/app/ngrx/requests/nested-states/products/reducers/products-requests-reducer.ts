@@ -1,12 +1,12 @@
 import * as productsRequestsActions from '../actions';
-import { IProductsRequestsState, initialState } from '../states';
+import { IProductsRequestsState, productsInitialState } from '../states';
 
 export function productsRequestsReducer (
-  state: IProductsRequestsState = initialState,
-  { type, payload }: productsRequestsActions.Actions,
+  state: IProductsRequestsState = productsInitialState,
+  { type, payload }: productsRequestsActions.ProductsActions,
 ) {
   switch (type) {
-    case productsRequestsActions.ActionTypes.REQUEST: {
+    case productsRequestsActions.ProductsActionTypes.REQUEST: {
       return {
         ...state,
         loading: true,
@@ -16,8 +16,8 @@ export function productsRequestsReducer (
       };
     }
 
-    case productsRequestsActions.ActionTypes.REQUEST_SUCCESS:
-    case productsRequestsActions.ActionTypes.REQUEST_FAIL: {
+    case productsRequestsActions.ProductsActionTypes.REQUEST_SUCCESS:
+    case productsRequestsActions.ProductsActionTypes.REQUEST_FAIL: {
       return {
         ...state,
         loading: false,

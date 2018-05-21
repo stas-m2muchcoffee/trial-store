@@ -1,12 +1,16 @@
 import { createSelector } from '@ngrx/store';
 
-import { AppState } from '../../../../app-state/app-state';
+import { getRequestsState } from '../../../states/requests-getter.state';
+
+import { IRequestsState } from '../../../states';
 
 import { IProductsRequestsState } from './products-requests.state';
 
 
-// export const getProductsRequestsState = (state: AppState) => state.productsRequests;
-export const getProductsRequestsState = (state: AppState) => state.requests;
+export const getProductsRequestsState = createSelector(
+  getRequestsState,
+  (state: IRequestsState) => state.productsRequestsState,
+);
 
 export const getIsLoadedProductsRequests = createSelector(
   getProductsRequestsState,

@@ -7,24 +7,24 @@ import 'rxjs/add/operator/map';
 import { Action } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 
-import * as productsRequestsActions from '../../requests/nested-states/products/actions';
+import * as customersRequestsActions from '../../requests/nested-states/customers/actions';
 
-import * as productsActions from '../actions';
+import * as customersActions from '../actions';
 
 @Injectable()
-export class ProductsEffects {
+export class CustomersEffects {
 
   @Effect()
   productsRequest$: Observable<Action> = this.actions$
-  .ofType(productsActions.ActionTypes.GET_LIST)
+  .ofType(customersActions.ActionTypes.GET_LIST)
   .map(() =>
-    new productsRequestsActions.GetListProductsAction
+    new customersRequestsActions.GetListCustomersAction
   );
 
   @Effect()
   products$: Observable<Action> = this.actions$
-  .ofType<productsActions.Actions>(productsRequestsActions.ProductsActionTypes.REQUEST_SUCCESS)
-  .map((action) => new productsActions.GetListProductSuccessfulAction(action.payload));
+  .ofType<customersActions.Actions>(customersRequestsActions.CustomersActionTypes.REQUEST_SUCCESS)
+  .map((action) => new customersActions.GetListCustomerSuccessfulAction(action.payload));
 
   constructor(
     private actions$: Actions,

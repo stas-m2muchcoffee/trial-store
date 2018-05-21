@@ -8,6 +8,8 @@ import { EffectsModule } from '@ngrx/effects';
 
 import { ProductsEffects } from '../ngrx/products/effects';
 import { ProductsRequestsEffects } from '../ngrx/requests/nested-states/products/effects';
+import { CustomersEffects } from '../ngrx/customers/effects';
+import { CustomersRequestsEffects } from '../ngrx/requests/nested-states/customers/effects';
 import { reducers } from '../ngrx/app-state/app-state';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
@@ -39,6 +41,8 @@ import { SpinnerModule } from './spinner/spinner.module';
     EffectsModule.forRoot([
       ProductsEffects,
       ProductsRequestsEffects,
+      CustomersEffects,
+      CustomersRequestsEffects,
     ]),
   ],
   exports: [

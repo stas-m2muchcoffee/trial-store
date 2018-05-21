@@ -15,9 +15,13 @@ import 'rxjs/add/operator/publishBehavior';
 
 import { StateManagement, StateRequests } from '../../shared/utils/state-management';
 
+import * as customersGetterState from '../../ngrx/customers/states/customers-getter.state';
+
 import { Invoice } from '../interfaces/invoice';
 import { CustomerService } from './customer.service';
 import { InvoiceItemsService } from './invoice-items.service';
+import {AppState} from '../../ngrx/app-state/app-state';
+import {Store} from '@ngrx/store';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -38,6 +42,7 @@ export class InvoiceService {
     private http: HttpClient,
     private customerService: CustomerService,
     private invoiceItemsService: InvoiceItemsService,
+    private store: Store<AppState>,
   ) {
     this.state = new StateManagement<Invoice>();
 
@@ -58,7 +63,7 @@ export class InvoiceService {
       ids.filter((id) => entities[id]).map((id) => entities[id])
     )
     // add customer
-    .combineLatest(this.customerService.state.entities$.startWith({}))
+    .combineLatest(this.store.select(customersGetterState.getCustomersEntities).startWith({}))
     .map(([invoices, entitiesCustomers]) => {
       return invoices.map((invoice) => {
         return ({
@@ -85,7 +90,7 @@ export class InvoiceService {
     )
     .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id])
     // add customer
-    .combineLatest(this.customerService.state.entities$.startWith({}))
+    .combineLatest(this.store.select(customersGetterState.getCustomersEntities).startWith({}))
     .map(([invoice, entitiesCustomers]) => {
       return ({
         ...invoice,
