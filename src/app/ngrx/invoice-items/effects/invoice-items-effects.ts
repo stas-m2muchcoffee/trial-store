@@ -28,17 +28,17 @@ export class InvoiceItemsEffects {
     new invoiceItemsActions.GetListInvoiceItemsSuccessfulAction(action.payload)
   );
 
-  // @Effect()
-  // createInvoiceItemRequest$: Observable<Action> = this.actions$
-  // .ofType(invoiceItemsActions.ActionTypes.CREATE_INVOICE_ITEM)
-  // .map((action) =>
-  //   new invoiceItemsRequestsActions.CreateInvoiceItemAction(action.payload)
-  // );
+  @Effect()
+  createInvoiceItemRequest$: Observable<Action> = this.actions$
+  .ofType<invoiceItemsActions.Actions>(invoiceItemsActions.ActionTypes.CREATE_INVOICE_ITEM)
+  .map((action) =>
+    new invoiceItemsRequestsActions.InvoiceItemsCreateRequestsAction(action.payload)
+  );
 
-  // @Effect()
-  // addedInvoiceItem$: Observable<Action> = this.actions$
-  // .ofType<invoiceItemsActions.Actions>(invoiceItemsRequestsActions.InvoiceItemsActionTypes.REQUEST_SUCCESS)
-  // .map((action) => new invoiceItemsActions.CreateInvoiceItemSuccessfulAction(action.payload));
+  @Effect()
+  addedInvoiceItem$: Observable<Action> = this.actions$
+  .ofType<invoiceItemsActions.Actions>(invoiceItemsRequestsActions.InvoiceItemsCreateRequestsActionTypes.REQUEST_SUCCESS)
+  .map((action) => new invoiceItemsActions.CreateInvoiceItemSuccessfulAction(action.payload));
 
   constructor(
     private actions$: Actions,
