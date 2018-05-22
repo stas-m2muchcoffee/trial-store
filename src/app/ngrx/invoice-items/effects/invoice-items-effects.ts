@@ -38,7 +38,23 @@ export class InvoiceItemsEffects {
   @Effect()
   addedInvoiceItem$: Observable<Action> = this.actions$
   .ofType<invoiceItemsActions.Actions>(invoiceItemsRequestsActions.InvoiceItemsCreateRequestsActionTypes.REQUEST_SUCCESS)
-  .map((action) => new invoiceItemsActions.CreateInvoiceItemSuccessfulAction(action.payload));
+  .map((action) =>
+    new invoiceItemsActions.CreateInvoiceItemSuccessfulAction(action.payload)
+  );
+
+  @Effect()
+  updateInvoiceItemRequest$: Observable<Action> = this.actions$
+  .ofType<invoiceItemsActions.Actions>(invoiceItemsActions.ActionTypes.UPDATE_INVOICE_ITEM)
+  .map((action) =>
+    new invoiceItemsRequestsActions.InvoiceItemsUpdateRequestsAction(action.payload)
+  );
+
+  @Effect()
+  updatedInvoiceItem$: Observable<Action> = this.actions$
+  .ofType<invoiceItemsActions.Actions>(invoiceItemsRequestsActions.InvoiceItemsUpdateRequestsActionTypes.REQUEST_SUCCESS)
+  .map((action) =>
+    new invoiceItemsActions.UpdateInvoiceItemSuccessfulAction(action.payload)
+  );
 
   constructor(
     private actions$: Actions,

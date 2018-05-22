@@ -11,6 +11,9 @@ export const ActionTypes = {
 
   CREATE_INVOICE_ITEM: `[${INVOICE_ITEM}] create`,
   CREATE_INVOICE_ITEM_SUCCESSFUL: `[${INVOICE_ITEM}] createSuccessful`,
+
+  UPDATE_INVOICE_ITEM: `[${INVOICE_ITEM}] update`,
+  UPDATE_INVOICE_ITEM_SUCCESSFUL: `[${INVOICE_ITEM}] updateSuccessful`,
 };
 
 export class GetListInvoiceItemsAction implements Action {
@@ -49,7 +52,27 @@ export class CreateInvoiceItemSuccessfulAction implements Action {
   ) {}
 }
 
+export class UpdateInvoiceItemAction implements Action {
+
+  readonly type = ActionTypes.UPDATE_INVOICE_ITEM;
+
+  constructor(
+    public payload: InvoiceItem,
+  ) {}
+}
+
+export class UpdateInvoiceItemSuccessfulAction implements Action {
+
+  readonly type = ActionTypes.UPDATE_INVOICE_ITEM_SUCCESSFUL;
+
+  constructor(
+    public payload: InvoiceItem,
+  ) {}
+}
+
 export type Actions = GetListInvoiceItemsAction |
   GetListInvoiceItemsSuccessfulAction |
   CreateInvoiceItemAction |
-  CreateInvoiceItemSuccessfulAction;
+  CreateInvoiceItemSuccessfulAction |
+  UpdateInvoiceItemAction |
+  UpdateInvoiceItemSuccessfulAction;

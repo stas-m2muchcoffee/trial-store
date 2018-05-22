@@ -14,7 +14,8 @@ import { ProductsRequestsEffects } from '../ngrx/requests/nested-states/products
 import { CustomersRequestsEffects } from '../ngrx/requests/nested-states/customers/effects';
 import {
   InvoiceItemsGetListRequestsEffects,
-  InvoiceItemsCreateRequestsEffects
+  InvoiceItemsUpdateRequestsEffects,
+  InvoiceItemsCreateRequestsEffects,
 } from '../ngrx/requests/nested-states/invoice-items/effects';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
@@ -51,6 +52,7 @@ import { SpinnerModule } from './spinner/spinner.module';
       InvoiceItemsEffects,
       InvoiceItemsGetListRequestsEffects,
       InvoiceItemsCreateRequestsEffects,
+      InvoiceItemsUpdateRequestsEffects,
     ]),
   ],
   exports: [

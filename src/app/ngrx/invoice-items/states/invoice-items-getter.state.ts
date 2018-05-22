@@ -29,7 +29,7 @@ export const getInvoiceItems = createSelector(
     collectionIds.filter((id) => entities[id]).map(id => entities[id])
 );
 
-export const getAddedInvoiceItems = createSelector(
+export const getCurrentInvoiceItems = createSelector(
   getInvoiceItemsEntities,
   getInvoiceItemsCurrentId,
   (entities, id) => entities[id]

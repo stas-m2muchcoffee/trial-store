@@ -18,6 +18,7 @@ import * as invoiceItemsActions from '../../ngrx/invoice-items/actions';
 import * as invoiceItemsGetterState from '../../ngrx/invoice-items/states/invoice-items-getter.state';
 import * as invoiceItemsGetListRequestsGetterState from '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-items-get-list/states/invoice-items-get-list-requests-getter.state';
 import * as invoiceItemsCreateRequestsGetterState from '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-items-create/states/invoice-items-create-requests-getter.state';
+import * as invoiceItemsUpdateRequestsGetterState from '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-items-update/states/invoice-items-update-requests-getter.state';
 
 import { InvoiceItem } from '../interfaces/invoice-item';
 
@@ -45,17 +46,15 @@ export class InvoiceItemsService {
     .filter(([items , isData]) => isData)
     .map(([items, isData]) => items);
 
-    this.addedInvoiceItem$ = this.store.select(invoiceItemsGetterState.getAddedInvoiceItems)
+    this.addedInvoiceItem$ = this.store.select(invoiceItemsGetterState.getCurrentInvoiceItems)
     .withLatestFrom(this.store.select(invoiceItemsCreateRequestsGetterState.getIsLoadedInvoiceItemsRequests))
-    .do(console.log)
     .filter(([items , isData]) => isData)
     .map(([item, isData]) => item);
 
-    this.updatedInvoiceItem$ = Observable.combineLatest(
-      this.state.entities$,
-      this.state.updateEntityId$
-    )
-    .map(([entities, id]: [{ [index: number]: InvoiceItem }, number]) => entities[id]);
+    this.updatedInvoiceItem$ = this.store.select(invoiceItemsGetterState.getCurrentInvoiceItems)
+    .withLatestFrom(this.store.select(invoiceItemsUpdateRequestsGetterState.getIsLoadedInvoiceItemsRequests))
+    .filter(([items , isData]) => isData)
+    .map(([item, isData]) => item);
   }
 
   dispatchGetListInvoiceItems(id: number | string) {
@@ -76,10 +75,13 @@ export class InvoiceItemsService {
     return this.http.post<InvoiceItem>(`invoices/${invoiceItem.invoice_id}/items`, invoiceItem, httpOptions);
   }
 
-  updateInvoiceItem(invoiceItem: InvoiceItem): Observable<InvoiceItem> {
-    this.state.update$
-    .next(this.http.put<InvoiceItem>(`invoices/${invoiceItem.invoice_id}/items/${invoiceItem.id}`, invoiceItem, httpOptions));
+  dispatchUpdateInvoiceItem(invoiceItem): Observable<InvoiceItem> {
+    this.store.dispatch(new invoiceItemsActions.UpdateInvoiceItemAction(invoiceItem));
     return this.updatedInvoiceItem$;
+  }
+
+  updateInvoiceItem(invoiceItem: InvoiceItem): Observable<InvoiceItem> {
+    return this.http.put<InvoiceItem>(`invoices/${invoiceItem.invoice_id}/items/${invoiceItem.id}`, invoiceItem, httpOptions);
   }
 
   deleteInvoiceItem(invoiceItem: InvoiceItem): Observable<InvoiceItem> {
