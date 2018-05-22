@@ -14,7 +14,7 @@ import { InvoiceItemsService } from '../../../../../../../core/services/invoice-
 import * as invoiceItemsGetListRequestsActions from '../actions';
 
 @Injectable()
-export class GetListInvoiceItemsRequestsEffects {
+export class InvoiceItemsGetListRequestsEffects {
 
   @Effect()
   getListInvoiceItemsRequests$: Observable<Action> = this.actions$
