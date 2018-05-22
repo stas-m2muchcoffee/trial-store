@@ -1,5 +1,5 @@
 import { IInvoiceItemsRequestsState, invoiceItemsInitialState } from '../states';
-import { getListInvoiceItemsRequestsReducer } from '../nested-states/get-list-invoice-items/reducers';
+import { invoiceItemsGetListRequestsReducer } from '../nested-states/invoice-items-get-list/reducers';
 
 
 export function invoiceItemsRequestsReducer(
@@ -7,6 +7,6 @@ export function invoiceItemsRequestsReducer(
   action
 ): IInvoiceItemsRequestsState {
   return {
-    invoiceItemsGetListState: getListInvoiceItemsRequestsReducer(state.invoiceItemsGetListState, action),
+    invoiceItemsGetListRequestsState: invoiceItemsGetListRequestsReducer(state.invoiceItemsGetListRequestsState, action),
   };
 }

@@ -7,8 +7,16 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/shareReplay';
+import 'rxjs/add/operator/withLatestFrom';
+
+import { Store } from '@ngrx/store';
 
 import { StateManagement } from '../../shared/utils/state-management';
+
+import { AppState } from '../../ngrx/app-state/app-state';
+import * as invoiceItemsActions from '../../ngrx/invoice-items/actions';
+import * as invoiceItemsGetterState from '../../ngrx/invoice-items/states/invoice-items-getter.state';
+import * as invoiceItemsGetListRequestsGetterState from '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-items-get-list/states/invoice-items-get-list-requests-getter.state';
 
 import { InvoiceItem } from '../interfaces/invoice-item';
 
@@ -26,18 +34,15 @@ export class InvoiceItemsService {
   state: StateManagement<InvoiceItem>;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private store: Store<AppState>,
   ) {
     this.state = new StateManagement<InvoiceItem>();
 
-    this.invoiceItems$ = Observable.combineLatest(
-      this.state.entities$,
-      this.state.collectionIds$
-    )
-    .map(([entities, ids]: [{ [index: number]: InvoiceItem }, number[]]) =>
-      ids.filter((id) => entities[id]).map((id) => entities[id])
-    )
-    .shareReplay(1);
+    this.invoiceItems$ = this.store.select(invoiceItemsGetterState.getInvoiceItems)
+    .withLatestFrom(this.store.select(invoiceItemsGetListRequestsGetterState.getIsLoadedInvoiceItemsRequests))
+    .filter(([items , isData]) => isData)
+    .map(([items, isData]) => items);
 
     this.addedInvoiceItem$ = Observable.combineLatest(
       this.state.entities$,
@@ -53,7 +58,11 @@ export class InvoiceItemsService {
   }
 
   getInvoiceItems(id: number | string): Observable<InvoiceItem[]> {
-    this.state.getList$.next(this.http.get<InvoiceItem[]>(`invoices/${id}/items`));
+    return this.http.get<InvoiceItem[]>(`invoices/${id}/items`);
+  }
+
+  dispatchGetListInvoiceItems(id: number | string) {
+    this.store.dispatch(new invoiceItemsActions.GetListInvoiceItemsAction(id));
     return this.invoiceItems$;
   }
 

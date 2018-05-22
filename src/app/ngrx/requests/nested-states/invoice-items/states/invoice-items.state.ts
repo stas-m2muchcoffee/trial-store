@@ -1,10 +1,10 @@
 // states
 import {
-  IGetListInvoiceItemsRequestsState,
+  IInvoiceItemsGetListRequestsState,
 } from './index';
 
 export interface IInvoiceItemsRequestsState {
-  invoiceItemsGetListState?: IGetListInvoiceItemsRequestsState;
+  invoiceItemsGetListRequestsState?: IInvoiceItemsGetListRequestsState;
 }
 
 export const invoiceItemsInitialState: IInvoiceItemsRequestsState = {};

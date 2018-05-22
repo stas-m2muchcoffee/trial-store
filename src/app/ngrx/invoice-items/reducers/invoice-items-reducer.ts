@@ -7,17 +7,18 @@ export function invoiceItemsReducer(
 ): IInvoiceItemsState {
   switch (type) {
     case invoiceItemsActions.ActionTypes.GET_LIST_SUCCESSFUL: {
-      const entities = payload.reduce((accEntities, currentCustomer) =>
-          ({...accEntities, [currentCustomer.id]: currentCustomer}),
+      const entities = payload.reduce((accEntities, currentInvoiceItem) =>
+          ({...accEntities, [currentInvoiceItem.id]: currentInvoiceItem}),
         {}
       );
-      const collectionIds = payload.map(customer => customer.id);
+      const collectionIds = payload.map(invoiceItem => invoiceItem.id);
       return {
         ...state,
         entities,
         collectionIds,
       };
     }
+
     default: {
       return state;
     }

@@ -1,11 +1,11 @@
-export interface IGetListInvoiceItemsRequestsState {
+export interface IInvoiceItemsGetListRequestsState {
   loading: boolean;
   loaded: boolean;
   status: string;
   data: any;
 }
 
-export const getListInvoiceItemsInitialState: IGetListInvoiceItemsRequestsState = {
+export const invoiceItemsGetListInitialState: IInvoiceItemsGetListRequestsState = {
   loading: false,
   loaded: false,
   status: '',

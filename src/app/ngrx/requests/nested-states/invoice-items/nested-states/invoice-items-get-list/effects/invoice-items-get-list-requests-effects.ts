@@ -11,19 +11,20 @@ import { Action } from '@ngrx/store';
 
 import { InvoiceItemsService } from '../../../../../../../core/services/invoice-items.service';
 
-import * as getListInvoiceItemsRequestsActions from '../actions';
+import * as invoiceItemsGetListRequestsActions from '../actions';
 
 @Injectable()
-export class InvoiceItemsRequestsEffects {
+export class GetListInvoiceItemsRequestsEffects {
 
   @Effect()
-  customersRequests$: Observable<Action> = this.actions$
-  .ofType(getListInvoiceItemsRequestsActions.GetListInvoiceItemsActionTypes.REQUEST)
+  getListInvoiceItemsRequests$: Observable<Action> = this.actions$
+  .ofType<invoiceItemsGetListRequestsActions.InvoiceItemsGetListActions>(invoiceItemsGetListRequestsActions
+  .InvoiceItemsGetListRequestsActionTypes.REQUEST)
   .switchMap((action) =>
     this.invoiceItemsService
-    .getInvoiceItems(225)
-    .map((items) => new getListInvoiceItemsRequestsActions.GetListInvoiceItemsSuccessAction(items))
-    .catch((error) => Observable.of(new getListInvoiceItemsRequestsActions.GetListInvoiceItemsFailAction(error)))
+    .getInvoiceItems(action.payload)
+    .map((items) => new invoiceItemsGetListRequestsActions.InvoiceItemsGetListRequestsSuccessAction(items))
+    .catch((error) => Observable.of(new invoiceItemsGetListRequestsActions.InvoiceItemsGetListRequestsFailAction(error)))
   );
 
   constructor(

@@ -16,10 +16,10 @@ export const getInvoiceItemsCollectionIds = createSelector(
   (state: IInvoiceItemsState) => state.collectionIds,
 );
 
-export const getInvoiceItemsCurrentId = createSelector(
-  getInvoiceItemsState,
-  (state: IInvoiceItemsState) => state.currentInvoiceItemId,
-);
+// export const getInvoiceItemsCurrentId = createSelector(
+//   getInvoiceItemsState,
+//   (state: IInvoiceItemsState) => state.currentInvoiceItemId,
+// );
 
 export const getInvoiceItems = createSelector(
   getInvoiceItemsEntities,
@@ -28,8 +28,8 @@ export const getInvoiceItems = createSelector(
     collectionIds.filter((id) => entities[id]).map(id => entities[id])
 );
 
-export const getAddedInvoiceItems = createSelector(
-  getInvoiceItemsEntities,
-  getInvoiceItemsCurrentId,
-  (entities, id) => entities[id],
-);
+// export const getAddedInvoiceItems = createSelector(
+//   getInvoiceItemsEntities,
+//   getInvoiceItemsCurrentId,
+//   (entities, id) => entities[id],
+// );

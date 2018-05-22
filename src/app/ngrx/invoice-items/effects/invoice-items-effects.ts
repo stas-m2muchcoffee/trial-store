@@ -16,14 +16,14 @@ export class InvoiceItemsEffects {
 
   @Effect()
   getListInvoiceItemsRequest$: Observable<Action> = this.actions$
-  .ofType(invoiceItemsActions.ActionTypes.GET_LIST)
-  .map(() =>
-    new invoiceItemsRequestsActions.GetListInvoiceItemsAction
+  .ofType<invoiceItemsRequestsActions.InvoiceItemsGetListActions>(invoiceItemsActions.ActionTypes.GET_LIST)
+  .map((action) =>
+    new invoiceItemsRequestsActions.InvoiceItemsGetListRequestsAction(action.payload)
   );
 
   @Effect()
   invoiceItems$: Observable<Action> = this.actions$
-  .ofType<invoiceItemsActions.Actions>(invoiceItemsRequestsActions.GetListInvoiceItemsActionTypes.REQUEST_SUCCESS)
+  .ofType<invoiceItemsActions.GetListInvoiceItemsAction>(invoiceItemsRequestsActions.InvoiceItemsGetListRequestsActionTypes.REQUEST_SUCCESS)
   .map((action) =>
     new invoiceItemsActions.GetListInvoiceItemsSuccessfulAction(action.payload)
   );

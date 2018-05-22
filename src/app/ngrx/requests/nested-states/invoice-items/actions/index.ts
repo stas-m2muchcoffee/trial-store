@@ -1,1 +1,1 @@
-export * from '../nested-states/get-list-invoice-items/actions/index';
+export * from '../nested-states/invoice-items-get-list/actions/index';

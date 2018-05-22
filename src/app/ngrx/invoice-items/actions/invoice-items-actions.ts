@@ -18,7 +18,7 @@ export class GetListInvoiceItemsAction implements Action {
   readonly type = ActionTypes.GET_LIST;
 
   constructor(
-    public payload?: undefined,
+    public payload: any,
   ) {}
 }
 

@@ -1,4 +1,4 @@
 export * from './invoice-items-reducer';
 
 // nested
-export * from '../nested-states/get-list-invoice-items/reducers/index';
+export * from '../nested-states/invoice-items-get-list/reducers/index';
