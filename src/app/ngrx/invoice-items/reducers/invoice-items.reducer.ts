@@ -6,33 +6,26 @@ export function invoiceItemsReducer(
   {type, payload}: invoiceItemsActions.Actions,
 ): IInvoiceItemsState {
   switch (type) {
+
     case invoiceItemsActions.ActionTypes.GET_LIST_SUCCESS:
-    case invoiceItemsActions.ActionTypes.CREATE_SUCCESS: {
-      const currentEntities = payload.reduce((accEntities, currentInvoiceItem) =>
-          ({...accEntities, [currentInvoiceItem.id]: currentInvoiceItem}),
-        {}
-      );
-      const entities = {...state.entities, ...currentEntities};
-      const currentCollectionIds = payload.map(invoiceItem => invoiceItem.id);
-      const collectionIds = [...state.collectionIds, ...currentCollectionIds];
-
-      return {
-        ...state,
-        entities,
-        collectionIds,
-      };
-    }
-
+    case invoiceItemsActions.ActionTypes.CREATE_SUCCESS:
     case invoiceItemsActions.ActionTypes.UPDATE_SUCCESS: {
       const currentEntities = payload.reduce((accEntities, currentInvoiceItem) =>
           ({...accEntities, [currentInvoiceItem.id]: currentInvoiceItem}),
         {}
       );
       const entities = {...state.entities, ...currentEntities};
+      const currentCollectionIds = [
+        ...state.collectionIds,
+        ...payload.map(item => item.id)
+      ];
+      const collectionIds = currentCollectionIds
+      .filter((id, pos) => currentCollectionIds.indexOf(id) === pos);
 
       return {
         ...state,
         entities,
+        collectionIds,
       };
     }
 
