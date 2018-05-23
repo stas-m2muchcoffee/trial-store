@@ -64,7 +64,7 @@ export class InvoiceItemsService {
     .map(([item, isData]) => item);
   }
 
-  getInvoiceItems(id: number | string) {
+  getInvoiceItems(id: number | string): Observable<InvoiceItem[]> {
     this.store.dispatch(new invoiceItems.GetInvoiceItemsAction(id));
     return this.invoiceItems$;
   }
