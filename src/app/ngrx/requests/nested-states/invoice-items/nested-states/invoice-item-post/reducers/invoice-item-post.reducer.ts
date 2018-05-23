@@ -1,12 +1,12 @@
-import { InvoiceItemsPostActions, InvoiceItemsPostActionTypes } from '../actions';
-import { IInvoiceItemsPostState, invoiceItemsPostInitialState } from '../states';
+import { InvoiceItemPostActions, InvoiceItemPostActionTypes } from '../actions';
+import { IInvoiceItemPostState, invoiceItemPostInitialState } from '../states';
 
-export function invoiceItemsPostReducer (
-  state: IInvoiceItemsPostState = invoiceItemsPostInitialState,
-  { type, payload }: InvoiceItemsPostActions,
+export function invoiceItemPostReducer (
+  state: IInvoiceItemPostState = invoiceItemPostInitialState,
+  { type, payload }: InvoiceItemPostActions,
 ) {
   switch (type) {
-    case InvoiceItemsPostActionTypes.REQUEST: {
+    case InvoiceItemPostActionTypes.REQUEST: {
       return {
         ...state,
         loading: true,
@@ -16,8 +16,8 @@ export function invoiceItemsPostReducer (
       };
     }
 
-    case InvoiceItemsPostActionTypes.REQUEST_SUCCESS:
-    case InvoiceItemsPostActionTypes.REQUEST_FAIL: {
+    case InvoiceItemPostActionTypes.REQUEST_SUCCESS:
+    case InvoiceItemPostActionTypes.REQUEST_FAIL: {
       return {
         ...state,
         loading: false,

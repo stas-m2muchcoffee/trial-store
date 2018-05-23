@@ -3,19 +3,19 @@ import { createSelector } from '@ngrx/store';
 import { IInvoiceItemsState } from '../../../states';
 import { getInvoiceItemsRequestsState } from '../../../states/invoice-items-getter.state';
 
-import { IInvoiceItemsPostState } from './invoice-item-post.state';
+import { IInvoiceItemPostState } from './invoice-item-post.state';
 
 export const getInvoiceItemPostState = createSelector(
   getInvoiceItemsRequestsState,
-  (state: IInvoiceItemsState) => state.invoiceItemsPostState,
+  (state: IInvoiceItemsState) => state.invoiceItemPostState,
 );
 
 export const getIsLoadedInvoiceItemPost = createSelector(
   getInvoiceItemPostState,
-  (state: IInvoiceItemsPostState) => state.loaded
+  (state: IInvoiceItemPostState) => state.loaded
 );
 
 export const getInvoiceItemPostData = createSelector(
   getInvoiceItemPostState,
-  (state: IInvoiceItemsPostState) => state.data
+  (state: IInvoiceItemPostState) => state.data
 );

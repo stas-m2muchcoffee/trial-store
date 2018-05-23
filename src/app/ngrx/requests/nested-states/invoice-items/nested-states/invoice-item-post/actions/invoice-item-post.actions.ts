@@ -3,15 +3,15 @@ import { Action } from '@ngrx/store';
 import { InvoiceItem } from '../../../../../../../core/interfaces/invoice-item';
 
 
-const INVOICE_ITEMS_POST = 'Invoice-items-post';
+const INVOICE_ITEM_POST = 'Invoice-item-post';
 
 export const ActionTypes = {
-  REQUEST: `[${INVOICE_ITEMS_POST}] Request`,
-  REQUEST_SUCCESS: `[${INVOICE_ITEMS_POST}] Request Success`,
-  REQUEST_FAIL: `[${INVOICE_ITEMS_POST}] Request Fail`,
+  REQUEST: `[${INVOICE_ITEM_POST}] Request`,
+  REQUEST_SUCCESS: `[${INVOICE_ITEM_POST}] Request Success`,
+  REQUEST_FAIL: `[${INVOICE_ITEM_POST}] Request Fail`,
 };
 
-export class InvoiceItemsPostAction implements Action {
+export class InvoiceItemPostAction implements Action {
 
   readonly type = ActionTypes.REQUEST;
 
@@ -20,7 +20,7 @@ export class InvoiceItemsPostAction implements Action {
   ) {}
 }
 
-export class InvoiceItemsPostSuccessAction implements Action {
+export class InvoiceItemPostSuccessAction implements Action {
 
   readonly type = ActionTypes.REQUEST_SUCCESS;
 
@@ -29,7 +29,7 @@ export class InvoiceItemsPostSuccessAction implements Action {
   ) {}
 }
 
-export class InvoiceItemsPostFailAction implements Action {
+export class InvoiceItemPostFailAction implements Action {
 
   readonly type = ActionTypes.REQUEST_FAIL;
 
@@ -38,6 +38,6 @@ export class InvoiceItemsPostFailAction implements Action {
   ) {}
 }
 
-export type Actions = InvoiceItemsPostAction |
-  InvoiceItemsPostSuccessAction |
-  InvoiceItemsPostFailAction;
+export type Actions = InvoiceItemPostAction |
+  InvoiceItemPostSuccessAction |
+  InvoiceItemPostFailAction;

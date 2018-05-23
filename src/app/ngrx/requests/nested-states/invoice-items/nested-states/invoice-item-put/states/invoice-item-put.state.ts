@@ -1,11 +1,11 @@
-export interface IInvoiceItemsPutState {
+export interface IInvoiceItemPutState {
   loading: boolean;
   loaded: boolean;
   status: string;
   data: any;
 }
 
-export const invoiceItemsPutInitialState: IInvoiceItemsPutState = {
+export const invoiceItemPutInitialState: IInvoiceItemPutState = {
   loading: false,
   loaded: false,
   status: '',

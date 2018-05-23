@@ -37,13 +37,13 @@ export class InvoiceItemsEffects {
     invoiceItems.ActionTypes.CREATE
   )
   .map((action) =>
-    new invoiceItemsRequests.InvoiceItemsPostAction(action.payload)
+    new invoiceItemsRequests.InvoiceItemPostAction(action.payload)
   );
 
   @Effect()
   addedInvoiceItem$: Observable<Action> = this.actions$
-  .ofType<invoiceItemsRequests.InvoiceItemsPostActions>(
-    invoiceItemsRequests.InvoiceItemsPostActionTypes.REQUEST_SUCCESS
+  .ofType<invoiceItemsRequests.InvoiceItemPostActions>(
+    invoiceItemsRequests.InvoiceItemPostActionTypes.REQUEST_SUCCESS
   )
   .map((action) =>
     new invoiceItems.CreateInvoiceItemSuccessAction([action.payload])
@@ -55,13 +55,13 @@ export class InvoiceItemsEffects {
     invoiceItems.ActionTypes.UPDATE
   )
   .map((action) =>
-    new invoiceItemsRequests.InvoiceItemsPutAction(action.payload)
+    new invoiceItemsRequests.InvoiceItemPutAction(action.payload)
   );
 
   @Effect()
   updatedInvoiceItem$: Observable<Action> = this.actions$
-  .ofType<invoiceItemsRequests.InvoiceItemsPutActions>(
-    invoiceItemsRequests.InvoiceItemsPutActionTypes.REQUEST_SUCCESS
+  .ofType<invoiceItemsRequests.InvoiceItemPutActions>(
+    invoiceItemsRequests.InvoiceItemPutActionTypes.REQUEST_SUCCESS
   )
   .map((action) =>
     new invoiceItems.UpdateInvoiceItemSuccessAction([action.payload])

@@ -1,14 +1,14 @@
 import {
   IInvoiceItemsGetState,
-  IInvoiceItemsPostState,
-  IInvoiceItemsPutState,
+  IInvoiceItemPostState,
+  IInvoiceItemPutState,
   IInvoiceItemDeleteState,
 } from './index';
 
 export interface IInvoiceItemsState {
   invoiceItemsGetState?: IInvoiceItemsGetState;
-  invoiceItemsPostState?: IInvoiceItemsPostState;
-  invoiceItemsPutState?: IInvoiceItemsPutState;
+  invoiceItemPostState?: IInvoiceItemPostState;
+  invoiceItemPutState?: IInvoiceItemPutState;
   invoiceItemDeleteState?: IInvoiceItemDeleteState;
 }
 

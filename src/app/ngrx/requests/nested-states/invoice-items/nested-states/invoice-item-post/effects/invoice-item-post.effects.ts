@@ -12,10 +12,10 @@ import { Action } from '@ngrx/store';
 import { InvoiceItemsService } from '../../../../../../../core/services/invoice-items.service';
 
 import {
-  InvoiceItemsPostActions,
-  InvoiceItemsPostActionTypes,
-  InvoiceItemsPostSuccessAction,
-  InvoiceItemsPostFailAction,
+  InvoiceItemPostActions,
+  InvoiceItemPostActionTypes,
+  InvoiceItemPostSuccessAction,
+  InvoiceItemPostFailAction,
 } from '../actions';
 
 @Injectable()
@@ -23,14 +23,14 @@ export class InvoiceItemPostRequestsEffects {
 
   @Effect()
   invoiceItemsPostRequest$: Observable<Action> = this.actions$
-  .ofType<InvoiceItemsPostActions>(
-    InvoiceItemsPostActionTypes.REQUEST
+  .ofType<InvoiceItemPostActions>(
+    InvoiceItemPostActionTypes.REQUEST
   )
   .switchMap((action) =>
     this.invoiceItemsService
     .createInvoiceItemRequest(action.payload)
-    .map((item) => new InvoiceItemsPostSuccessAction(item))
-    .catch((error) => Observable.of(new InvoiceItemsPostFailAction(error)))
+    .map((item) => new InvoiceItemPostSuccessAction(item))
+    .catch((error) => Observable.of(new InvoiceItemPostFailAction(error)))
   );
 
   constructor(

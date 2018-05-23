@@ -1,11 +1,11 @@
-export interface IInvoiceItemsPostState {
+export interface IInvoiceItemPostState {
   loading: boolean;
   loaded: boolean;
   status: string;
   data: any;
 }
 
-export const invoiceItemsPostInitialState: IInvoiceItemsPostState = {
+export const invoiceItemPostInitialState: IInvoiceItemPostState = {
   loading: false,
   loaded: false,
   status: '',

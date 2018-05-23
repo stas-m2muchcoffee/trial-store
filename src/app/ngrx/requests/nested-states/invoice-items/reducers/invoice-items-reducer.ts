@@ -1,7 +1,7 @@
 import { IInvoiceItemsState, invoiceItemsInitialState } from '../states';
 import { invoiceItemsGetReducer } from '../nested-states/invoice-items-get/reducers';
-import { invoiceItemsPostReducer } from '../nested-states/invoice-item-post/reducers';
-import { invoiceItemsPutReducer } from '../nested-states/invoice-item-put/reducers';
+import { invoiceItemPostReducer } from '../nested-states/invoice-item-post/reducers';
+import { invoiceItemPutReducer } from '../nested-states/invoice-item-put/reducers';
 import { invoiceItemDeleteReducer } from '../nested-states/invoice-item-delete/reducers';
 
 // import {
@@ -17,8 +17,8 @@ export function invoiceItemsReducer(
 ): IInvoiceItemsState {
   return {
     invoiceItemsGetState: invoiceItemsGetReducer(state.invoiceItemsGetState, action),
-    invoiceItemsPostState: invoiceItemsPostReducer(state.invoiceItemsPostState, action),
-    invoiceItemsPutState: invoiceItemsPutReducer(state.invoiceItemsPutState, action),
+    invoiceItemPostState: invoiceItemPostReducer(state.invoiceItemPostState, action),
+    invoiceItemPutState: invoiceItemPutReducer(state.invoiceItemPutState, action),
     invoiceItemDeleteState: invoiceItemDeleteReducer(state.invoiceItemDeleteState, action),
   };
 }

@@ -11,7 +11,7 @@ export const ActionTypes = {
   REQUEST_FAIL: `[${INVOICE_ITEM_PUT}] Request Fail`,
 };
 
-export class InvoiceItemsPutAction implements Action {
+export class InvoiceItemPutAction implements Action {
 
   readonly type = ActionTypes.REQUEST;
 
@@ -20,7 +20,7 @@ export class InvoiceItemsPutAction implements Action {
   ) {}
 }
 
-export class InvoiceItemsPutSuccessAction implements Action {
+export class InvoiceItemPutSuccessAction implements Action {
 
   readonly type = ActionTypes.REQUEST_SUCCESS;
 
@@ -29,7 +29,7 @@ export class InvoiceItemsPutSuccessAction implements Action {
   ) {}
 }
 
-export class InvoiceItemsPutFailAction implements Action {
+export class InvoiceItemPutFailAction implements Action {
 
   readonly type = ActionTypes.REQUEST_FAIL;
 
@@ -38,6 +38,6 @@ export class InvoiceItemsPutFailAction implements Action {
   ) {}
 }
 
-export type Actions = InvoiceItemsPutAction |
-  InvoiceItemsPutSuccessAction |
-  InvoiceItemsPutFailAction;
+export type Actions = InvoiceItemPutAction |
+  InvoiceItemPutSuccessAction |
+  InvoiceItemPutFailAction;

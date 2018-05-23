@@ -1,13 +1,13 @@
-import { InvoiceItemsPutActions, InvoiceItemsPutActionTypes } from '../actions';
-import { IInvoiceItemsPutState, invoiceItemsPutInitialState } from '../states';
+import { InvoiceItemPutActions, InvoiceItemPutActionTypes } from '../actions';
+import { IInvoiceItemPutState, invoiceItemPutInitialState } from '../states';
 
-export function invoiceItemsPutReducer (
-  state: IInvoiceItemsPutState = invoiceItemsPutInitialState,
-  { type, payload }: InvoiceItemsPutActions,
+export function invoiceItemPutReducer (
+  state: IInvoiceItemPutState = invoiceItemPutInitialState,
+  { type, payload }: InvoiceItemPutActions,
 ) {
   switch (type) {
 
-    case InvoiceItemsPutActionTypes.REQUEST: {
+    case InvoiceItemPutActionTypes.REQUEST: {
       return {
         ...state,
         loading: true,
@@ -17,8 +17,8 @@ export function invoiceItemsPutReducer (
       };
     }
 
-    case InvoiceItemsPutActionTypes.REQUEST_SUCCESS:
-    case InvoiceItemsPutActionTypes.REQUEST_FAIL: {
+    case InvoiceItemPutActionTypes.REQUEST_SUCCESS:
+    case InvoiceItemPutActionTypes.REQUEST_FAIL: {
       return {
         ...state,
         loading: false,

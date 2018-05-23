@@ -1,8 +1,8 @@
 export {
-  Actions as InvoiceItemsPutActions,
-  ActionTypes as InvoiceItemsPutActionTypes,
+  Actions as InvoiceItemPutActions,
+  ActionTypes as InvoiceItemPutActionTypes,
 
-  InvoiceItemsPutAction,
-  InvoiceItemsPutSuccessAction,
-  InvoiceItemsPutFailAction,
+  InvoiceItemPutAction,
+  InvoiceItemPutSuccessAction,
+  InvoiceItemPutFailAction,
 } from './invoice-item-put.actions';

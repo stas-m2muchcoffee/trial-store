@@ -1,8 +1,8 @@
 export {
-  Actions as InvoiceItemsPostActions,
-  ActionTypes as InvoiceItemsPostActionTypes,
+  Actions as InvoiceItemPostActions,
+  ActionTypes as InvoiceItemPostActionTypes,
 
-  InvoiceItemsPostAction,
-  InvoiceItemsPostSuccessAction,
-  InvoiceItemsPostFailAction,
+  InvoiceItemPostAction,
+  InvoiceItemPostSuccessAction,
+  InvoiceItemPostFailAction,
 } from './invoice-item-post.actions';

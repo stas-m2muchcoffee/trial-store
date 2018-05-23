@@ -12,10 +12,10 @@ import { Action } from '@ngrx/store';
 import { InvoiceItemsService } from '../../../../../../../core/services/invoice-items.service';
 
 import {
-  InvoiceItemsPutActions,
-  InvoiceItemsPutActionTypes,
-  InvoiceItemsPutSuccessAction,
-  InvoiceItemsPutFailAction,
+  InvoiceItemPutActions,
+  InvoiceItemPutActionTypes,
+  InvoiceItemPutSuccessAction,
+  InvoiceItemPutFailAction,
 } from '../actions';
 
 @Injectable()
@@ -23,14 +23,14 @@ export class InvoiceItemPutRequestsEffects {
 
   @Effect()
   invoiceItemsPutRequest$: Observable<Action> = this.actions$
-  .ofType<InvoiceItemsPutActions>(
-    InvoiceItemsPutActionTypes.REQUEST
+  .ofType<InvoiceItemPutActions>(
+    InvoiceItemPutActionTypes.REQUEST
   )
   .switchMap((action) =>
     this.invoiceItemsService
     .updateInvoiceItemRequest(action.payload)
-    .map((item) => new InvoiceItemsPutSuccessAction(item))
-    .catch((error) => Observable.of(new InvoiceItemsPutFailAction(error)))
+    .map((item) => new InvoiceItemPutSuccessAction(item))
+    .catch((error) => Observable.of(new InvoiceItemPutFailAction(error)))
   );
 
   constructor(
