@@ -46,7 +46,7 @@ export class InvoiceItemsEffects {
     invoiceItemsRequests.InvoiceItemsPostActionTypes.REQUEST_SUCCESS
   )
   .map((action) =>
-    new invoiceItems.CreateInvoiceItemSuccessAction(action.payload)
+    new invoiceItems.CreateInvoiceItemSuccessAction([action.payload])
   );
 
   @Effect()
@@ -64,7 +64,7 @@ export class InvoiceItemsEffects {
     invoiceItemsRequests.InvoiceItemsPutActionTypes.REQUEST_SUCCESS
   )
   .map((action) =>
-    new invoiceItems.UpdateInvoiceItemSuccessAction(action.payload)
+    new invoiceItems.UpdateInvoiceItemSuccessAction([action.payload])
   );
 
   constructor(

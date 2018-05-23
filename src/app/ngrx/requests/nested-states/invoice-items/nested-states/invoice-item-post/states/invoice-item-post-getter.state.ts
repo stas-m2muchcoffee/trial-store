@@ -14,3 +14,8 @@ export const getIsLoadedInvoiceItemPost = createSelector(
   getInvoiceItemPostState,
   (state: IInvoiceItemsPostState) => state.loaded
 );
+
+export const getInvoiceItemPostData = createSelector(
+  getInvoiceItemPostState,
+  (state: IInvoiceItemsPostState) => state.data
+);

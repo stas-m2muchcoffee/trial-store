@@ -29,7 +29,7 @@ export class InvoiceItemPostRequestsEffects {
   .switchMap((action) =>
     this.invoiceItemsService
     .createInvoiceItem(action.payload)
-    .map((item) => new InvoiceItemsPostSuccessAction([item]))
+    .map((item) => new InvoiceItemsPostSuccessAction(item))
     .catch((error) => Observable.of(new InvoiceItemsPostFailAction(error)))
   );
 

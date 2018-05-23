@@ -14,3 +14,8 @@ export const getIsLoadedInvoiceItemPut = createSelector(
   getInvoiceItemsPutState,
   (state: IInvoiceItemsPutState) => state.loaded
 );
+
+export const getInvoiceItemPutData = createSelector(
+  getInvoiceItemsPutState,
+  (state: IInvoiceItemsPutState) => state.data
+);

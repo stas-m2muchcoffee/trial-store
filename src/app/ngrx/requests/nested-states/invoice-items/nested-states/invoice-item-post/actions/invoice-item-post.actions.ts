@@ -25,7 +25,7 @@ export class InvoiceItemsPostSuccessAction implements Action {
   readonly type = ActionTypes.REQUEST_SUCCESS;
 
   constructor(
-    public payload: InvoiceItem[],
+    public payload: InvoiceItem,
   ) {}
 }
 

@@ -24,6 +24,7 @@ import * as invoiceItemPutGetterState from
     '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-put/states/invoice-item-put-getter.state';
 
 import { InvoiceItem } from '../interfaces/invoice-item';
+import 'rxjs/add/operator/do';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -49,15 +50,12 @@ export class InvoiceItemsService {
     .filter(([items , isData]) => isData)
     .map(([items, isData]) => items);
 
-    this.addedInvoiceItem$ = this.store.select(invoiceItemsGetterState.getCurrentInvoiceItems)
+    this.addedInvoiceItem$ = this.store.select(invoiceItemPostGetterState.getInvoiceItemPostData)
     .withLatestFrom(this.store.select(invoiceItemPostGetterState.getIsLoadedInvoiceItemPost))
     .filter(([items , isData]) => isData)
     .map(([item, isData]) => item);
 
-    this.updatedInvoiceItem$ = this.store.select(invoiceItemsGetterState.getCurrentInvoiceItems)
-    .withLatestFrom(this.store.select(invoiceItemPutGetterState.getIsLoadedInvoiceItemPut))
-    .filter(([items , isData]) => isData)
-    .map(([item, isData]) => item);
+    this.updatedInvoiceItem$ = this.store.select(invoiceItemPutGetterState.getInvoiceItemPutData);
   }
 
   dispatchGetListInvoiceItems(id: number | string) {

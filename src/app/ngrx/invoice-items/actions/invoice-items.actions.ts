@@ -48,7 +48,7 @@ export class CreateInvoiceItemSuccessAction implements Action {
   readonly type = ActionTypes.CREATE_SUCCESS;
 
   constructor(
-    public payload: InvoiceItem,
+    public payload: InvoiceItem[],
   ) {}
 }
 
@@ -66,7 +66,7 @@ export class UpdateInvoiceItemSuccessAction implements Action {
   readonly type = ActionTypes.UPDATE_SUCCESS;
 
   constructor(
-    public payload: InvoiceItem,
+    public payload: InvoiceItem[],
   ) {}
 }
 

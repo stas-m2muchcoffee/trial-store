@@ -28,12 +28,10 @@ export function invoiceItemsReducer(
       const entities = {...state.entities, ...currentEntities};
       const currentCollectionIds = payload.map(invoiceItem => invoiceItem.id);
       const collectionIds = [...state.collectionIds, ...currentCollectionIds];
-      const currentInvoiceItemId = payload[0].id;
       return {
         ...state,
         entities,
         collectionIds,
-        currentInvoiceItemId,
       };
     }
 
