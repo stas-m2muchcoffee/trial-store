@@ -38,11 +38,11 @@ export class CustomerService {
     .map(([products, isData]) => products);
   }
 
-  getCustomers(): Observable<Customer[]> {
+  getCustomersRequest(): Observable<Customer[]> {
     return this.http.get<Customer[]>('customers');
   }
 
-  dispatchGetListCustomerAction(): Observable<Customer[]> {
+  getCustomers(): Observable<Customer[]> {
     this.store.dispatch(new customers.GetCustomersAction);
     return this.customers$;
   }

@@ -28,7 +28,7 @@ export class InvoiceItemsGetRequestsEffects {
   )
   .switchMap((action) =>
     this.invoiceItemsService
-    .getInvoiceItems(action.payload)
+    .getInvoiceItemsRequest(action.payload)
     .map((items) => new InvoiceItemsGetSuccessAction(items))
     .catch((error) => Observable.of(new InvoiceItemsGetFailAction(error)))
   );

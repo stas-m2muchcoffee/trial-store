@@ -21,7 +21,7 @@ export class ProductsResolverService implements Resolve<Product[]> {
       if (isData) {
         return this.productService.products$;
       }
-      return this.productService.dispatchGetListProductAction();
+      return this.productService.getProducts();
     })
     .take(1);
   }

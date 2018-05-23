@@ -58,30 +58,30 @@ export class InvoiceItemsService {
     this.updatedInvoiceItem$ = this.store.select(invoiceItemPutGetterState.getInvoiceItemPutData);
   }
 
-  dispatchGetListInvoiceItems(id: number | string) {
+  getInvoiceItems(id: number | string) {
     this.store.dispatch(new invoiceItems.GetInvoiceItemsAction(id));
     return this.invoiceItems$;
   }
 
-  getInvoiceItems(id: number | string): Observable<InvoiceItem[]> {
+  getInvoiceItemsRequest(id: number | string): Observable<InvoiceItem[]> {
     return this.http.get<InvoiceItem[]>(`invoices/${id}/items`);
   }
 
-  dispatchCreateInvoiceItem(invoiceItem): Observable<InvoiceItem> {
+  createInvoiceItem(invoiceItem): Observable<InvoiceItem> {
     this.store.dispatch(new invoiceItems.CreateInvoiceItemAction(invoiceItem));
     return this.addedInvoiceItem$;
   }
 
-  createInvoiceItem(invoiceItem): Observable<InvoiceItem> {
+  createInvoiceItemRequest(invoiceItem): Observable<InvoiceItem> {
     return this.http.post<InvoiceItem>(`invoices/${invoiceItem.invoice_id}/items`, invoiceItem, httpOptions);
   }
 
-  dispatchUpdateInvoiceItem(invoiceItem): Observable<InvoiceItem> {
+  updateInvoiceItem(invoiceItem): Observable<InvoiceItem> {
     this.store.dispatch(new invoiceItems.UpdateInvoiceItemAction(invoiceItem));
     return this.updatedInvoiceItem$;
   }
 
-  updateInvoiceItem(invoiceItem: InvoiceItem): Observable<InvoiceItem> {
+  updateInvoiceItemRequest(invoiceItem: InvoiceItem): Observable<InvoiceItem> {
     return this.http.put<InvoiceItem>(`invoices/${invoiceItem.invoice_id}/items/${invoiceItem.id}`, invoiceItem, httpOptions);
   }
 

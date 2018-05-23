@@ -25,7 +25,7 @@ export class CustomersRequestsEffects {
   .ofType(CustomersActionTypes.REQUEST)
   .switchMap(() =>
     this.customerService
-    .getCustomers()
+    .getCustomersRequest()
     .map((customers) => new GetCustomersSuccessAction(customers))
     .catch((error) => Observable.of(new GetCustomersFailAction(error)))
   );

@@ -17,7 +17,7 @@ export class InvoiceItemsResolverService implements Resolve<InvoiceItem[] | bool
   resolve(route: ActivatedRouteSnapshot): Observable<InvoiceItem[]> | boolean {
     const id = route.paramMap.get('id');
     if (id) {
-      return this.invoiceItemsService.dispatchGetListInvoiceItems(id)
+      return this.invoiceItemsService.getInvoiceItems(id)
       .take(1);
     }
     return false;

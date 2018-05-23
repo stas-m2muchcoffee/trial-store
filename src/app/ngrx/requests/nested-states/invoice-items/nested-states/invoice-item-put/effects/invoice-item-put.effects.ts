@@ -28,7 +28,7 @@ export class InvoiceItemPutRequestsEffects {
   )
   .switchMap((action) =>
     this.invoiceItemsService
-    .updateInvoiceItem(action.payload)
+    .updateInvoiceItemRequest(action.payload)
     .map((item) => new InvoiceItemsPutSuccessAction(item))
     .catch((error) => Observable.of(new InvoiceItemsPutFailAction(error)))
   );

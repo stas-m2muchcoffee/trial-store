@@ -30,15 +30,15 @@ export class ProductService {
 
     this.products$ = this.store.select(productsGetterState.getProducts)
     .withLatestFrom(this.isData$)
-    .filter(([products , isData]) => isData)
-    .map(([products, isData]) => products);
+    .filter(([_products , isData]) => isData)
+    .map(([_products, isData]) => _products);
   }
 
-  getProducts(): Observable<Product[]> {
+  getProductsRequest(): Observable<Product[]> {
     return this.http.get<Product[]>('products');
   }
 
-  dispatchGetListProductAction(): Observable<Product[]> {
+  getProducts(): Observable<Product[]> {
     this.store.dispatch(new products.GetProductsAction);
     return this.products$;
   }
