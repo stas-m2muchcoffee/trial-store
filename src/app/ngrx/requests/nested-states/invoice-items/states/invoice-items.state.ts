@@ -1,4 +1,3 @@
-// states
 import {
   IInvoiceItemsGetState,
   IInvoiceItemsPostState,

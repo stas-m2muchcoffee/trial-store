@@ -47,12 +47,20 @@ export class InvoiceItemsService {
     .map(([items, isData]) => items);
 
     this.addedInvoiceItem$ = this.store.select(invoiceItemsGetterState.getCurrentInvoiceItems)
+<<<<<<< HEAD
     .withLatestFrom(this.store.select(invoiceItemPostGetterState.getIsLoadedInvoiceItemPost))
+=======
+    .withLatestFrom(this.store.select(invoiceItemsCreateRequestsGetterState.getIsLoadedInvoiceItemsRequests))
+>>>>>>> 67d0af25aae173ffc1d2a8ed0b6a728af5a1a9fe
     .filter(([items , isData]) => isData)
     .map(([item, isData]) => item);
 
     this.updatedInvoiceItem$ = this.store.select(invoiceItemsGetterState.getCurrentInvoiceItems)
+<<<<<<< HEAD
     .withLatestFrom(this.store.select(invoiceItemPutGetterState.getIsLoadedInvoiceItemPut))
+=======
+    .withLatestFrom(this.store.select(invoiceItemsUpdateRequestsGetterState.getIsLoadedInvoiceItemsRequests))
+>>>>>>> 67d0af25aae173ffc1d2a8ed0b6a728af5a1a9fe
     .filter(([items , isData]) => isData)
     .map(([item, isData]) => item);
   }
@@ -76,7 +84,11 @@ export class InvoiceItemsService {
   }
 
   dispatchUpdateInvoiceItem(invoiceItem): Observable<InvoiceItem> {
+<<<<<<< HEAD
     this.store.dispatch(new invoiceItems.UpdateInvoiceItemAction(invoiceItem));
+=======
+    this.store.dispatch(new invoiceItemsActions.UpdateInvoiceItemAction(invoiceItem));
+>>>>>>> 67d0af25aae173ffc1d2a8ed0b6a728af5a1a9fe
     return this.updatedInvoiceItem$;
   }
 
