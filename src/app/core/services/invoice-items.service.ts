@@ -16,9 +16,12 @@ import { StateManagement } from '../../shared/utils/state-management';
 import { AppState } from '../../ngrx';
 import * as invoiceItems from '../../ngrx/invoice-items/actions';
 import * as invoiceItemsGetterState from '../../ngrx/invoice-items/states/invoice-items-getter.state';
-import * as invoiceItemsGetGetterState from '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-items-get/states/invoice-items-get-getter.state';
-import * as invoiceItemPostGetterState from '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-post/states/invoice-item-post-getter.state';
-import * as invoiceItemPutGetterState from '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-put/states/invoice-item-put-getter.state';
+import * as invoiceItemsGetGetterState from
+    '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-items-get/states/invoice-items-get-getter.state';
+import * as invoiceItemPostGetterState from
+    '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-post/states/invoice-item-post-getter.state';
+import * as invoiceItemPutGetterState from
+    '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-put/states/invoice-item-put-getter.state';
 
 import { InvoiceItem } from '../interfaces/invoice-item';
 
@@ -47,20 +50,12 @@ export class InvoiceItemsService {
     .map(([items, isData]) => items);
 
     this.addedInvoiceItem$ = this.store.select(invoiceItemsGetterState.getCurrentInvoiceItems)
-<<<<<<< HEAD
     .withLatestFrom(this.store.select(invoiceItemPostGetterState.getIsLoadedInvoiceItemPost))
-=======
-    .withLatestFrom(this.store.select(invoiceItemsCreateRequestsGetterState.getIsLoadedInvoiceItemsRequests))
->>>>>>> 67d0af25aae173ffc1d2a8ed0b6a728af5a1a9fe
     .filter(([items , isData]) => isData)
     .map(([item, isData]) => item);
 
     this.updatedInvoiceItem$ = this.store.select(invoiceItemsGetterState.getCurrentInvoiceItems)
-<<<<<<< HEAD
     .withLatestFrom(this.store.select(invoiceItemPutGetterState.getIsLoadedInvoiceItemPut))
-=======
-    .withLatestFrom(this.store.select(invoiceItemsUpdateRequestsGetterState.getIsLoadedInvoiceItemsRequests))
->>>>>>> 67d0af25aae173ffc1d2a8ed0b6a728af5a1a9fe
     .filter(([items , isData]) => isData)
     .map(([item, isData]) => item);
   }
@@ -84,11 +79,7 @@ export class InvoiceItemsService {
   }
 
   dispatchUpdateInvoiceItem(invoiceItem): Observable<InvoiceItem> {
-<<<<<<< HEAD
     this.store.dispatch(new invoiceItems.UpdateInvoiceItemAction(invoiceItem));
-=======
-    this.store.dispatch(new invoiceItemsActions.UpdateInvoiceItemAction(invoiceItem));
->>>>>>> 67d0af25aae173ffc1d2a8ed0b6a728af5a1a9fe
     return this.updatedInvoiceItem$;
   }
 
