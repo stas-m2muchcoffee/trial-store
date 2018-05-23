@@ -16,6 +16,7 @@ import {
   InvoiceItemsGetRequestsEffects,
   InvoiceItemPostRequestsEffects,
   InvoiceItemPutRequestsEffects,
+  InvoiceItemDeleteRequestsEffects,
 } from '../ngrx/requests/nested-states/invoice-items/effects';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
@@ -53,6 +54,7 @@ import { SpinnerModule } from './spinner/spinner.module';
       InvoiceItemsGetRequestsEffects,
       InvoiceItemPostRequestsEffects,
       InvoiceItemPutRequestsEffects,
+      InvoiceItemDeleteRequestsEffects,
     ]),
   ],
   exports: [

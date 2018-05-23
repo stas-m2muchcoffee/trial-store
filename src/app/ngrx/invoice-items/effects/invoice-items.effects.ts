@@ -67,6 +67,24 @@ export class InvoiceItemsEffects {
     new invoiceItems.UpdateInvoiceItemSuccessAction([action.payload])
   );
 
+  @Effect()
+  invoiceItemDeleteRequest$: Observable<Action> = this.actions$
+  .ofType<invoiceItems.Actions>(
+    invoiceItems.ActionTypes.DELETE
+  )
+  .map((action) =>
+    new invoiceItemsRequests.InvoiceItemDeleteAction(action.payload)
+  );
+
+  @Effect()
+  deletedInvoiceItem$: Observable<Action> = this.actions$
+  .ofType<invoiceItemsRequests.InvoiceItemDeleteActions>(
+    invoiceItemsRequests.InvoiceItemDeleteActionTypes.REQUEST_SUCCESS
+  )
+  .map((action) =>
+    new invoiceItems.DeleteInvoiceItemSuccessAction([action.payload])
+  );
+
   constructor(
     private actions$: Actions,
   ) {}

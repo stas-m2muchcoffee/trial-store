@@ -14,6 +14,9 @@ export const ActionTypes = {
 
   UPDATE: `[${INVOICE_ITEM}] update`,
   UPDATE_SUCCESS: `[${INVOICE_ITEM}] updateSuccess`,
+
+  DELETE: `[${INVOICE_ITEM}] delete`,
+  DELETE_SUCCESS: `[${INVOICE_ITEM}] deleteSuccess`,
 };
 
 export class GetInvoiceItemsAction implements Action {
@@ -70,9 +73,29 @@ export class UpdateInvoiceItemSuccessAction implements Action {
   ) {}
 }
 
+export class DeleteInvoiceItemAction implements Action {
+
+  readonly type = ActionTypes.DELETE;
+
+  constructor(
+    public payload: InvoiceItem,
+  ) {}
+}
+
+export class DeleteInvoiceItemSuccessAction implements Action {
+
+  readonly type = ActionTypes.DELETE_SUCCESS;
+
+  constructor(
+    public payload: InvoiceItem[],
+  ) {}
+}
+
 export type Actions = GetInvoiceItemsAction |
   GetInvoiceItemsSuccessAction |
   CreateInvoiceItemAction |
   CreateInvoiceItemSuccessAction |
   UpdateInvoiceItemAction |
-  UpdateInvoiceItemSuccessAction;
+  UpdateInvoiceItemSuccessAction |
+  DeleteInvoiceItemAction |
+  DeleteInvoiceItemSuccessAction;

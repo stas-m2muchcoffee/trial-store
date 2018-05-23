@@ -5,17 +5,17 @@ import { getInvoiceItemsRequestsState } from '../../../states/invoice-items-gett
 
 import { IInvoiceItemsPutState } from './invoice-item-put.state';
 
-export const getInvoiceItemsPutState = createSelector(
+export const getInvoiceItemPutState = createSelector(
   getInvoiceItemsRequestsState,
   (state: IInvoiceItemsState) => state.invoiceItemsPutState,
 );
 
 export const getIsLoadedInvoiceItemPut = createSelector(
-  getInvoiceItemsPutState,
+  getInvoiceItemPutState,
   (state: IInvoiceItemsPutState) => state.loaded
 );
 
 export const getInvoiceItemPutData = createSelector(
-  getInvoiceItemsPutState,
+  getInvoiceItemPutState,
   (state: IInvoiceItemsPutState) => state.data
 );

@@ -8,23 +8,23 @@ import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/withLatestFrom';
+import 'rxjs/add/operator/mapTo';
 
 import { Store } from '@ngrx/store';
-
-import { StateManagement } from '../../shared/utils/state-management';
 
 import { AppState } from '../../ngrx';
 import * as invoiceItems from '../../ngrx/invoice-items/actions';
 import * as invoiceItemsGetterState from '../../ngrx/invoice-items/states/invoice-items-getter.state';
 import * as invoiceItemsGetGetterState from
-    '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-items-get/states/invoice-items-get-getter.state';
+'../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-items-get/states/invoice-items-get-getter.state';
 import * as invoiceItemPostGetterState from
-    '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-post/states/invoice-item-post-getter.state';
+'../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-post/states/invoice-item-post-getter.state';
 import * as invoiceItemPutGetterState from
-    '../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-put/states/invoice-item-put-getter.state';
+'../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-put/states/invoice-item-put-getter.state';
+import * as invoiceItemDeleteGetterState from
+'../../ngrx/requests/nested-states/invoice-items/nested-states/invoice-item-delete/states/invoice-item-delete-getter.state';
 
 import { InvoiceItem } from '../interfaces/invoice-item';
-import 'rxjs/add/operator/do';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -37,14 +37,12 @@ export class InvoiceItemsService {
   invoiceItems$: Observable<InvoiceItem[]>;
   addedInvoiceItem$: Observable<InvoiceItem>;
   updatedInvoiceItem$: Observable<InvoiceItem>;
-  state: StateManagement<InvoiceItem>;
+  deleteInvoiceItem$: Observable<InvoiceItem>;
 
   constructor(
     private http: HttpClient,
     private store: Store<AppState>,
   ) {
-    this.state = new StateManagement<InvoiceItem>();
-
     this.invoiceItems$ = this.store.select(invoiceItemsGetterState.getInvoiceItems)
     .withLatestFrom(this.store.select(invoiceItemsGetGetterState.getIsLoadedInvoiceItemsGet))
     .filter(([items , isData]) => isData)
@@ -55,7 +53,15 @@ export class InvoiceItemsService {
     .filter(([items , isData]) => isData)
     .map(([item, isData]) => item);
 
-    this.updatedInvoiceItem$ = this.store.select(invoiceItemPutGetterState.getInvoiceItemPutData);
+    this.updatedInvoiceItem$ = this.store.select(invoiceItemPutGetterState.getInvoiceItemPutData)
+    .withLatestFrom(this.store.select(invoiceItemPutGetterState.getIsLoadedInvoiceItemPut))
+    .filter(([items , isData]) => isData)
+    .map(([item, isData]) => item);
+
+    this.deleteInvoiceItem$ = this.store.select(invoiceItemDeleteGetterState.getInvoiceItemDeleteData)
+    .withLatestFrom(this.store.select(invoiceItemDeleteGetterState.getIsLoadedInvoiceItemDelete))
+    .filter(([items , isData]) => isData)
+    .map(([item, isData]) => item);
   }
 
   getInvoiceItems(id: number | string) {
@@ -85,8 +91,13 @@ export class InvoiceItemsService {
     return this.http.put<InvoiceItem>(`invoices/${invoiceItem.invoice_id}/items/${invoiceItem.id}`, invoiceItem, httpOptions);
   }
 
-  deleteInvoiceItem(invoiceItem: InvoiceItem): Observable<InvoiceItem> {
-    this.state.remove$.next(this.http.delete<InvoiceItem>(`invoices/${invoiceItem.invoice_id}/items/${invoiceItem.id}`, httpOptions));
-    return this.state.removeResponse$;
+  deleteInvoiceItem(item: InvoiceItem): Observable<InvoiceItem> {
+    this.store.dispatch(new invoiceItems.DeleteInvoiceItemAction(item));
+    return this.deleteInvoiceItem$;
+  }
+
+  deleteInvoiceItemRequest(item: InvoiceItem): Observable<InvoiceItem> {
+    return this.http.delete<InvoiceItem>(`invoices/${item.invoice_id}/items/${item.id}`, httpOptions)
+    .mapTo(item);
   }
 }
