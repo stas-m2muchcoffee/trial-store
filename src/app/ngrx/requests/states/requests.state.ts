@@ -1,14 +1,14 @@
 // states
 import {
-  IProductsRequestsState,
-  ICustomersRequestsState,
-  IInvoiceItemsRequestsState,
+  IProductsState,
+  ICustomersState,
+  IInvoiceItemsState,
 } from './index';
 
 export interface IRequestsState {
-  productsRequestsState?:  IProductsRequestsState;
-  customersRequestsState?: ICustomersRequestsState;
-  invoiceItemsRequestsState?: IInvoiceItemsRequestsState;
+  productsState?:  IProductsState;
+  customersState?: ICustomersState;
+  invoiceItemsState?: IInvoiceItemsState;
 }
 
 export interface IRequestsNestedState {

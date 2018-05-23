@@ -1,15 +1,22 @@
-import { IInvoiceItemsRequestsState, invoiceItemsInitialState } from '../states';
+import { IInvoiceItemsState, invoiceItemsInitialState } from '../states';
+import { invoiceItemsGetReducer } from '../nested-states/invoice-items-get/reducers';
+import { invoiceItemsPostReducer } from '../nested-states/invoice-item-post/reducers';
+import { invoiceItemsPutReducer } from '../nested-states/invoice-item-put/reducers';
 
-import { invoiceItemsGetListRequestsReducer } from '../nested-states/invoice-items-get-list/reducers';
-import { invoiceItemsCreateRequestsReducer } from '../nested-states/invoice-items-create/reducers';
+// import {
+//   invoiceItemsGetReducer,
+//   invoiceItemsPostReducer,
+//   invoiceItemsPutReducer,
+// } from './index';
 
 
-export function invoiceItemsRequestsReducer(
+export function invoiceItemsReducer(
   state = invoiceItemsInitialState,
   action
-): IInvoiceItemsRequestsState {
+): IInvoiceItemsState {
   return {
-    invoiceItemsGetListRequestsState: invoiceItemsGetListRequestsReducer(state.invoiceItemsGetListRequestsState, action),
-    invoiceItemsCreateRequestsState: invoiceItemsCreateRequestsReducer(state.invoiceItemsCreateRequestsState, action),
+    invoiceItemsGetState: invoiceItemsGetReducer(state.invoiceItemsGetState, action),
+    invoiceItemsPostState: invoiceItemsPostReducer(state.invoiceItemsPostState, action),
+    invoiceItemsPutState: invoiceItemsPutReducer(state.invoiceItemsPutState, action),
   };
 }

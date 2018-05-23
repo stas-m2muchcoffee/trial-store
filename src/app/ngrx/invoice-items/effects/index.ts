@@ -1,1 +1,1 @@
-export * from './invoice-items-effects';
+export * from './invoice-items.effects';

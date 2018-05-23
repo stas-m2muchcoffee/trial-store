@@ -1,1 +1,1 @@
-export * from './products-requests-reducer';
+export * from './products-get.reducer';

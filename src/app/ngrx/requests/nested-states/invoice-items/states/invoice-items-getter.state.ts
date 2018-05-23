@@ -9,5 +9,5 @@ import { getRequestsState } from '../../../states/requests-getter.state';
 
 export const getInvoiceItemsRequestsState = createSelector(
   getRequestsState,
-  (state: IRequestsState) => state.invoiceItemsRequestsState
+  (state: IRequestsState) => state.invoiceItemsState
 );

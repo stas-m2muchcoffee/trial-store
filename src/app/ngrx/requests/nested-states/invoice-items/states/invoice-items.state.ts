@@ -1,12 +1,14 @@
 // states
 import {
-  IInvoiceItemsGetListRequestsState,
-  IInvoiceItemsCreateRequestsState,
+  IInvoiceItemsGetState,
+  IInvoiceItemsPostState,
+  IInvoiceItemsPutState,
 } from './index';
 
-export interface IInvoiceItemsRequestsState {
-  invoiceItemsGetListRequestsState?: IInvoiceItemsGetListRequestsState;
-  invoiceItemsCreateRequestsState?: IInvoiceItemsCreateRequestsState;
+export interface IInvoiceItemsState {
+  invoiceItemsGetState?: IInvoiceItemsGetState;
+  invoiceItemsPostState?: IInvoiceItemsPostState;
+  invoiceItemsPutState?: IInvoiceItemsPutState;
 }
 
-export const invoiceItemsInitialState: IInvoiceItemsRequestsState = {};
+export const invoiceItemsInitialState: IInvoiceItemsState = {};

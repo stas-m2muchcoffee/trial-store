@@ -13,10 +13,10 @@ import { Store } from '@ngrx/store';
 
 import { StateManagement } from '../../shared/utils/state-management';
 
-import { AppState } from '../../ngrx/app-state/app-state';
-import * as customersActions from '../../ngrx/customers/actions';
+import { AppState } from '../../ngrx';
+import * as customers from '../../ngrx/customers/actions';
 import * as customersGetterState from '../../ngrx/customers/states/customers-getter.state';
-import * as customersRequestsGetterState from '../../ngrx/requests/nested-states/customers/states/customers-requests-getter.state';
+import * as customersRequestsGetterState from '../../ngrx/requests/nested-states/customers/states/customers-get-getter.state';
 
 import { Customer } from '../interfaces/customer';
 
@@ -43,7 +43,7 @@ export class CustomerService {
   }
 
   dispatchGetListCustomerAction(): Observable<Customer[]> {
-    this.store.dispatch(new customersActions.GetListCustomerAction);
+    this.store.dispatch(new customers.GetCustomersAction);
     return this.customers$;
   }
 }

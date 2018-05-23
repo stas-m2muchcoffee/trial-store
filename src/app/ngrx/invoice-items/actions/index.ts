@@ -1,1 +1,1 @@
-export * from './invoice-items-actions';
+export * from './invoice-items.actions';

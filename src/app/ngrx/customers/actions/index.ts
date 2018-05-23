@@ -1,1 +1,1 @@
-export * from './customers-actions';
+export * from './customers.actions';

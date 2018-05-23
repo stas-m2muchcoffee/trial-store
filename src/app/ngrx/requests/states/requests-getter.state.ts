@@ -1,4 +1,4 @@
 // interfaces
-import { AppState } from '../../app-state/app-state';
+import { AppState } from '../../';
 
 export const getRequestsState = (state: AppState) => state.requests;

@@ -8,10 +8,10 @@ import 'rxjs/add/operator/map';
 
 import { Store } from '@ngrx/store';
 
-import { AppState } from '../../ngrx/app-state/app-state';
-import * as productsActions from '../../ngrx/products/actions';
+import { AppState } from '../../ngrx';
+import * as products from '../../ngrx/products/actions';
 import * as productsGetterState from '../../ngrx/products/states/products-getter.state';
-import * as productsRequestsGetterState from '../../ngrx/requests/nested-states/products/states/products-requests-getter.state';
+import * as productsRequestsGetterState from '../../ngrx/requests/nested-states/products/states/products-get-getter.state';
 
 import { Product } from '../interfaces/product';
 
@@ -39,7 +39,7 @@ export class ProductService {
   }
 
   dispatchGetListProductAction(): Observable<Product[]> {
-    this.store.dispatch(new productsActions.GetListProductAction);
+    this.store.dispatch(new products.GetProductsAction);
     return this.products$;
   }
 }

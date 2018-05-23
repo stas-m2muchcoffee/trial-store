@@ -6,15 +6,16 @@ import { HttpClientModule } from '@angular/common/http';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
-import { reducers } from '../ngrx/app-state/app-state';
+import { reducers } from '../ngrx';
 import { ProductsEffects } from '../ngrx/products/effects';
 import { CustomersEffects } from '../ngrx/customers/effects';
 import { InvoiceItemsEffects } from '../ngrx/invoice-items/effects';
 import { ProductsRequestsEffects } from '../ngrx/requests/nested-states/products/effects';
 import { CustomersRequestsEffects } from '../ngrx/requests/nested-states/customers/effects';
 import {
-  InvoiceItemsGetListRequestsEffects,
-  InvoiceItemsCreateRequestsEffects
+  InvoiceItemsGetRequestsEffects,
+  InvoiceItemPostRequestsEffects,
+  InvoiceItemPutRequestsEffects,
 } from '../ngrx/requests/nested-states/invoice-items/effects';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
@@ -49,8 +50,9 @@ import { SpinnerModule } from './spinner/spinner.module';
       CustomersEffects,
       CustomersRequestsEffects,
       InvoiceItemsEffects,
-      InvoiceItemsGetListRequestsEffects,
-      InvoiceItemsCreateRequestsEffects,
+      InvoiceItemsGetRequestsEffects,
+      InvoiceItemPostRequestsEffects,
+      InvoiceItemPutRequestsEffects,
     ]),
   ],
   exports: [

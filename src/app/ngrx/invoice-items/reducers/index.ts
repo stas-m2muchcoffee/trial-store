@@ -1,1 +1,1 @@
-export * from './invoice-items-reducer';
+export * from './invoice-items.reducer';
