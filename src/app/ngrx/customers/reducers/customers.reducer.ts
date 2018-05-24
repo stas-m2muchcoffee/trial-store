@@ -1,5 +1,6 @@
 import { Actions, ActionTypes } from '../actions';
 import { ICustomersState, initialState } from '../states';
+import { getIdsArrEntities, setEntities, updateEntities } from '../../utils/util';
 
 export function customersReducer(
   state: ICustomersState = initialState,
@@ -8,11 +9,11 @@ export function customersReducer(
   switch (type) {
 
     case ActionTypes.GET_LIST_SUCCESS: {
-      const entities = payload.reduce((accEntities, currentCustomer) =>
-          ({...accEntities, [currentCustomer.id]: currentCustomer}),
-        {}
-      );
-      const collectionIds = payload.map(customer => customer.id);
+      let entities = { ...state.entities };
+      payload.forEach(customer => {
+        entities = { ...setEntities(entities, customer) };
+      });
+      const collectionIds = getIdsArrEntities(entities);
 
       return {
         ...state,
