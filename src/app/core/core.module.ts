@@ -11,14 +11,22 @@ import { reducers } from '../ngrx';
 import { ProductsEffects } from '../ngrx/products/effects';
 import { CustomersEffects } from '../ngrx/customers/effects';
 import { InvoiceItemsEffects } from '../ngrx/invoice-items/effects';
+import { InvoicesEffects } from '../ngrx/invoices/effects';
 import { ProductsRequestsEffects } from '../ngrx/requests/nested-states/products/effects';
 import { CustomersRequestsEffects } from '../ngrx/requests/nested-states/customers/effects';
 import {
-InvoiceItemsGetRequestsEffects,
-InvoiceItemPostRequestsEffects,
-InvoiceItemPutRequestsEffects,
-InvoiceItemDeleteRequestsEffects,
+  InvoiceItemsGetRequestsEffects,
+  InvoiceItemPostRequestsEffects,
+  InvoiceItemPutRequestsEffects,
+  InvoiceItemDeleteRequestsEffects,
 } from '../ngrx/requests/nested-states/invoice-items/effects';
+import {
+  InvoicesGetRequestsEffects,
+  InvoiceGetRequestsEffects,
+  InvoicePostRequestsEffects,
+  InvoicePutRequestsEffects,
+  InvoiceDeleteRequestsEffects,
+} from '../ngrx/requests/nested-states/invoices/effects';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
 
@@ -52,10 +60,16 @@ import { SpinnerModule } from './spinner/spinner.module';
       CustomersEffects,
       CustomersRequestsEffects,
       InvoiceItemsEffects,
+      InvoicesEffects,
       InvoiceItemsGetRequestsEffects,
       InvoiceItemPostRequestsEffects,
       InvoiceItemPutRequestsEffects,
       InvoiceItemDeleteRequestsEffects,
+      InvoicesGetRequestsEffects,
+      InvoiceGetRequestsEffects,
+      InvoicePostRequestsEffects,
+      InvoicePutRequestsEffects,
+      InvoiceDeleteRequestsEffects,
     ]),
     StoreDevtoolsModule.instrument({
       maxAge: 25,

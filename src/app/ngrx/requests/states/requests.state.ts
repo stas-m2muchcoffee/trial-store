@@ -2,12 +2,14 @@
 import {
   IProductsState,
   ICustomersState,
+  IInvoicesState,
   IInvoiceItemsState,
 } from './index';
 
 export interface IRequestsState {
   productsState?:  IProductsState;
   customersState?: ICustomersState;
+  invoicesState?: IInvoicesState;
   invoiceItemsState?: IInvoiceItemsState;
 }
 

@@ -11,8 +11,6 @@ import 'rxjs/add/operator/filter';
 
 import { Store } from '@ngrx/store';
 
-import { StateManagement } from '../../shared/utils/state-management';
-
 import { AppState } from '../../ngrx';
 import * as customers from '../../ngrx/customers/actions';
 import * as customersGetterState from '../../ngrx/customers/states/customers-getter.state';
@@ -22,8 +20,9 @@ import { Customer } from '../interfaces/customer';
 
 @Injectable()
 export class CustomerService {
-  state: StateManagement<Customer>;
+
   customers$: Observable<Customer[]>;
+
   isData$: Observable<boolean>;
 
   constructor(

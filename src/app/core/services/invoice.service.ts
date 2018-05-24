@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 
+import { Store } from '@ngrx/store';
+
 import { Observable } from 'rxjs/Observable';
-import { ConnectableObservable } from 'rxjs/observable/ConnectableObservable';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/publishReplay';
@@ -13,15 +14,26 @@ import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/shareReplay';
 import 'rxjs/add/operator/publishBehavior';
 
-import { StateManagement, StateRequests } from '../../shared/utils/state-management';
-
+import { AppState } from '../../ngrx';
 import * as customersGetterState from '../../ngrx/customers/states/customers-getter.state';
+import * as invoices from '../../ngrx/invoices/actions';
+import * as invoicesGetterState from '../../ngrx/invoices/states/invoices-getter.state';
+import * as invoiceItemsGetterState from '../../ngrx/invoice-items/states/invoice-items-getter.state';
+import * as invoicePostGetterState from
+'../../ngrx/requests/nested-states/invoices/nested-states/invoice-post/states/invoice-post-getter.state';
+import * as invoicePutGetterState from
+'../../ngrx/requests/nested-states/invoices/nested-states/invoice-put/states/invoice-put-getter.state';
+import * as invoiceDeleteGetterState from
+'../../ngrx/requests/nested-states/invoices/nested-states/invoice-delete/states/invoice-delete-getter.state';
+import * as invoicesGetGetterState from
+'../../ngrx/requests/nested-states/invoices/nested-states/invoices-get/states/invoices-get-getter.state';
+import * as invoiceGetGetterState from
+'../../ngrx/requests/nested-states/invoices/nested-states/invoice-get/states/invoice-get-getter.state';
 
 import { Invoice } from '../interfaces/invoice';
 import { CustomerService } from './customer.service';
 import { InvoiceItemsService } from './invoice-items.service';
-import {AppState} from '../../ngrx/app-state/app-state';
-import {Store} from '@ngrx/store';
+
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -31,12 +43,14 @@ const httpOptions = {
 
 @Injectable()
 export class InvoiceService {
+
   invoices$: Observable<Invoice[]>;
   invoice$: Observable<Invoice>;
   addedInvoice$: Observable<Invoice>;
   updatedInvoice$: Observable<Invoice>;
-  state: StateManagement<Invoice>;
-  isData$: ConnectableObservable<boolean>;
+  deletedInvoice$: Observable<Invoice>;
+
+  isData$: Observable<boolean>;
 
   constructor(
     private http: HttpClient,
@@ -44,28 +58,16 @@ export class InvoiceService {
     private invoiceItemsService: InvoiceItemsService,
     private store: Store<AppState>,
   ) {
-    this.state = new StateManagement<Invoice>();
+    this.isData$ = this.store.select(invoicesGetGetterState.getIsLoadedInvoicesGet);
 
-    this.isData$ = this.state.responseDataRequests$
-    .scan((isData: boolean, {type}) => {
-      if (type === StateRequests.GetList) {
-        return true;
-      }
-    }, false)
-    .publishBehavior(false);
-    this.isData$.connect();
-
-    this.invoices$ = Observable.combineLatest(
-      this.state.entities$,
-      this.state.collectionIds$
-    )
-    .map(([entities, ids]: [{ [index: number]: Invoice }, number[]]) =>
-      ids.filter((id) => entities[id]).map((id) => entities[id])
-    )
+    this.invoices$ = this.store.select(invoicesGetterState.getInvoices)
+    .withLatestFrom(this.store.select(invoicesGetGetterState.getIsLoadedInvoicesGet))
+    .filter(([_invoices, isData]) => isData)
+    .map(([_invoices, isData]) => _invoices)
     // add customer
     .combineLatest(this.store.select(customersGetterState.getCustomersEntities).startWith({}))
-    .map(([invoices, entitiesCustomers]) => {
-      return invoices.map((invoice) => {
+    .map(([_invoices, entitiesCustomers]) => {
+      return _invoices.map((invoice) => {
         return ({
           ...invoice,
           customer: entitiesCustomers[invoice.customer_id],
@@ -74,21 +76,19 @@ export class InvoiceService {
     })
     // add items
     .combineLatest(this.invoiceItemsService.invoiceItems$.startWith([]))
-    .map(([invoices, items]) => {
-      return invoices.map((invoice) => {
+    .map(([_invoices, items]) => {
+      return _invoices.map((invoice) => {
         return ({
           ...invoice,
           items: items.filter((item) => item.invoice_id === invoice.id)
         });
       });
-    })
-    .shareReplay(1);
+    });
 
-    this.invoice$ = Observable.combineLatest(
-      this.state.entities$,
-      this.state.entityId$
-    )
-    .map(([entities, id]: [{ [index: number]: Invoice }, number]) => entities[id])
+    this.invoice$ = this.store.select(invoicesGetterState.getInvoice)
+    .withLatestFrom(this.store.select(invoiceGetGetterState.getIsLoadedInvoiceGet))
+    .filter(([_invoices, isData]) => isData)
+    .map(([_invoices, isData]) => _invoices)
     // add customer
     .combineLatest(this.store.select(customersGetterState.getCustomersEntities).startWith({}))
     .map(([invoice, entitiesCustomers]) => {
@@ -97,56 +97,73 @@ export class InvoiceService {
         customer: entitiesCustomers[invoice.customer_id],
       });
     })
-    // add invoices
-    .combineLatest(this.invoiceItemsService.invoiceItems$.startWith([]))
+    // add items
+    .combineLatest(this.store.select(invoiceItemsGetterState.getInvoiceItems).startWith([]))
     .map(([invoice, items]) => {
       return ({
         ...invoice,
         items: items.filter((item) => item.invoice_id === invoice.id)
       });
-    })
-    .share();
+    });
 
-    this.addedInvoice$ = this.getEntity('add');
-    this.updatedInvoice$ = this.getEntity('update');
+    this.addedInvoice$ = this.store.select(invoicePostGetterState.getInvoicePostData)
+    .withLatestFrom(this.store.select(invoicePostGetterState.getIsLoadedInvoicePost))
+    .filter(([items, isData]) => isData)
+    .map(([invoice, isData]) => invoice);
+
+    this.updatedInvoice$ = this.store.select(invoicePutGetterState.getInvoicePutData)
+    .withLatestFrom(this.store.select(invoicePutGetterState.getIsLoadedInvoicePut))
+    .filter(([items, isData]) => isData)
+    .map(([invoice, isData]) => invoice);
+
+    this.deletedInvoice$ = this.store.select(invoiceDeleteGetterState.getInvoiceDeleteData)
+    .withLatestFrom(this.store.select(invoiceDeleteGetterState.getIsLoadedInvoiceDelete))
+    .filter(([items, isData]) => isData)
+    .map(([invoice, isData]) => invoice);
   }
 
-  getEntity(typeRequest: string) {
-    let pathId;
-    switch (typeRequest) {
-      case 'update': pathId = this.state.updateEntityId$; break;
-      case 'add': pathId = this.state.addEntityId$; break;
-    }
-    return Observable.combineLatest(
-      this.state.entities$,
-      pathId
-    )
-    .debounceTime(10)
-    .map(([entities, id]) => entities[id]);
+  getInvoicesRequest(): Observable<Invoice[]> {
+    return this.http.get<Invoice[]>('invoices');
   }
 
   getInvoices(): Observable<Invoice[]> {
-    this.state.getList$.next(this.http.get<Invoice[]>('invoices'));
+    this.store.dispatch(new invoices.GetInvoicesAction);
     return this.invoices$;
   }
 
+  getInvoiceRequest(id: number | string): Observable<Invoice> {
+    return this.http.get<Invoice>(`invoices/${id}`);
+  }
+
   getInvoice(id: number | string): Observable<Invoice> {
-    this.state.get$.next(this.http.get<Invoice>(`invoices/${id}`));
+    this.store.dispatch(new invoices.GetInvoiceAction(id));
     return this.invoice$;
   }
 
+  createInvoiceRequest(invoice: Invoice): Observable<Invoice> {
+    return this.http.post<Invoice>('invoices', invoice, httpOptions);
+  }
+
   createInvoice(invoice: Invoice): Observable<Invoice> {
-    this.state.add$.next(this.http.post<Invoice>('invoices', invoice, httpOptions));
+    this.store.dispatch(new invoices.CreateInvoiceAction(invoice));
     return this.addedInvoice$;
   }
 
+  deleteInvoiceRequest(invoice: Invoice): Observable<Invoice> {
+    return this.http.delete<Invoice>(`invoices/${invoice.id}`, httpOptions);
+  }
+
   deleteInvoice(invoice: Invoice): Observable<Invoice> {
-    this.state.remove$.next(this.http.delete<Invoice>(`invoices/${invoice.id}`, httpOptions).mapTo(invoice));
-    return this.state.removeResponse$;
+    this.store.dispatch(new invoices.DeleteInvoiceAction(invoice));
+    return this.deletedInvoice$;
+  }
+
+  updateInvoiceRequest(invoice: Invoice): Observable<Invoice> {
+    return this.http.put<Invoice>(`invoices/${invoice.id}`, invoice, httpOptions);
   }
 
   updateInvoice(invoice: Invoice): Observable<Invoice> {
-    this.state.update$.next(this.http.put<Invoice>(`invoices/${invoice.id}`, invoice, httpOptions));
+    this.store.dispatch(new invoices.UpdateInvoiceAction(invoice));
     return this.updatedInvoice$;
   }
 }
