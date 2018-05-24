@@ -2,12 +2,14 @@ import { Action } from '@ngrx/store';
 
 import { Product } from '../../../core/interfaces/product';
 
+import { type } from '../../utils/util';
+
 
 const PRODUCT = 'Product';
 
 export const ActionTypes = {
-  GET_LIST: `[${PRODUCT}] getList`,
-  GET_LIST_SUCCESS: `[${PRODUCT}] getListSuccessful`,
+  GET_LIST: type(`[${PRODUCT}] getList`),
+  GET_LIST_SUCCESS: type(`[${PRODUCT}] getListSuccessful`),
 };
 
 export class GetProductsAction implements Action {

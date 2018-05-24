@@ -2,13 +2,15 @@ import { Action } from '@ngrx/store';
 
 import { Invoice } from '../../../../../../../core/interfaces/invoice';
 
+import { type } from '../../../../../../utils/util';
+
 
 const INVOICE_POST = 'Invoice-post';
 
 export const ActionTypes = {
-  REQUEST: `[${INVOICE_POST}] Request`,
-  REQUEST_SUCCESS: `[${INVOICE_POST}] Request Success`,
-  REQUEST_FAIL: `[${INVOICE_POST}] Request Fail`,
+  REQUEST: type(`[${INVOICE_POST}] Request`),
+  REQUEST_SUCCESS: type(`[${INVOICE_POST}] Request Success`),
+  REQUEST_FAIL: type(`[${INVOICE_POST}] Request Fail`),
 };
 
 export class InvoicePostAction implements Action {

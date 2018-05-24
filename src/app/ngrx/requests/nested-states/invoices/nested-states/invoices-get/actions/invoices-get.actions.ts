@@ -2,13 +2,15 @@ import { Action } from '@ngrx/store';
 
 import { Invoice } from '../../../../../../../core/interfaces/invoice';
 
+import { type } from '../../../../../../utils/util';
+
 
 const INVOICES_GET = 'Invoices-get';
 
 export const ActionTypes = {
-  REQUEST: `[${INVOICES_GET}] Request`,
-  REQUEST_SUCCESS: `[${INVOICES_GET}] Request Success`,
-  REQUEST_FAIL: `[${INVOICES_GET}] Request Fail`,
+  REQUEST: type(`[${INVOICES_GET}] Request`),
+  REQUEST_SUCCESS: type(`[${INVOICES_GET}] Request Success`),
+  REQUEST_FAIL: type(`[${INVOICES_GET}] Request Fail`),
 };
 
 export class InvoicesGetAction implements Action {

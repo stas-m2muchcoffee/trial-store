@@ -2,13 +2,15 @@ import { Action } from '@ngrx/store';
 
 import { Customer } from '../../../../../core/interfaces/customer';
 
+import { type } from '../../../../utils/util';
+
 
 const CUSTOMERS_GET = 'Customers-get';
 
 export const ActionTypes = {
-  REQUEST: `[${CUSTOMERS_GET}] Request`,
-  REQUEST_SUCCESS: `[${CUSTOMERS_GET}] Request Success`,
-  REQUEST_FAIL: `[${CUSTOMERS_GET}] Request Fail`,
+  REQUEST: type(`[${CUSTOMERS_GET}] Request`),
+  REQUEST_SUCCESS: type(`[${CUSTOMERS_GET}] Request Success`),
+  REQUEST_FAIL: type(`[${CUSTOMERS_GET}] Request Fail`),
 };
 
 export class GetCustomersAction implements Action {

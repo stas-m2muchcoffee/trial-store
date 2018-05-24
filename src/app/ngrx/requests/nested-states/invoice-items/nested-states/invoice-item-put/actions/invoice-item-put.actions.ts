@@ -2,13 +2,15 @@ import { Action } from '@ngrx/store';
 
 import { InvoiceItem } from '../../../../../../../core/interfaces/invoice-item';
 
+import { type } from '../../../../../../utils/util';
+
 
 const INVOICE_ITEM_PUT = 'Invoice-item-put';
 
 export const ActionTypes = {
-  REQUEST: `[${INVOICE_ITEM_PUT}] Request`,
-  REQUEST_SUCCESS: `[${INVOICE_ITEM_PUT}] Request Success`,
-  REQUEST_FAIL: `[${INVOICE_ITEM_PUT}] Request Fail`,
+  REQUEST: type(`[${INVOICE_ITEM_PUT}] Request`),
+  REQUEST_SUCCESS: type(`[${INVOICE_ITEM_PUT}] Request Success`),
+  REQUEST_FAIL: type(`[${INVOICE_ITEM_PUT}] Request Fail`),
 };
 
 export class InvoiceItemPutAction implements Action {

@@ -2,21 +2,23 @@ import { Action } from '@ngrx/store';
 
 import { InvoiceItem } from '../../../core/interfaces/invoice-item';
 
+import { type } from '../../utils/util';
+
 
 const INVOICE_ITEM = 'Invoice-item';
 
 export const ActionTypes = {
-  GET_LIST: `[${INVOICE_ITEM}] getList`,
-  GET_LIST_SUCCESS: `[${INVOICE_ITEM}] getListSuccess`,
+  GET_LIST: type(`[${INVOICE_ITEM}] getList`),
+  GET_LIST_SUCCESS: type(`[${INVOICE_ITEM}] getListSuccess`),
 
-  CREATE: `[${INVOICE_ITEM}] create`,
-  CREATE_SUCCESS: `[${INVOICE_ITEM}] createSuccess`,
+  CREATE: type(`[${INVOICE_ITEM}] create`),
+  CREATE_SUCCESS: type(`[${INVOICE_ITEM}] createSuccess`),
 
-  UPDATE: `[${INVOICE_ITEM}] update`,
-  UPDATE_SUCCESS: `[${INVOICE_ITEM}] updateSuccess`,
+  UPDATE: type(`[${INVOICE_ITEM}] update`),
+  UPDATE_SUCCESS: type(`[${INVOICE_ITEM}] updateSuccess`),
 
-  DELETE: `[${INVOICE_ITEM}] delete`,
-  DELETE_SUCCESS: `[${INVOICE_ITEM}] deleteSuccess`,
+  DELETE: type(`[${INVOICE_ITEM}] delete`),
+  DELETE_SUCCESS: type(`[${INVOICE_ITEM}] deleteSuccess`),
 };
 
 export class GetInvoiceItemsAction implements Action {

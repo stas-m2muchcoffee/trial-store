@@ -2,12 +2,14 @@ import { Action } from '@ngrx/store';
 
 import { Customer } from '../../../core/interfaces/customer';
 
+import { type } from '../../utils/util';
+
 
 const CUSTOMER = 'Customer';
 
 export const ActionTypes = {
-  GET_LIST: `[${CUSTOMER}] getList`,
-  GET_LIST_SUCCESS: `[${CUSTOMER}] getListSuccess`,
+  GET_LIST: type(`[${CUSTOMER}] getList`),
+  GET_LIST_SUCCESS: type(`[${CUSTOMER}] getListSuccess`),
 };
 
 export class GetCustomersAction implements Action {

@@ -2,13 +2,15 @@ import { Action } from '@ngrx/store';
 
 import { Product } from '../../../../../core/interfaces/product';
 
+import { type } from '../../../../utils/util';
+
 
 const PRODUCTS_GET = 'Products-get';
 
 export const ActionTypes = {
-  REQUEST: `[${PRODUCTS_GET}] Request`,
-  REQUEST_SUCCESS: `[${PRODUCTS_GET}] Request Success`,
-  REQUEST_FAIL: `[${PRODUCTS_GET}] Request Fail`,
+  REQUEST: type(`[${PRODUCTS_GET}] Request`),
+  REQUEST_SUCCESS: type(`[${PRODUCTS_GET}] Request Success`),
+  REQUEST_FAIL: type(`[${PRODUCTS_GET}] Request Fail`),
 };
 
 export class GetProductsAction implements Action {

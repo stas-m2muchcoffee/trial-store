@@ -2,13 +2,15 @@ import { Action } from '@ngrx/store';
 
 import { Invoice } from '../../../../../../../core/interfaces/invoice';
 
+import { type } from '../../../../../../utils/util';
+
 
 const INVOICE_DELETE = 'Invoice-delete';
 
 export const ActionTypes = {
-  REQUEST: `[${INVOICE_DELETE}] Request`,
-  REQUEST_SUCCESS: `[${INVOICE_DELETE}] Request Success`,
-  REQUEST_FAIL: `[${INVOICE_DELETE}] Request Fail`,
+  REQUEST: type(`[${INVOICE_DELETE}] Request`),
+  REQUEST_SUCCESS: type(`[${INVOICE_DELETE}] Request Success`),
+  REQUEST_FAIL: type(`[${INVOICE_DELETE}] Request Fail`),
 };
 
 export class InvoiceDeleteAction implements Action {
