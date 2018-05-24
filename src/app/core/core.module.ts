@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 import { reducers } from '../ngrx';
 import { ProductsEffects } from '../ngrx/products/effects';
@@ -13,10 +14,10 @@ import { InvoiceItemsEffects } from '../ngrx/invoice-items/effects';
 import { ProductsRequestsEffects } from '../ngrx/requests/nested-states/products/effects';
 import { CustomersRequestsEffects } from '../ngrx/requests/nested-states/customers/effects';
 import {
-  InvoiceItemsGetRequestsEffects,
-  InvoiceItemPostRequestsEffects,
-  InvoiceItemPutRequestsEffects,
-  InvoiceItemDeleteRequestsEffects,
+InvoiceItemsGetRequestsEffects,
+InvoiceItemPostRequestsEffects,
+InvoiceItemPutRequestsEffects,
+InvoiceItemDeleteRequestsEffects,
 } from '../ngrx/requests/nested-states/invoice-items/effects';
 
 import { ToolbarModule } from './toolbar/toolbar.module';
@@ -56,6 +57,9 @@ import { SpinnerModule } from './spinner/spinner.module';
       InvoiceItemPutRequestsEffects,
       InvoiceItemDeleteRequestsEffects,
     ]),
+    StoreDevtoolsModule.instrument({
+      maxAge: 25,
+    }),
   ],
   exports: [
     ToolbarModule,
