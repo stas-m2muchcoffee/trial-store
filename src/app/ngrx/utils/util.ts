@@ -1,3 +1,5 @@
+import * as _ from 'lodash';
+
 const typeCache: { [label: string]: boolean } = {};
 
 export function type<T>(label: T | ''): T {
