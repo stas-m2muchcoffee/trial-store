@@ -23,15 +23,17 @@ export function invoicesReducer(
 
     case invoicesActions.ActionTypes.CREATE_SUCCESS:
     case invoicesActions.ActionTypes.UPDATE_SUCCESS: {
-      const currentEntities = payload.reduce((accEntities, currentInvoiceItem) =>
+
+      const entities = payload.reduce((accEntities, currentInvoiceItem) =>
           ({...accEntities, [currentInvoiceItem.id]: currentInvoiceItem}),
-        {}
+        state.entities
       );
-      const entities = {...state.entities, ...currentEntities};
+
       const currentCollectionIds = [
         ...state.collectionIds,
         ...payload.map(item => item.id)
       ];
+
       const collectionIds = currentCollectionIds
       .filter((id, pos) => currentCollectionIds.indexOf(id) === pos);
 
