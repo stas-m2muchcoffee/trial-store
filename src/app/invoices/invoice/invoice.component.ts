@@ -32,6 +32,7 @@ import { Product } from '../../core/interfaces/product';
 import { InvoiceItem } from '../../core/interfaces/invoice-item';
 import { Invoice } from '../../core/interfaces/invoice';
 
+
 export class RawProductErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;
@@ -56,17 +57,14 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   addInvoiceItemSubscription: Subscription;
   updateInvoiceSubscription: Subscription;
   setTotalSubscription: Subscription;
-  createInvoiceSubscription: Subscription;
-  navigationPermissionSubscription: Subscription;
   addInvoiceItem = new FormControl(null);
   createInvoice$: Subject<Invoice>;
   invoice: Invoice;
   invoiceItems: InvoiceItem[];
   rawProductMatcher = new RawProductErrorStateMatcher();
   onCanDeactivate$: Subject<boolean>;
+  isCreatedInvoiceSuccess$: Observable<boolean>;
   navigationPermission$: ConnectableObservable<boolean>;
-  createInvoiceRequest$: Observable<Invoice>;
-  isSuccessfulResponse$: Observable<boolean>;
 
   constructor(
     private customerService: CustomerService,
@@ -112,6 +110,23 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     this.customers$ = this.customerService.customers$;
     this.products$ = this.productService.products$;
 
+    this.isCreatedInvoiceSuccess$ = this.invoiceService.isCreatedInvoiceSuccess$
+    .filter(data => data);
+
+    this.navigationPermission$ = Observable.merge(
+      this.isCreatedInvoiceSuccess$,
+      this.onCanDeactivate$,
+    )
+    .switchMap((isSuccessfulResponse) => {
+      if ((this.invoiceForm.touched || this.items.value.length) && !(this.isEdit || isSuccessfulResponse)) {
+        return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
+      }
+      return Observable.of(true);
+    })
+    .delay(10)
+    .publish();
+    this.navigationPermission$.connect();
+
     this.setTotalSubscription = Observable.combineLatest(
       this.items.valueChanges.startWith(this.items.value),
       this.discount.valueChanges.startWith(this.discount.value),
@@ -123,13 +138,6 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     .subscribe((total) => {
       this.total.setValue(total);
     });
-
-    this.createInvoiceRequest$ = this.createInvoice$
-    .mergeMap((invoice) => this.invoiceService.createInvoice(invoice))
-    .shareReplay(1);
-
-    this.createInvoiceSubscription = this.createInvoiceRequest$
-    .subscribe(() => this.router.navigate(['./invoices']));
 
     this.addInvoiceItemSubscription = this.addInvoiceItem.valueChanges
     .switchMap(product_id => {
@@ -162,31 +170,11 @@ export class InvoiceComponent implements OnInit, OnDestroy {
     .subscribe(() => {
       this.invoiceService.updateInvoice(this.invoiceForm.value);
     });
-
-    this.isSuccessfulResponse$ = this.createInvoiceRequest$
-    .mapTo(true)
-    .startWith(false);
-
-    this.navigationPermission$ = Observable.merge(
-      this.isSuccessfulResponse$,
-      this.onCanDeactivate$,
-    )
-    .switchMap((isSuccessfulResponse) => {
-      if ((this.invoiceForm.touched || this.items.value.length) && !(this.isEdit || isSuccessfulResponse)) {
-        return this.modalService.confirmModal('Your changes have not been saved. Do you want to leave?');
-      }
-      return Observable.of(true);
-    })
-    .delay(10)
-    .publish();
-    this.navigationPermissionSubscription = this.navigationPermission$.connect();
   }
 
   ngOnDestroy() {
     this.addInvoiceItemSubscription.unsubscribe();
     this.setTotalSubscription.unsubscribe();
-    this.createInvoiceSubscription.unsubscribe();
-    this.navigationPermissionSubscription.unsubscribe();
   }
 
   createForm() {
@@ -218,7 +206,7 @@ export class InvoiceComponent implements OnInit, OnDestroy {
   createInvoice() {
     if (this.invoiceForm.valid) {
       this.onCanDeactivate$.complete();
-      this.createInvoice$.next({...this.invoiceForm.value} as Invoice);
+      this.invoiceService.createInvoice({...this.invoiceForm.value} as Invoice);
     }
   }
 

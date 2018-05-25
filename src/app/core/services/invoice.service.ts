@@ -49,6 +49,7 @@ export class InvoiceService {
   addedInvoice$: Observable<Invoice>;
   updatedInvoice$: Observable<Invoice>;
   deletedInvoice$: Observable<Invoice>;
+  isCreatedInvoiceSuccess$: Observable<boolean>;
 
   isData$: Observable<boolean>;
 
@@ -59,6 +60,8 @@ export class InvoiceService {
     private store: Store<AppState>,
   ) {
     this.isData$ = this.store.select(invoicesGetGetterState.getIsLoadedInvoicesGet);
+
+    this.isCreatedInvoiceSuccess$ = this.store.select(invoicePostGetterState.getIsLoadedInvoicePost);
 
     this.invoices$ = this.store.select(invoicesGetterState.getInvoices)
     .withLatestFrom(this.store.select(invoicesGetGetterState.getIsLoadedInvoicesGet))

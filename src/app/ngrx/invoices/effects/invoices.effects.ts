@@ -3,12 +3,15 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/do';
 
 import { Action } from '@ngrx/store';
 import { Actions, Effect } from '@ngrx/effects';
 
 import * as invoicesRequests from '../../requests/nested-states/invoices/actions';
 import * as invoices from '../actions';
+import {Router} from '@angular/router';
+import {ModalService} from '../../../core/services/modal.service';
 
 @Injectable()
 export class InvoicesEffects {
@@ -45,8 +48,20 @@ export class InvoicesEffects {
   .ofType<invoicesRequests.InvoicePostActions>(
     invoicesRequests.InvoicePostActionTypes.REQUEST_SUCCESS
   )
-  .map((action) =>
-    new invoices.CreateInvoiceSuccessAction([action.payload])
+  .map((action) => {
+      this.router.navigate(['./invoices']);
+      return new invoices.CreateInvoiceSuccessAction([action.payload]);
+    }
+  );
+
+  @Effect({dispatch: false})
+  failAddInvoice$: Observable<Action> = this.actions$
+  .ofType<invoicesRequests.InvoicePostActions>(
+    invoicesRequests.InvoicePostActionTypes.REQUEST_FAIL
+  )
+  .do(() => {
+      this.modalService.confirmModal('Error! Invoice was not added', false);
+    }
   );
 
   @Effect()
@@ -105,5 +120,7 @@ export class InvoicesEffects {
 
   constructor(
     private actions$: Actions,
+    private router: Router,
+    private modalService: ModalService,
   ) {}
 }
